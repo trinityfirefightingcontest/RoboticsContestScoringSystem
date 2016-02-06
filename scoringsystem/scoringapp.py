@@ -33,6 +33,8 @@ app.wsgi_app = SharedDataMiddleware(app.wsgi_app, {
 # blueprints and views
 from blueprints.main import main
 app.register_blueprint(main)
+from blueprints.authentication import authentication
+app.register_blueprint(authentication, url_prefix='/auth')
 
 
 def _get_etag():

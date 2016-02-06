@@ -19,7 +19,8 @@
       }
 
       .form-signin {
-        max-width: 300px;
+        text-align: center;
+        max-width: 500px;
         padding: 19px 29px 29px;
         margin: 0 auto 20px;
         background-color: #fff;
@@ -46,15 +47,10 @@
 </head>
 <body>
     <div class="container">
-      <form class="form-signin">
-        <h2 class="form-signin-heading">Please sign in</h2>
-        <input type="text" class="input-block-level" placeholder="Email address">
-        <input type="password" class="input-block-level" placeholder="Password">
-        <label class="checkbox">
-          <input type="checkbox" value="remember-me"> Remember me
-        </label>
-        <button class="btn btn-large btn-primary" type="submit">Sign in</button>
-      </form>
+      <div class="form-signin">
+        <h2 class="form-signin-heading">Sign In with Google Account</h2>
+        <a href="{{ url_for('auth.oauth2_login') }}"><button class="btn btn-large btn-primary" type="submit">Sign in</button></a>
+      </div>
     </div> 
     {% block main_content %}
     {% endblock %}

@@ -14,3 +14,9 @@ ALLOWED_ADMINS = [
     'binay150@gmail.com',
     'david.Ahlgren@trincoll.edu'
 ]
+
+CLIENT_ID = '904731183016-rhpk64herjjr80mgufhmghs9f88c57v7.apps.googleusercontent.com'  # NOQA
+CLIENT_SECRET = 'gIHijtxmhPqItaZLUtQOHCq4'
+OAUTH2_SCOPE = ('https://www.googleapis.com/auth/userinfo.profile',
+                'https://www.googleapis.com/auth/userinfo.email')
+PROFILE_URI = 'https://www.googleapis.com/oauth2/v1/userinfo'
