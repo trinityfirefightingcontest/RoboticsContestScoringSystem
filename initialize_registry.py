@@ -5,6 +5,8 @@ import registry
 from constants import settings
 from libraries.my_sql_connection import MySQLConnection
 from raven import Client
+from libraries.repositories.robots import Robots
+from libraries.repositories.runs import Runs
 
 
 def load_registry():
@@ -14,8 +16,8 @@ def load_registry():
     if r.is_locked():
         return
     init_mysql(r)
-    # init_sentry(r)
     init_redis(r)
+    init_clients(r)
     init_db_objects(r)
     r.lock()
 
@@ -32,5 +34,13 @@ def init_redis(r):
     )
 
 
+def init_clients(r):
+    r['SENTRY'] = Client(
+        'https://858c1ce455dc43538c50f8ca3b3358ce:93608270372'
+        'b4b939737b04a3c816612@app.getsentry.com/60618'
+    )
+
+
 def init_db_objects(r):
-    r['SENTRY'] = Client('https://858c1ce455dc43538c50f8ca3b3358ce:93608270372b4b939737b04a3c816612@app.getsentry.com/60618')
+    r['ROBOTS'] = Robots
+    r['RUNS'] = Runs
