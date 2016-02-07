@@ -1,3 +1,5 @@
+# -*- coding: utf-8; -*-
+
 import MySQLdb
 from constants import settings
 

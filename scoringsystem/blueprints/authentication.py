@@ -65,7 +65,7 @@ def callback():
             if white_listed:
                 # Store credentials on session to signify login
                 session['email'] = email
-                return redirect(url_for('main.index'))
+                return redirect(url_for('main.home'))
             else:
                 message = "Not a valid email address."
         except Error:
@@ -76,7 +76,7 @@ def callback():
         message = "Could not extract authorization code from Google callback."
     session.clear()
     _oauth2_error_handler(message)
-    return redirect(url_for('.sign_in'))
+    return redirect(url_for('main.signin'))
 
 
 def _build_redirect_uri(request):

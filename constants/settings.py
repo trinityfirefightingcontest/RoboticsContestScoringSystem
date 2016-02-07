@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 mysql_host = 'localhost'
-mysql_database = 'challenge'
+mysql_database = 'scoring_system'
 mysql_user = 'root'
 mysql_password = 'D5QfPNvVSfq5qE6v0UlngA=='
 mysql_use_sample = True

@@ -1,0 +1,77 @@
+{% extends "header.html" %}
+{% block head %}
+  <style type="text/css">
+    #spotlight {
+       margin: 0;
+       padding: 10px 15px;
+       width: 100%;
+       font-size: 16px;
+    }
+
+    #spotlight-show-all {
+       padding: 10px;
+    }
+
+    .spotlight-error {
+       color: #ff7700;
+    }
+
+    #jobs li {
+       display: none;
+       padding: 10px;
+       border-bottom: 1px solid #eaeaea;
+    }
+
+    #jobs li span {
+       color: #777;
+       font-size: 89%;
+    }
+
+    .spotlight-highlight ul.job-tags {
+       display: none;
+    }
+
+    #jobs ul.job-tags li {
+       border-radius: 3px;
+       background: #bfc8de;
+       padding: 3px 5px;
+       color: #444;
+       display: inline;
+       border-bottom: 0;
+       font-size: 89%;
+    }
+
+    .spotlight-highlight {
+       background: #4183c4;
+    }
+
+    .spotlight-highlight a {
+       color: #fff;
+    }
+
+    .spotlight-highlight span {
+       color: #eee !important;
+    }
+    a, a:active { color: #4183c4; }
+    a:hover { 
+      color: #337a9d;
+      text-decoration: none;
+    }
+  </style>
+{% endblock %}
+{% block main_content %}
+<div class="container">
+  <input id="spotlight" placeholder="Don't see a robot? Search right here." />
+  <ul id="jobs">
+    {% for robot in robots %}
+    <li>
+      <a href="{{ robot['endpoint'] }}">
+        <h3>{{ robot['name'] }}</h3>
+        <span>{{ robot['school'] }}</span>
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+  <a id="spotlight-show-all" href="javascript:;">More&hellip;</a>
+</div> 
+{% endblock %}
