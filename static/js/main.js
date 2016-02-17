@@ -16,7 +16,7 @@ require(["ui/spotlighter"],
 
         function(spotlighter) {
             spotlighter
-                .initialize("#spotlight", "#jobs", "#spotlight-show-all");
+                .initialize("#spotlight", "#jobs", "#show-all");
 
             $("#main").css("visibility", "visible");
         });

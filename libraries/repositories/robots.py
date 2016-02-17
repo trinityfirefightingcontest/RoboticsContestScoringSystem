@@ -41,3 +41,11 @@ class Robots(object):
             'division': division
         }
         r.get_registry()['MY_SQL'].insert(query, data)
+
+    @staticmethod
+    def get_robot(robot_id):
+        query = """SELECT * FROM robots where id = %(robot_id)s;"""
+        data = {
+            'robot_id': robot_id
+        }
+        return r.get_registry()['MY_SQL'].get(query, data)

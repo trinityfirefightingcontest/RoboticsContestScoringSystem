@@ -1,0 +1,17 @@
+{% extends "header.html" %}
+{% block head %}
+{% endblock %}
+{% block main_content %}
+<div class="container container-fluid">
+    <div class="row">
+        <div class="page-header">
+            <h1>{{robot_name}}</h1>
+        </div>
+    </div>
+    <div class="row">
+        <a href="{{url_for('main.robot_add_run', robot_id=robot_id)}}">
+        <button class="btn btn-large btn-primary">Add Run</button>
+        </a>
+    </div>
+</div>
+{% endblock %}
