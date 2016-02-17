@@ -1,25 +1,43 @@
 {% extends "header.html" %}
 {% block head %}
   <style type="text/css">
+    body {
+      background-color: #f5f5f5;
+    }
+    .content-wrapper {
+      max-width: 800px;
+      padding: 0px 50px 40px;
+      margin: 0 auto;
+      background-color: #fff;
+      border: 1px solid #e5e5e5;
+      -webkit-border-radius: 5px;
+         -moz-border-radius: 5px;
+              border-radius: 5px;
+      -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+         -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+              box-shadow: 0 1px 2px rgba(0,0,0,.05);
+    }
     #spotlight {
        margin: 0;
        padding: 10px 15px;
        width: 100%;
        font-size: 16px;
+       margin-top: 20px;
     }
 
-    #spotlight-show-all {
+    #show-all {
        padding: 10px;
     }
 
     .spotlight-error {
-       color: #ff7700;
+       color: red;
     }
 
     #jobs li {
        display: none;
        padding: 10px;
        border-bottom: 1px solid #eaeaea;
+       list-style: none;
     }
 
     #jobs li span {
@@ -39,28 +57,43 @@
        display: inline;
        border-bottom: 0;
        font-size: 89%;
+       list-style: none;
     }
 
     .spotlight-highlight {
-       background: #4183c4;
+       background: #095388;
     }
 
     .spotlight-highlight a {
        color: #fff;
     }
 
-    .spotlight-highlight span {
-       color: #eee !important;
+    .spotlight-highlight a:hover {
+       color: #ddd;
     }
-    a, a:active { color: #4183c4; }
+
+    .spotlight-highlight span {
+       color: #ffcd04 !important;
+    }
+
+    a, a:active { color: #095388; }
     a:hover { 
-      color: #337a9d;
       text-decoration: none;
+    }
+    #jobs li:hover {
+      color: #4F89B2;
+      background: #f5f5f5;
+    }
+    #jobs li:hover a {
+      color: #4F89B2;
     }
   </style>
 {% endblock %}
 {% block main_content %}
-<div class="container">
+<div class="container content-wrapper">
+  <div class="center big-top-padding">
+    <img src="/static/img/logo.png" width="300">
+  </div>
   <input id="spotlight" placeholder="Don't see a robot? Search right here." />
   <ul id="jobs">
     {% for robot in robots %}
@@ -72,6 +105,6 @@
     </li>
     {% endfor %}
   </ul>
-  <a id="spotlight-show-all" href="javascript:;">More&hellip;</a>
+  <a id="show-all" href="javascript:;">More&hellip;</a>
 </div> 
 {% endblock %}

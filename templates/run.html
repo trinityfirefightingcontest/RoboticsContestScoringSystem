@@ -1,0 +1,162 @@
+{% extends "header.html" %}
+{% block head %}
+{% endblock %}
+{% block main_content %}
+<div class="container container-fluid">
+    <form method="post">
+    <div class="row">
+        <div class="page-header">
+            <h1>Add Run: {{robot_name}} (Level {{ level_number }})</h1>
+        </div>
+    </div>
+    <div class="container container-fluid">
+        <div class="input-group">
+            <span class="input-group-addon" id="basic-addon1">Sanity Check - Robot name:</span>
+            <input type="text" class="form-control" name="robot_name" value="{{ input['robot_name'] }}">
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-lg-12">
+                <h2>Versa Valve Option:</h2>
+            </div>
+            <div class="col-xs-12 checkbox">
+                <label>
+                    <input type="checkbox" name="versa_valve_used" {% if input['versa_valve_used'] %} checked {% endif %}/>Robot uses Versa Valve.
+                </label>
+            </div>
+        </div>
+        {% if division in ['junior', 'walking'] and level_number==1 %}
+        <div class="row">
+            <div class="col-xs-12 col-lg-12">
+                <h2>Special deduction for Level 1 Junior and Walking divison:</h2>
+            </div>
+            <div class="col-xs-12 checkbox">
+                <label>
+                    <input type="checkbox" name="candle_detected" {% if input['candle_detected'] %} checked {% endif %}/>Candle detection notified with light or sound.
+                </label>
+            </div>
+            <div class="col-xs-12 checkbox">
+                <label>
+                    <input type="checkbox" name="stopped_within_30" {% if input['stopped_within_30'] %} checked {% endif %}/>Robot stopped with 30cm of candle without touching it.
+                </label>
+            </div>
+            <div class="col-xs-6 col-lg-6">
+                <label>Number of rooms searched:</label>
+                <input type="text" class="form-control" name="rooms_searched" value="{{input['rooms_searched']}}"/>
+            </div>
+        </div>
+        {% endif %}
+        <div class="row">
+            <div class="col-xs-12 col-lg-12">
+                <h2>Run Disqualified:</h2>
+            </div>
+            <div class="col-xs-12 checkbox">
+                <label>
+                    <input type="checkbox" name="run_disqualified" {% if input['run_disqualified'] %} checked {% endif %}/>Robot could not put out the flame within the time limit.
+                </label>
+            </div>
+        </div>
+        {%- if level_number in [1, 2] -%}
+        <div class="row">
+            <div class="col-xs-12 col-lg-12">
+                <h2>Operating Mode Deductions:</h2>
+            </div>
+            <div class="col-xs-12 checkbox">
+                <label>
+                    <input type="checkbox" name="non_air" {% if input['non_air'] %} checked {% endif %}/>Non-air Extinguisher
+                </label>
+            </div>
+            <div class="col-xs-12 checkbox">
+                <label>
+                    <input type="checkbox" name="furniture" {% if input['furniture'] %} checked {% endif %}/>Furniture
+                </label>
+            </div>
+            <div class="col-xs-12 checkbox">
+                <label>
+                    <input type="checkbox" name="arbitrary_start" {% if input['arbitrary_start'] %} checked {% endif %}/>Abitrary Start Location.
+                </label>
+            </div>
+            <div class="col-xs-12 checkbox">
+                <label>
+                    <input type="checkbox" name="return_trip" {% if input['return_trip'] %} checked {% endif %}/>Returning Trip
+                </label>
+            </div>
+            {%- if level_number==1 -%}
+            <div class="col-xs-12 checkbox">
+                <label>
+                    <input type="checkbox" name="no_candle_circle" {% if input['no_candle_circle'] %} checked {% endif %}/>Found candle without a candle circle.
+                </label>
+            </div>
+            {%- endif -%}
+        </div>
+        {% endif %}
+        <div class="row">
+            <div class="col-xs-12 col-lg-12">
+                <h2>Actual Time:</h2>
+            </div>
+            <div class="col-xs-6 col-lg-6">
+                <label>Seconds taken to put out candle:</label>
+                <input type="text" class="form-control" name="seconds_to_put_out_candle" value="{{ input['seconds_to_put_out_candle'] }}"/>
+            </div>
+        </div>
+        {%- if level_number in [1, 2] -%}
+        <div class="row">
+            <div class="col-xs-12 col-lg-12">
+                <h2>Room Factor:</h2>
+            </div>
+            <div class="col-xs-6 col-lg-6">
+                <label>Number of rooms searched:</label>
+                <input type="text" class="form-control" name="number_of_rooms_searched" value="{{ input['number_of_rooms_searched'] }}"/>
+            </div>
+        </div>
+        {% endif %}
+        {%- if level_number == 3 -%}
+        <div class="row">
+            <div class="col-xs-12 col-lg-12">
+                <h2>Level 3 Reductions:</h2>
+            </div>
+            <div class="col-xs-12 checkbox">
+                <label>
+                    <input type="checkbox" name="ramp_used" {% if input['ramp_used'] %} checked {% endif %}/>Ramp in the hallway.
+                </label>
+            </div>
+            <div class="col-xs-12 checkbox">
+                <label>
+                    <input type="checkbox" name="baby_relocated" {% if input['baby_relocated'] %} checked {% endif %}/>Baby relocated.
+                </label>
+            </div>
+            <div class="col-xs-12 checkbox">
+                <label>
+                    <input type="checkbox" name="all_candles" {% if input['all_candles'] %} checked {% endif %}/>Put out all candles.
+                </label>
+            </div>
+        </div>
+        {% endif %}
+        <div class="row">
+            <div class="col-xs-12 col-lg-12">
+                <h2>Penalty Points:</h2>
+            </div>
+            <div class="col-xs-12 checkbox">
+                <label>
+                    <input type="checkbox" name="touched_candle" {% if input['touched_candle'] %} checked {% endif %}/>Touched candle.
+                </label>
+            </div>
+            <div class="col-xs-12 checkbox">
+                <label>
+                    <input type="checkbox" name="kicked_dog" {% if input['kicked_dog'] %} checked {% endif %}/>Kicked the dog.
+                </label>
+            </div>
+            <div class="col-xs-6 col-lg-6">
+                <label>Centimeters of Wall Contact:</label>
+                <input type="text" class="form-control" name="wall_contact_cms" value="{{input['wall_contact_cms']}}"/>
+            </div>
+        </div>
+        <div class="row">
+            <hr/>
+            <div class="col-xs-12 col-lg-12">
+                <input class="btn btn-large btn-primary" type="submit"/>
+            </div>
+        </div>
+    </div>
+    </form>
+</div>
+{% endblock %}
