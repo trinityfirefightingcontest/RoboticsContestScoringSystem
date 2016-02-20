@@ -3,7 +3,7 @@
 mysql_host = 'localhost'
 mysql_database = 'scoring_system'
 mysql_user = 'root'
-mysql_password = 'D5QfPNvVSfq5qE6v0UlngA=='
+mysql_password = ''
 mysql_use_sample = True
 mysql_port = 3306
 redis_host = 'localhost'
