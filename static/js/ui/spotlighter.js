@@ -64,7 +64,7 @@ define(["jquery", "lodash"], function($, _) {
                        $(":visible:first", $output).addClass(highlightClass);
                    }
                    if ($("> :visible", $output).length < 1) {
-                       $output.after("<span class='spotlight-error'>No jobs matching your query</span>");
+                       $output.after("<span class='spotlight-error'>No robots matching your query</span>");
                    }
                } else {
                    $showAll.show();
