@@ -6,13 +6,13 @@
     <form method="post">
     <div class="row">
         <div class="page-header">
-            <h1>Add Run: {{robot_name}} (Level {{ level_number }})</h1>
+            <h1>Add Run: {{robot['name']}} (Level {{ robot['level'] }})</h1>
         </div>
     </div>
     <div class="container container-fluid">
         <div class="input-group">
             <span class="input-group-addon" id="basic-addon1">Sanity Check - Robot name:</span>
-            <input type="text" class="form-control" name="robot_name" value="{{ input['robot_name'] }}">
+            <input type="text" class="form-control" name="name" value="{{ input['name'] }}">
         </div>
         <div class="row">
             <div class="col-xs-12 col-lg-12">
@@ -24,7 +24,7 @@
                 </label>
             </div>
         </div>
-        {% if division in ['junior', 'walking'] and level_number==1 %}
+        {% if robot['division'] in ['junior', 'walking'] and robot['level']==1 %}
         <div class="row">
             <div class="col-xs-12 col-lg-12">
                 <h2>Special deduction for Level 1 Junior and Walking divison:</h2>
@@ -55,7 +55,7 @@
                 </label>
             </div>
         </div>
-        {%- if level_number in [1, 2] -%}
+        {%- if robot['level'] in [1, 2] -%}
         <div class="row">
             <div class="col-xs-12 col-lg-12">
                 <h2>Operating Mode Deductions:</h2>
@@ -80,7 +80,7 @@
                     <input type="checkbox" name="return_trip" {% if input['return_trip'] %} checked {% endif %}/>Returning Trip
                 </label>
             </div>
-            {%- if level_number==1 -%}
+            {%- if robot['level']==1 -%}
             <div class="col-xs-12 checkbox">
                 <label>
                     <input type="checkbox" name="no_candle_circle" {% if input['no_candle_circle'] %} checked {% endif %}/>Found candle without a candle circle.
@@ -98,7 +98,7 @@
                 <input type="text" class="form-control" name="seconds_to_put_out_candle" value="{{ input['seconds_to_put_out_candle'] }}"/>
             </div>
         </div>
-        {%- if level_number in [1, 2] -%}
+        {%- if robot['level'] in [1, 2] -%}
         <div class="row">
             <div class="col-xs-12 col-lg-12">
                 <h2>Room Factor:</h2>
@@ -109,7 +109,7 @@
             </div>
         </div>
         {% endif %}
-        {%- if level_number == 3 -%}
+        {%- if robot['level'] == 3 -%}
         <div class="row">
             <div class="col-xs-12 col-lg-12">
                 <h2>Level 3 Reductions:</h2>

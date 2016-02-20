@@ -99,7 +99,7 @@
     {% for robot in robots %}
     <li>
       <a href="{{ robot['endpoint'] }}">
-        <h3>{{ robot['name'] }}</h3>
+        <h3>{{ robot['name'] }} - {{ robot['division'] }}</h3>
         <span>{{ robot['school'] }}</span>
       </a>
     </li>
