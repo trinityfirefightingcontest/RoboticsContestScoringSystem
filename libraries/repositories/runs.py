@@ -23,3 +23,14 @@ class Runs(object):
              ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"""
         )
         r.get_registry()['MY_SQL'].query(query)
+
+    @statismethod
+    def get_runs(robot_id):
+        query = """ SELECT * FROM runs where r_id = %(robot_id)s;"""
+        data = {
+            'r_id': robot_id       
+        }
+        return r.get_registry()['MY_SQL'].get(query, data)
+
+
+
