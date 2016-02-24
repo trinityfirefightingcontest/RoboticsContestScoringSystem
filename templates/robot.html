@@ -9,52 +9,70 @@
         </div>
     </div>
     {% if robot_runs %}
-    <div class="row">
-        <table class="table table-striped">
-            <thead class="thead-inverse"> 
-				<tr>
-					<th>#</th>
-					<th>Disqualified</th>
-					<th>Level</th>
-					<th>Time taken</th>
-					<th>Reached time limit</th>
-					<th>Used versa valve</th>
-					<th>Non_air</th>
-					<th>Furniture</th>
-					<th>Random elements added</th>
-					<th>Return thip</th>		
-					<th>No candle circle</th>
-					<th>Touched candle</th>
-					<th>Kicked dog</th>
-					<th>Seconds taken</th>
-					<th>Rooms searched</th>
-					<th>Score</th>
-				<th>
-            </thead>
-            <tbody>
-            {% for run in robot_runs %}
-                <tr>
-                    <td>{{ loop.index }}</td>
-                    <td>{{ run.get('is_disqualified', '') }}</td>
-                    <td>{{ run.get('level', '') }}</td>
-					<td>{{ run.get('actual_time', '') }}</td>
-                    <td>{{ run.get('reached_time_limit', '') }}</td>
-                    <td>{{ run.get('used_versa_valve', '') }}</td>
-                    <td>{{ run.get('non_air', '') }}</td>
-                    <td>{{ run.get('furniture', '') }}</td>
-					<td>{{ run.get('arbitrary_start', '') }}</td>
-                    <td>{{ run.get('return_trip', '') }}</td>
-                    <td>{{ run.get('no_candle_circle', '') }}</td>
-                    <td>{{ run.get('touched_candle', '') }}</td>
-                    <td>{{ run.get('kicked_dog', '') }}</td>
-                    <td>{{ run.get('second_taken', '') }}</td>
-                    <td>{{ run.get('rooms_searched', '') }}</td>
-					
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
+		<div class="row">
+			<table class="table table-striped">
+				<thead class="thead-inverse"> 
+					<tr>
+						<th>#</th>
+						<th>Disqualified</th>
+						<th>Level</th>
+						<th>Time taken</th>
+						<th>Reached time limit</th>
+						<th>Used versa valve</th>
+						<th>Non_air</th>
+						<th>Furniture</th>
+						<th>Random elements added</th>
+						<th>Return thip</th>		
+						<th>No candle circle</th>
+						<th>Touched candle</th>
+						<th>Kicked dog</th>
+						<th>Seconds taken</th>
+						<th>Rooms searched</th>
+						<th>Score</th>
+					</tr>
+				</thead>
+				<tbody>
+				{% for run in robot_runs %}
+					<tr>
+						<td>{{ loop.index }}</td>
+						<td>{{ run.get('is_disqualified', '') }}</td>
+						<td>{{ run.get('level', '') }}</td>
+						<td>{{ run.get('actual_time', '') }}</td>
+						<td>{{ run.get('reached_time_limit', '') }}</td>
+						<td>{{ run.get('used_versa_valve', '') }}</td>
+						<td>{{ run.get('non_air', '') }}</td>
+						<td>{{ run.get('furniture', '') }}</td>
+						<td>{{ run.get('arbitrary_start', '') }}</td>
+						<td>{{ run.get('return_trip', '') }}</td>
+						<td>{{ run.get('no_candle_circle', '') }}</td>
+						<td>{{ run.get('touched_candle', '') }}</td>
+						<td>{{ run.get('kicked_dog', '') }}</td>
+						<td>{{ run.get('second_taken', '') }}</td>
+						<td>{{ run.get('rooms_searched', '') }}</td>	
+					</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+		</div>
+		{% if robot_runs|length == 5 %}
+			<h2>Final score</h2>
+			<div class="row">
+				<table class="table table-striped">
+					<thead class="thead-inverse">
+						<tr>
+							<th>Rounds qualified</th>
+							<th>Total score</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>{{ rounds_qualified }}</td>
+							<td>{{ total_score }}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		{% endif %}
     {% endif %}
     <div class="row">
         <a href="{{url_for('main.robot_add_run', robot_id=robot_id)}}">
