@@ -46,7 +46,7 @@ class Runs(object):
         data = {
             'robot_id': robot_id       
         }
-        return r.get_registry()['MY_SQL'].get(query, data)
+        return r.get_registry()['MY_SQL'].get_all(query, data)
 
     @staticmethod
     def record_run(id,
