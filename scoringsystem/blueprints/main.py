@@ -34,15 +34,22 @@ def not_found():
 @main.route('/robot/<robot_id>', methods=['GET', 'POST'])
 def robot_detail(robot_id):
     robot = r.get_registry()['ROBOTS'].get_robot(robot_id)
-    runs = r.get_regitstry()['runs'].get_runs(robot_id);
+    runs = r.get_registry()['RUNS'].get_runs(robot_id)
     if not robot:
         return render_template("not_found.html")
-    return render_template(
-        "robot.html",
-        robot_name=robot['name'],
-        robot_id=robot_id,
-        robot_runs = get_runs(robot_id)
-    )
+    if not runs and robot:
+        return render_template(
+            "robot.html",
+            robot_name=robot['name'],
+            robot_id=robot_id
+        )
+    else:
+        return render_template(
+            "robot.html",
+            robot_name=robot['name'],
+            robot_id=robot_id,
+            robot_runs = runs
+        )
 
 
 @main.route('/robot/<robot_id>/addrun', methods=['GET', 'POST'])

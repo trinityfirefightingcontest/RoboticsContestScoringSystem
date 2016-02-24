@@ -40,11 +40,11 @@ class Runs(object):
         )
         r.get_registry()['MY_SQL'].query(query)
 
-    @statismethod
+    @staticmethod
     def get_runs(robot_id):
-        query = """ SELECT * FROM runs where r_id = %(robot_id)s;"""
+        query = """ SELECT * FROM runs where id = %(robot_id)s;"""
         data = {
-            'r_id': robot_id       
+            'robot_id': robot_id       
         }
         return r.get_registry()['MY_SQL'].get(query, data)
 
@@ -114,7 +114,7 @@ class Runs(object):
         );"""
         data = {
             'id': id,
-            'level': level,
+            'level': int(level),
             'failed_trial': failed_trial,
             'actual_time': int(actual_time),
             'reached_time_limit': reached_time_limit,

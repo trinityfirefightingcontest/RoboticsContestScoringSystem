@@ -15,34 +15,37 @@
                 <tr>#</tr>
                 <tr>Disqualified</tr>
                 <tr>Level</tr>
-                <tr>Used versa valve</tr>
+				<tr>Time taken</tr>
                 <tr>Reached time limit</tr>
+                <tr>Used versa valve</tr>
                 <tr>Non_air</tr>
                 <tr>Furniture</tr>
-                <tr>Started arbitrarily</tr>
-                <tr>Return trip</tr>
+                <tr>Random elements added</tr>
+                <tr>Return trip</tr>		
                 <tr>No candle circle</tr>
                 <tr>Touched candle</tr>
                 <tr>Kicked dog</tr>
                 <tr>Seconds taken</tr>
                 <tr>Rooms searched</tr>
+				<tr>Score</tr>
             </thead>
             <tbody>
             {% for run in robot_runs %}
                 <tr>
                     <td>{{ loop.index }}</td>
-                    <td>{{ robot.get('is_disqualified') }}</td>
-                    <td>{{ robot.get('level') }}</td>
-                    <td>{{ robot.get('used_versa_valve') }}</td>
-                    <td>{{ robot.get('reached_time_limit') }}</td>
-                    <td>{{ robot.get('non_air') }}</td>
-                    <td>{{ robot.get('furniture') }}</td>
-                    <td>{{ robot.get('return_trip') }}</td>
-                    <td>{{ robot.get('no_candle_circle') }}</td>
-                    <td>{{ robot.get('touched_candle') }}</td>
-                    <td>{{ robot.get('kicked_dog') }}</td>
-                    <td>{{ robot.get('second_taken') }}</td>
-                    <td>{{ robot.get('rooms_serached') }}</td>
+                    <td>{{ run.get('is_disqualified') }}</td>
+                    <td>{{ run.get('level') }}</td>
+					<td>{{ run.get('actual_time') }}</td>
+                    <td>{{ run.get('reached_time_limit') }}</td>
+                    <td>{{ run.get('used_versa_valve') }}</td>
+                    <td>{{ run.get('non_air') }}</td>
+                    <td>{{ run.get('furniture') }}</td>
+                    <td>{{ run.get('return_trip') }}</td>
+                    <td>{{ run.get('no_candle_circle') }}</td>
+                    <td>{{ run.get('touched_candle') }}</td>
+                    <td>{{ run.get('kicked_dog') }}</td>
+                    <td>{{ run.get('second_taken') }}</td>
+                    <td>{{ run.get('rooms_searched') }}</td>
                 </tr>
             {% endfor %}
             </tbody>
