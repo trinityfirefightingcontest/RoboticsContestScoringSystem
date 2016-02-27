@@ -77,6 +77,7 @@ def not_found():
 def robot_detail(robot_id):
     robot = r.get_registry()['ROBOTS'].get_robot(robot_id)
     runs = r.get_registry()['RUNS'].get_runs(robot_id)
+    print runs
     if not robot:
         return render_template("not_found.html")
     if not runs and robot:
