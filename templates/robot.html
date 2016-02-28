@@ -6,12 +6,69 @@
     <div class="row">
         <div class="page-header">
             <h1>{{robot_name}}</h1>
+			<h2>{{robot}}<h2>
         </div>
     </div>
+    {% if robot_runs %}
+		<div class="row">
+			<table class="table table-striped">
+				<thead class="thead-inverse"> 
+					<tr>
+						<th>#</th>
+						<th>Disqualified</th>
+						<th>Level</th>
+						<th>Actual Time (AT)</th>
+						<th>Operating Modes(OM.x)<th>
+						<th>Penalty Points(PP)<th>
+						<th>Score</th>
+					</tr>
+				</thead>
+				<tbody>
+				{% for run in robot_runs %}
+					<tr>
+						<td>{{ loop.index }}</td>
+						<td>{{ run.get('is_disqualified',false) }}</td>
+						<td>{{ run.get('level') }}</td>
+						<td>{{ run.get('actual_time') }}</td>
+						<td>{{ false if run.get('used_versa_valve', 0) == 0 else true }}</td>
+						<td>{{ false if run.get('non_air', 0 == 0) else true }}</td>
+						<td>{{ false if run.get('furniture', 0 == 0) else true }}</td>
+						<td>{{ false if run.get('arbitrary_start', 0) == 0 else true }}</td>
+						<td>{{ run.get('return_trip') }}</td>
+						<td>{{ false if run.get('no_candle_circle', 0) == 0 else true }}</td>
+						<td>{{ false if run.get('touched_candle', 0) == 0 else true }}</td>
+						<td>{{ false if run.get('kicked_dog', 0) == 0 else true }}</td>
+						<td>{{ false if run.get('second_taken', 0) == 0 else true }}</td>
+						<td>{{ false if run.get('rooms_searched', 0) == 0 else true }}</td>	
+					</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+		</div>
+		{% if robot_runs|length == 5 %}
+			<h2>Final score</h2>
+			<div class="row">
+				<table class="table table-striped">
+					<thead class="thead-inverse">
+						<tr>
+							<th>Rounds qualified</th>
+							<th>Total score</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>{{ rounds_qualified }}</td>
+							<td>{{ total_score }}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		{% endif %}
+    {% endif %}
     <div class="row">
         <a href="{{url_for('main.robot_add_run', robot_id=robot_id)}}">
         <button class="btn btn-large btn-primary">Add Run</button>
-        </a>
+        </a>	
     </div>
 </div>
 {% endblock %}

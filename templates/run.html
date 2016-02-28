@@ -93,9 +93,10 @@
             <div class="col-xs-12 col-lg-12">
                 <h2>Actual Time:</h2>
             </div>
-            <div class="col-xs-6 col-lg-6">
+            <div {% if input['TIME_ERR'] == True %} class="col-xs-6 col-lg-6 has-error" {% else %} class="col-xs-6 col-lg-6" {% endif %} >
                 <label>Seconds taken to put out candle:</label>
                 <input type="text" class="form-control" name="seconds_to_put_out_candle" value="{{ input['seconds_to_put_out_candle'] }}"/>
+                {% if input['TIME_ERR'] == True %}<label class="control-label">Invalid input</label> {% endif %}
             </div>
         </div>
         {%- if robot['level'] in [1, 2] -%}
@@ -103,9 +104,10 @@
             <div class="col-xs-12 col-lg-12">
                 <h2>Room Factor:</h2>
             </div>
-            <div class="col-xs-6 col-lg-6">
+            <div {% if input['ROOM_ERR'] == True %} class="col-xs-6 col-lg-6 has-error" {% else %} class="col-xs-6 col-lg-6 " {% endif %} >
                 <label>Number of rooms searched:</label>
                 <input type="text" class="form-control" name="number_of_rooms_searched" value="{{ input['number_of_rooms_searched'] }}"/>
+                {% if input['ROOM_ERR'] == True %}<label class="control-label">Invalid input</label> {% endif %}
             </div>
         </div>
         {% endif %}
@@ -145,9 +147,10 @@
                     <input type="checkbox" name="kicked_dog" {% if input['kicked_dog'] %} checked {% endif %}/>Kicked the dog.
                 </label>
             </div>
-            <div class="col-xs-6 col-lg-6">
+            <div {% if input['WALL_ERR'] == True %} class="col-xs-6 col-lg-6 has-error" {% else %} class="col-xs-6 col-lg-6 " {% endif %} >
                 <label>Centimeters of Wall Contact:</label>
                 <input type="text" class="form-control" name="wall_contact_cms" value="{{input['wall_contact_cms']}}"/>
+                {% if input['WALL_ERR'] == True %}<label class="control-label">Invalid input</label> {% endif %}
             </div>
         </div>
         <div class="row">
