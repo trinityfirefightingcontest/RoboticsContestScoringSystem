@@ -7,7 +7,6 @@ main = Blueprint('main', __name__)
 # name of all html form inputs, order matters
 params_all = ['run_disqualified',
         'seconds_to_put_out_candle',
-        'reached_time_limit',
         'non_air',
         'furniture',
         'arbitrary_start',
@@ -26,7 +25,6 @@ params_all = ['run_disqualified',
 
 # sublist of name of all checkboxes
 boolean_params = ['run_disqualified',
-                'reached_time_limit',
                 'non_air',
                 'furniture',
                 'arbitrary_start',
