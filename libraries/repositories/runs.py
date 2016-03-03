@@ -36,7 +36,7 @@ class Runs(object):
                 used_versa_valve BOOLEAN,
                 score FLOAT(10,2),
                 robot_id VARCHAR(10))
-                ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"""
+                ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;""")
         r.get_registry()['MY_SQL'].query(query)
 
     @staticmethod
@@ -147,7 +147,6 @@ class Runs(object):
                                          int(level),
                                          failed_trial,
                                          int(actual_time),
-                                         reached_time_limit,
                                          non_air,
                                          furniture,
                                          arbitrary_start,

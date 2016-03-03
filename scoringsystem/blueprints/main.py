@@ -144,9 +144,11 @@ def robot_add_run(robot_id):
         # convert dict values to tuple to prepare to insert to DB
         params_t = convert_to_tuple(params_d, robot_id, score)
 
+        print params_t
+
         # insert into databse
         print params_t
-        r.get_registry()['RUNS'].record_run(*params_t, robot_id=robot_id)
+        r.get_registry()['RUNS'].record_run(*params_t)
 
         return redirect(url_for('main.robot_detail', robot_id = robot_id))
 
