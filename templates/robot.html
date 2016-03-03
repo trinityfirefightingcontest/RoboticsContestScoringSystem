@@ -34,7 +34,7 @@
 						<td>{{ applied_factors[loop.index - 1].get('applied_oms') }}</td>
 						<td>{{ applied_factors[loop.index - 1].get('applied_pp') }}</td>
 						<td>{{ applied_factors[loop.index - 1].get('applied_rf') }}</td>
-						<td>{{ run_score[loop.index - 1] }}</td>
+						<td>{{ run.get('score') }}</td>
 					</tr>
 				{% endfor %}
 				</tbody>

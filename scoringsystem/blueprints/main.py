@@ -77,11 +77,14 @@ def not_found():
 def robot_detail(robot_id):
     robot = r.get_registry()['ROBOTS'].get_robot(robot_id)
     runs = r.get_registry()['RUNS'].get_runs(robot_id)
-    run_levels = get_values_of_key('id', list(runs))
+    run_levels = get_values_of_dicts('id', list(runs))
+    '''
+    print(runs)
     run_scor = [calculate_run_score(id, robot_id) for id in run_levels]
     applied_factor = [applied_factors(id, robot_id) for id in run_levels]
     print(run_scor)
     print(applied_factor)
+    '''
     if not robot:
         return render_template("not_found.html")
     if not runs and robot:
@@ -96,7 +99,6 @@ def robot_detail(robot_id):
             robot_name=robot['name'],
             robot_id=robot_id,
             robot_runs = runs,
-            run_score = [calculate_run_score(id, robot_id) for id in run_levels],
             applied_factors = [applied_factors(id, robot_id) for id in run_levels]
         )
 
@@ -138,12 +140,12 @@ def robot_add_run(robot_id):
 
         # insert into databse
         print params_t
-        r.get_registry()['RUNS'].record_run(*params_t)
+        r.get_registry()['RUNS'].record_run(*params_t, robot_id=robot_id)
 
         return redirect(url_for('main.robot_detail', robot_id = robot_id))
 
-
-def get_values_of_key(key, runs):
+#Getting values of specific key in the list of dictionaries
+def get_values_of_dicts(key, runs):
     result = []
     for entries in runs:
         result.append(entries.get(key))
@@ -331,78 +333,3 @@ def applied_factors(run_id, robot_id):
     
     return {'applied_oms': applied_oms, 'applied_rf': applied_rf, 'applied_pp': applied_pp}
  
-def calculate_run_score(run_id, robot_id):
-    query = ("""SELECT * FROM runs where id = %(run_id)s;""")
-    data = {
-        'run_id': run_id
-    } 
-    run_data = r.get_registry()['MY_SQL'].get(query, data)
-   
-    query = ("""SELECT division FROM robots where id = %(robot_id)s;""")
-    data = {
-        'robot_id': robot_id
-    }
-    robot_div = r.get_registry()['MY_SQL'].get(query, data).get('division')
-    
-    actual_time = run_data['actual_time']
-    run_level = run_data['level'];
-    
-    if run_level == 1 and robot_div in ['junior','walking']:
-        task_search = run_data.get('num_rooms_searched', 0) * (-30)
-        task_detect = -30 if run_data.get('signaled_detection', 0) == 1 else 0
-        task_position = -30 if run_data.get('stopped_within_circle', 0) == 1 else 0
-    
-    if run_level in [1,2,3]:
-        if run_level == 1:
-            om_candle = 0.75 if run_data.get('candle_location_mode', 0) == 1 else 1
-
-        if run_level in [1,2]:
-            om_start = 0.8 if run_data.get('arbitrary_start', 0) == 1 else 1
-            om_return = 0.8 if run_data.get('return_trip', 0) == 1 else 1
-            om_extinguisher = 0.75 if run_data.get('non_air', 0) == 1 else 1
-            om_furniture = 0.75 if run_data.get('furniture', 0) == 1 else 1
-
-            if run_data.get('num_rooms_searched') == 1:
-                room_factor = 1
-            elif run_data.get('num_rooms_searched') == 2:
-                room_factor = 0.85
-            elif run_data.get('num_rooms_searched') == 3:
-                room_factor = 0.5
-            elif run_data.get('num_rooms_searched') == 4:
-                room_factor = 0.35
-
-        pp_candle = 50 if run_data.get('touched_candle', 0) == 1 else 0
-        pp_slide = run_data.get('cont_wall_contact', 0) / 2
-        pp_dog = 50 if run_data.get('kicked_dog', 0) == 1 else 0
-
-        if run_level == 3:
-            om_alt_target = 0.6 if run_data.get('alt_target', 0) == 1 else 1
-            om_ramp_hallway = 0.9 if run_data.get('ramp_hallway', 0) == 1 else 1
-            om_all_candles = 0.6 if run_data.get('all_candles', 0) == 1 else 1
-
-    #Scores
-    if run_data.get('disqualified'):
-        if robot_div in ['junior', 'walking']:
-            return 600 + task_detect + task_position + task_search;
-        else:
-            return 600
-
-    elif run_level == 1 and robot_div in ['junior','walking']:
-        return ((actual_time + task_detect + task_position + task_search) *
-                (om_candle * om_start * om_return * om_extinguisher * om_furniture))
-    
-    elif run_level == 1 and robot_div in ['high_school','senior']:
-        return ((actual_time + task_search) * (om_start * om_return * om_extinguisher * om_furniture))
-
-    elif run_level == 2 and robot_div in ['junior', 'walking']:
-        return ((actual_time) * (om_start * om_return * om_extinguisher * om_furniture) * room_factor)
-
-    elif run_level == 2 and robot_div in ['high_school', 'senior']:
-        return ((actual_time) * (om_start * om_return * om_extinguisher * om_furniture))
-
-    #?? 
-    elif run_level == 3 and robot_div == 'junior':
-        return actual_time
-
-    elif run_level == 3 and robot_div in ['walking', 'high_school', 'senior']:
-        return actual_time * (om_alt_target * om_ramp_hallway * om_all_candles)
