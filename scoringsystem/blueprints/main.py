@@ -5,8 +5,10 @@ import registry as r
 main = Blueprint('main', __name__)
 
 # name of all html form inputs, order matters
-params_all = ['run_disqualified',
-        'seconds_to_put_out_candle',
+params_all = ['name',
+        'run_disqualified',
+        'seconds_to_put_out_candle_1',
+        'seconds_to_put_out_candle_2',
         'non_air',
         'furniture',
         'arbitrary_start',
@@ -40,7 +42,9 @@ boolean_params = ['run_disqualified',
                 'versa_valve_used']
 
 # sublist of name of inputs that need string input
-input_params = ['seconds_to_put_out_candle',
+input_params = ['name',
+            'seconds_to_put_out_candle_1',
+            'seconds_to_put_out_candle_2',
             'number_of_rooms_searched',
             'wall_contact_cms']
 
@@ -104,11 +108,12 @@ def robot_add_run(robot_id):
         params_d = bind_params(input_data,robot_id, robot['level'])
 
         # if invalide input data
-        err = validate_params(params_d, robot['level'])
+        err = validate_params(params_d, robot['level'], robot['name'])
         if len(err) > 0:
+            err['ERR'] = True
             params_and_errors = {}
-            params_and_errors.update(params_d)
-            params_and_errors.update(err)
+            params_and_errors.update(params_d) # leave data already entered unchanged
+            params_and_errors.update(err) # include errors
             return render_template(
                 "run.html",
                 level_number=1,
@@ -116,8 +121,11 @@ def robot_add_run(robot_id):
                 input=params_and_errors
             )
 
-        # convert dict values to tuple
-        params_t = convert_to_tuple(params_d)
+        # calculate score
+        score = 0
+
+        # convert dict values to tuple to prepare to insert to DB
+        params_t = convert_to_tuple(params_d, robot_id, score)
 
         # insert into databse
         print params_t
@@ -126,35 +134,89 @@ def robot_add_run(robot_id):
         return redirect(url_for('main.robot_detail', robot_id = robot_id))
 
 
-def convert_to_tuple(dic):
+# convert dict values to tuple to prepare to insert to DB
+def convert_to_tuple(dic, robot_id, score):
     # convert the dictionary values to tuples, order matters
     l = []
+
     l.append(dic['id'])
     l.append(dic['level'])
-    for p in params_all:
-        l.append(dic[p])
+    l.append(dic['run_disqualified'])
+    l.append((to_float(dic['seconds_to_put_out_candle_1']) +
+              to_float(dic['seconds_to_put_out_candle_2'])/2)) # average times by the 2 judges
+    l.append(dic['non_air'])
+    l.append(dic['furniture'])
+    l.append(dic['arbitrary_start'])
+    l.append(dic['return_trip'])
+    l.append(dic['no_candle_circle'])
+    l.append(dic['stopped_within_30'])
+    l.append(dic['candle_detected'])
+    l.append(to_int(dic['number_of_rooms_searched']))
+    l.append(dic['kicked_dog'])
+    l.append(dic['touched_candle'])
+    l.append(to_int(dic['wall_contact_cms']))
+    l.append(dic['ramp_used'])
+    l.append(dic['baby_relocated'])
+    l.append(dic['all_candles'])
+    l.append(dic['versa_valve_used'])
+    l.append(score)
+    l.append(robot_id)
 
     return tuple(l)
 
-def validate_params(input_data, level):
+# convert string to float
+def to_float(input_s):
+    if input_s:
+        return float(input_s)
+
+    # only true when run is disqualified
+    return 0
+
+# convert string to float
+def to_int(input_s):
+    if input_s:
+        return int(input_s)
+
+    # only true when run is disqualified
+    return 0
+
+# validate input
+def validate_params(input_data, level, name):
     # create a dictionary out of input data
     data = dict(input_data)
 
     err = dict()
-    # validate each parameter
-    for p in input_params:
-        if p in data:
-            if p == 'seconds_to_put_out_candle':
-                if not validate_actual_time(data[p],level):
-                    err["TIME_ERR"] = True
-            elif p == 'number_of_rooms_searched':
-                if not validate_num_rooms(data[p]):
-                    err["ROOM_ERR"] = True
-            elif p == 'wall_contact_cms':
-                if not validate_wall_contact(data[p]):
-                    err["WALL_ERR"] = True
+    # if disqualified, only need to check for name
+    if(data['run_disqualified']): 
+        if not validate_name(data['name'], name):
+            err['NAME_ERR'] = True
+    # else validate every input
+    else: 
+        for p in input_params:
+            if p in data:
+                if p == 'name':
+                    if not validate_name(data[p], name):
+                        print "name error"
+                        err['NAME_ERR'] = True
+                elif p == 'seconds_to_put_out_candle_1':
+                    if not validate_actual_time(data[p],level):
+                        err["TIME_ERR_1"] = True
+                elif p == 'seconds_to_put_out_candle_2':
+                    if not validate_actual_time(data[p],level):
+                        err["TIME_ERR_2"] = True
+                elif p == 'number_of_rooms_searched':
+                    if not validate_num_rooms(data[p], level):
+                        err["ROOM_ERR"] = True
+                elif p == 'wall_contact_cms':
+                    if not validate_wall_contact(data[p]):
+                        err["WALL_ERR"] = True
     return err
 
+
+def validate_name(name, robot_name):
+    return name == robot_name
+
+# valide actual time
 def validate_actual_time(time_s, level):
     # minimum and maximum time allowed for each level
     min_123 = 0 # minimum for any level
@@ -172,8 +234,8 @@ def validate_actual_time(time_s, level):
     if not time_s.isdigit():
         return False
 
-    # convet to an integer
-    time = int(time_s)
+    # convet to a float
+    time = float(time_s)
 
     # validation for level 1
     if ((level == 1)
@@ -193,7 +255,7 @@ def validate_actual_time(time_s, level):
     elif ((level == 3)
         and (time < min_123 or time > max_3)
         and (time != fail_123)
-        and (time != traversedAtoB_3)
+        and (time != traversed_3)
         and (time != found_baby_3)
         and (time != picked_baby_3)):
 
@@ -201,18 +263,22 @@ def validate_actual_time(time_s, level):
 
     return True
 
-
-def validate_num_rooms(num_s):
+# validate number of rooms
+def validate_num_rooms(num_s, level):
     # minimum and maximum allowed values
     min_123 = 1
     max_123 = 8
 
     # check if input string is a number
-    if not num_s.isdigit():
-        return False
+    if level in [1,2]:
+        if not num_s.isdigit():
+            return False
 
-    return (int(num_s) >= min_123) and (int(num_s) <= max_123)
+        return (int(num_s) >= min_123) and (int(num_s) <= max_123)
 
+    return True
+
+# validate wall contact distance
 def validate_wall_contact(num_s):
     # minimum and maximum allowed values
     min_123 = 0
@@ -241,7 +307,7 @@ def bind_params(input_data, id, level):
                 # if boolean and exists add True
                 args[p] = True
             else:
-                # dict is of form {key:value} where value is of form [u'str']
+                # data dict is of form {key:value} where value is of form [u'str']
                 args[p] = data[p][0]
         else:
             if p in boolean_params:

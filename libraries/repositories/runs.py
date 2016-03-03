@@ -35,7 +35,8 @@ class Runs(object):
                 alt_target BOOLEAN,
                 all_candles BOOLEAN,
                 used_versa_valve BOOLEAN,
-                FOREIGN KEY (id) REFERENCES robots(id))
+                score FLOAT,
+                robot_id VARCHAR(10))
             ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"""
         )
         r.get_registry()['MY_SQL'].query(query)
@@ -59,7 +60,9 @@ class Runs(object):
                 ramp_hallway,
                 alt_target,
                 all_candles,
-                used_versa_valve):
+                used_versa_valve,
+                score,
+                robot_id):
         query = """INSERT INTO runs(
             id,
             level,
@@ -79,7 +82,9 @@ class Runs(object):
             ramp_hallway,
             alt_target,
             all_candles,
-            used_versa_valve
+            used_versa_valve,
+            score,
+            robot_id
         ) VALUES (
             %(id)s,
             %(level)s,
@@ -99,13 +104,15 @@ class Runs(object):
             %(ramp_hallway)s,
             %(alt_target)s,
             %(all_candles)s,
-            %(used_versa_valve)s
+            %(used_versa_valve)s,
+            %(score)s,
+            %(robot_id)s
         );"""
         data = {
             'id': id,
             'level': level,
             'failed_trial': failed_trial,
-            'actual_time': int(actual_time),
+            'actual_time': actual_time,
             'non_air': non_air,
             'furniture': furniture,
             'arbitrary_start': arbitrary_start,
@@ -113,13 +120,15 @@ class Runs(object):
             'candle_location_mode': candle_location_mode,
             'stopped_within_circle': stopped_within_circle,
             'signaled_detection': signaled_detection,
-            'num_rooms_searched': int(num_rooms_searched),
+            'num_rooms_searched': num_rooms_searched,
             'kicked_dog': kicked_dog,
             'touched_candle': touched_candle,
-            'cont_wall_contact': int(cont_wall_contact),
+            'cont_wall_contact': cont_wall_contact,
             'ramp_hallway': ramp_hallway,
             'alt_target': alt_target,
             'all_candles': all_candles,
-            'used_versa_valve': used_versa_valve
+            'used_versa_valve': used_versa_valve,
+            'score': score,
+            'robot_id': robot_id
         }
         r.get_registry()['MY_SQL'].insert(query, data)

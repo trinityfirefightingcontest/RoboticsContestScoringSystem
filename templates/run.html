@@ -10,9 +10,11 @@
         </div>
     </div>
     <div class="container container-fluid">
-        <div class="input-group">
+        <div {% if input['NAME_ERR'] == True %} class="input-group has-error" {% else %} class="input-group" {% endif %} >
             <span class="input-group-addon" id="basic-addon1">Sanity Check - Robot name:</span>
             <input type="text" class="form-control" name="name" value="{{ input['name'] }}">
+            <br>
+            {% if input['NAME_ERR'] == True %}<label class="control-label input-group-addon">Invalid name</label> {% endif %}
         </div>
         <div class="row">
             <div class="col-xs-12 col-lg-12">
@@ -38,10 +40,6 @@
                 <label>
                     <input type="checkbox" name="stopped_within_30" {% if input['stopped_within_30'] %} checked {% endif %}/>Robot stopped with 30cm of candle without touching it.
                 </label>
-            </div>
-            <div class="col-xs-6 col-lg-6">
-                <label>Number of rooms searched:</label>
-                <input type="text" class="form-control" name="rooms_searched" value="{{input['rooms_searched']}}"/>
             </div>
         </div>
         {% endif %}
@@ -93,10 +91,18 @@
             <div class="col-xs-12 col-lg-12">
                 <h2>Actual Time:</h2>
             </div>
-            <div {% if input['TIME_ERR'] == True %} class="col-xs-6 col-lg-6 has-error" {% else %} class="col-xs-6 col-lg-6" {% endif %} >
+            <div class="col-xs-12 col-lg-12">
                 <label>Seconds taken to put out candle:</label>
-                <input type="text" class="form-control" name="seconds_to_put_out_candle" value="{{ input['seconds_to_put_out_candle'] }}"/>
-                {% if input['TIME_ERR'] == True %}<label class="control-label">Invalid input</label> {% endif %}
+            </div>
+            <div {% if input['TIME_ERR_1'] == True %} class="col-xs-3 col-lg-3 has-error" {% else %} class="col-xs-3 col-lg-3" {% endif %} >
+                <label>Judge 1:</label>
+                <input type="text" class="form-control" name="seconds_to_put_out_candle_1" value="{{ input['seconds_to_put_out_candle_1'] }}"/>
+                {% if input['TIME_ERR_1'] == True %}<label class="control-label">Invalid input</label> {% endif %}
+            </div>
+            <div {% if input['TIME_ERR_2'] == True %} class="col-xs-3 col-lg-3 has-error" {% else %} class="col-xs-3 col-lg-3" {% endif %} >
+                <label>Judge 2:</label>
+                <input type="text" class="form-control" name="seconds_to_put_out_candle_2" value="{{ input['seconds_to_put_out_candle_2'] }}"/>
+                {% if input['TIME_ERR_2'] == True %}<label class="control-label">Invalid input</label> {% endif %}
             </div>
         </div>
         {%- if robot['level'] in [1, 2] -%}
@@ -155,6 +161,9 @@
         </div>
         <div class="row">
             <hr/>
+            <div class="col-xs-12 col-lg-12">
+                {% if input['ERR'] == True %}<label class="alert-danger control-label">*Please fix errors highlighted in red</label><br><br>{% endif %}
+            </div>
             <div class="col-xs-12 col-lg-12">
                 <input class="btn btn-large btn-primary" type="submit"/>
             </div>

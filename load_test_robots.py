@@ -28,7 +28,7 @@ def run():
             'teammates': 4,
             'is_unique': False,
             'used_versa_valve': False,
-            'level': 1,
+            'level': 2,
             'is_disqualified': False,
             'passed_inspection': False
         },
@@ -41,7 +41,7 @@ def run():
             'teammates': 4,
             'is_unique': True,
             'used_versa_valve': False,
-            'level': 1,
+            'level': 3,
             'is_disqualified': False,
             'passed_inspection': False
         },
