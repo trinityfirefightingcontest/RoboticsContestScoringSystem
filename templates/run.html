@@ -18,6 +18,16 @@
         </div>
         <div class="row">
             <div class="col-xs-12 col-lg-12">
+                <h2>Run Disqualified:</h2>
+            </div>
+            <div class="col-xs-12 checkbox">
+                <label>
+                    <input type="checkbox" name="run_disqualified" {% if input['run_disqualified'] %} checked {% endif %}/>Robot could not put out the flame within the time limit.
+                </label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-lg-12">
                 <h2>Versa Valve Option:</h2>
             </div>
             <div class="col-xs-12 checkbox">
@@ -43,16 +53,6 @@
             </div>
         </div>
         {% endif %}
-        <div class="row">
-            <div class="col-xs-12 col-lg-12">
-                <h2>Run Disqualified:</h2>
-            </div>
-            <div class="col-xs-12 checkbox">
-                <label>
-                    <input type="checkbox" name="run_disqualified" {% if input['run_disqualified'] %} checked {% endif %}/>Robot could not put out the flame within the time limit.
-                </label>
-            </div>
-        </div>
         {%- if robot['level'] in [1, 2] -%}
         <div class="row">
             <div class="col-xs-12 col-lg-12">
@@ -97,12 +97,12 @@
             <div {% if input['TIME_ERR_1'] == True %} class="col-xs-3 col-lg-3 has-error" {% else %} class="col-xs-3 col-lg-3" {% endif %} >
                 <label>Judge 1:</label>
                 <input type="text" class="form-control" name="seconds_to_put_out_candle_1" value="{{ input['seconds_to_put_out_candle_1'] }}"/>
-                {% if input['TIME_ERR_1'] == True %}<label class="control-label">Invalid input</label> {% endif %}
+                {% if input['TIME_ERR_1'] == True %}<label class="control-label">Invalid value</label> {% endif %}
             </div>
             <div {% if input['TIME_ERR_2'] == True %} class="col-xs-3 col-lg-3 has-error" {% else %} class="col-xs-3 col-lg-3" {% endif %} >
                 <label>Judge 2:</label>
                 <input type="text" class="form-control" name="seconds_to_put_out_candle_2" value="{{ input['seconds_to_put_out_candle_2'] }}"/>
-                {% if input['TIME_ERR_2'] == True %}<label class="control-label">Invalid input</label> {% endif %}
+                {% if input['TIME_ERR_2'] == True %}<label class="control-label">Invalid value</label> {% endif %}
             </div>
         </div>
         {%- if robot['level'] in [1, 2] -%}
@@ -113,7 +113,7 @@
             <div {% if input['ROOM_ERR'] == True %} class="col-xs-6 col-lg-6 has-error" {% else %} class="col-xs-6 col-lg-6 " {% endif %} >
                 <label>Number of rooms searched:</label>
                 <input type="text" class="form-control" name="number_of_rooms_searched" value="{{ input['number_of_rooms_searched'] }}"/>
-                {% if input['ROOM_ERR'] == True %}<label class="control-label">Invalid input</label> {% endif %}
+                {% if input['ROOM_ERR'] == True %}<label class="control-label">Invalid value</label> {% endif %}
             </div>
         </div>
         {% endif %}
@@ -156,13 +156,13 @@
             <div {% if input['WALL_ERR'] == True %} class="col-xs-6 col-lg-6 has-error" {% else %} class="col-xs-6 col-lg-6 " {% endif %} >
                 <label>Centimeters of Wall Contact:</label>
                 <input type="text" class="form-control" name="wall_contact_cms" value="{{input['wall_contact_cms']}}"/>
-                {% if input['WALL_ERR'] == True %}<label class="control-label">Invalid input</label> {% endif %}
+                {% if input['WALL_ERR'] == True %}<label class="control-label">Invalid value</label> {% endif %}
             </div>
         </div>
         <div class="row">
             <hr/>
             <div class="col-xs-12 col-lg-12">
-                {% if input['ERR'] == True %}<label class="alert-danger control-label">*Please fix errors highlighted in red</label><br><br>{% endif %}
+                {% if input['ERR'] == True %}<label class="alert-danger control-label">*Please fix all errors highlighted in red</label><br><br>{% endif %}
             </div>
             <div class="col-xs-12 col-lg-12">
                 <input class="btn btn-large btn-primary" type="submit"/>
