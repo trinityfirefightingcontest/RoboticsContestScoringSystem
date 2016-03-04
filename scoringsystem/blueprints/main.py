@@ -154,6 +154,32 @@ def robot_add_run(robot_id):
 
         return redirect(url_for('main.robot_detail', robot_id = robot_id))
 
+@main.route('/scoreboard/<division>', methods=['GET', 'POST'])
+def scoreboard(division):
+    robots = r.get_registry()['ROBOTS'].get_all_robots_division(division)
+
+    if not robots:
+        return render_template("not_found.html")
+
+    # TODO: get LS1, LS2, LS3, TFS of all robots
+    # TODO: sort robots based on TFS
+
+    if division == 'junior':
+        label = "Junior Division"
+    elif division == 'walking':
+        label = "Walking Division"
+    elif division == 'high_school':
+        label = "High School Division"
+    else:
+        label = "Senior Division"
+
+    return render_template(
+        "scoreboard.html",
+        robots = robots,
+        division = label
+    )
+
+
 #Getting values of specific key in the list of dictionaries
 def get_values_of_dicts(key, runs):
     result = []
