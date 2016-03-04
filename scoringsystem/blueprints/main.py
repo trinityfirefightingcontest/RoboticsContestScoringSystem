@@ -107,15 +107,20 @@ def robot_detail(robot_id):
 @main.route('/robot/<robot_id>/addrun', methods=['GET', 'POST'])
 def robot_add_run(robot_id):
     robot = r.get_registry()['ROBOTS'].get_robot(robot_id)
+
     if not robot:
         return render_template("not_found.html")
 
     if request.method == 'GET':
+        #get data from previous run
+        runs = r.get_registry()['RUNS'].get_runs_robot_level(robot['id'], robot['level'])
+        last_run = runs[-1]
+
         return render_template(
             "run.html",
             level_number=1,
             robot=robot,
-            input=request.args
+            input=get_data_from_prev(last_run)
         )
     else:
         # get data from html form
@@ -161,9 +166,24 @@ def scoreboard(division):
     if not robots:
         return render_template("not_found.html")
 
-    # TODO: get LS1, LS2, LS3, TFS of all robots
-    # TODO: sort robots based on TFS
+    # get score for each level and total score
+    for robot in robots:
+        runs = r.get_registry()['RUNS'].get_runs(robot['id'])
 
+        # calculate lowes scores for each level and TFS
+        scores = calculate_scores(runs) #returns a tuple
+
+        robot['LS1'] = scores[0]
+        robot['LS2'] = scores[1]
+        robot['LS3'] = scores[2]
+        robot['TFS'] = scores[3]
+        robot['completed'] = scores[4]
+
+    # sort based on name then total score
+    sorted_robots = sorted(list(robots), key=lambda k: k['name'])
+    sorted_robots = sorted(list(sorted_robots), key=lambda k: k['TFS'])
+
+    # page header label
     if division == 'junior':
         label = "Junior Division"
     elif division == 'walking':
@@ -175,10 +195,48 @@ def scoreboard(division):
 
     return render_template(
         "scoreboard.html",
-        robots = robots,
+        robots = sorted_robots,
         division = label
     )
 
+#Calculate LS1, LS2, LS3, TFS to be displayed on the scoreboard
+def calculate_scores(runs):
+    LS1 = 600
+    LS2 = 600
+    LS3 = 600
+
+    completed = []
+
+    for run in runs:
+        if run['level'] == 1:
+            if 1 not in completed:
+                completed.append(1)
+            if run['score'] <= LS1:
+                LS1 = run['score']
+        if run['level'] == 2:
+            if 2 not in completed:
+                completed.append(2)
+            if run['score'] <= LS2:
+                LS2 = run['score']
+        if run['level'] == 3:
+            if 3 not in completed:
+                completed.append(3)
+            if run['score'] <= LS3:
+                LS3 = run['score']
+
+    TFS = LS1 + LS2 + LS3
+
+    return (LS1, LS2, LS3, TFS, completed)
+
+def get_data_from_prev(prev_run):
+    return {
+        'non_air': prev_run['non_air'],
+        'furniture': prev_run['furniture'],
+        'arbitrary_start': prev_run['arbitrary_start'],
+        'return_trip': prev_run['return_trip'],
+        'no_candle_circle': prev_run['candle_location_mode'],
+        'versa_valve_used': prev_run['used_versa_valve']
+    }
 
 #Getting values of specific key in the list of dictionaries
 def get_values_of_dicts(key, runs):
@@ -342,6 +400,7 @@ def validate_wall_contact(num_s):
 
     return (int(num_s) >= min_123) and (int(num_s) <= max_123)
 
+# creates a dictionary out of data entered for new run
 def bind_params(input_data, id, level):
     # create a dictionary out of input data
     data = dict(input_data)
@@ -369,6 +428,7 @@ def bind_params(input_data, id, level):
                 args[p] = None
     return args
 
+# calculate and return score of current run
 def get_score(robot, data):
     return r.get_registry()['RUNS'].calculate_run_score(
                         robot['division'],

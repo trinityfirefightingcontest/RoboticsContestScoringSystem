@@ -1,5 +1,10 @@
 {% extends "header.html" %}
 {% block head %}
+<style>
+	td, th {
+	   text-align: center;
+	}
+</style>
 {% endblock %}
 {% block main_content %}
 <div class="container container-fluid">
@@ -27,12 +32,24 @@
 				{% for robot in robots %}
 					<tr>
 						<td>{{ loop.index }}</td>
-						<td>{{ robot.get('name') }}</td>
+						<td><a href="{{url_for('main.robot_detail', robot_id=robot['id'])}}">{{ robot.get('name') }}</a></td>
 						<td>{{ robot.get('level') }}</td>
-						<td>0</td>
-						<td>0</td>
-						<td>0</td>
-						<td>0</td>
+						{% if 1 in robot.get('completed') %}
+							<td>{{ robot.get('LS1') }}</td>
+						{% else %}
+							<td> - </td>
+						{% endif %}
+						{% if 2 in robot.get('completed') %}
+							<td>{{ robot.get('LS2') }}</td>
+						{% else %}
+							<td> - </td>
+						{% endif %}
+						{% if 3 in robot.get('completed') %}
+							<td>{{ robot.get('LS3') }}</td>
+						{% else %}
+							<td> - </td>
+						{% endif %}
+						<td>{{ robot.get('TFS') }}</td>
 					</tr>
 				{% endfor %}
 				</tbody>

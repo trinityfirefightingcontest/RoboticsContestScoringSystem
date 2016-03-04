@@ -138,6 +138,15 @@ class Runs(object):
         r.get_registry()['MY_SQL'].insert(query, data)
 
     @staticmethod
+    def get_runs_robot_level(robot_id, level):
+        query = """SELECT * FROM runs where (robot_id = %(robot_id)s) AND (level = level);"""
+        data = {
+            'robot_id': robot_id,
+            'level': level
+        }
+        return r.get_registry()['MY_SQL'].get_all(query, data)
+
+    @staticmethod
     def calculate_run_score(robot_div,
                             level,
                             failed_trial = False,
