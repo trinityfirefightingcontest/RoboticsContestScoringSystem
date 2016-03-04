@@ -139,11 +139,13 @@ def robot_add_run(robot_id):
             )
 
         # calculate score
-        score = 0
+        score = get_score(robot, params_d)
+        print "DICT"
+        print params_d
 
         # convert dict values to tuple to prepare to insert to DB
         params_t = convert_to_tuple(params_d, robot_id, score)
-
+        print "TUPLE"
         print params_t
 
         # insert into databse
@@ -164,11 +166,10 @@ def convert_to_tuple(dic, robot_id, score):
     # convert the dictionary values to tuples, order matters
     l = []
 
-    l.append(dic['id'])
     l.append(dic['level'])
     l.append(dic['run_disqualified'])
     l.append((to_float(dic['seconds_to_put_out_candle_1']) +
-              to_float(dic['seconds_to_put_out_candle_2'])/2)) # average times by the 2 judges
+              to_float(dic['seconds_to_put_out_candle_2']))/2.0) # average times by the 2 judges
     l.append(dic['non_air'])
     l.append(dic['furniture'])
     l.append(dic['arbitrary_start'])
@@ -322,7 +323,6 @@ def bind_params(input_data, id, level):
     # create a dictionary of all parameters
     args = dict()
 
-    args['id'] = id
     args['level'] = level
 
     for p in params_all:
@@ -342,6 +342,28 @@ def bind_params(input_data, id, level):
                 # add null for other non exisiting inputs params
                 args[p] = None
     return args
+
+def get_score(robot, data):
+    return r.get_registry()['RUNS'].calculate_run_score(
+                        robot['division'],
+                        robot['level'],
+                        data['run_disqualified'],
+                        (to_float(data['seconds_to_put_out_candle_1']) +
+                        to_float(data['seconds_to_put_out_candle_2']))/2.0,
+                        data['non_air'],
+                        data['furniture'],
+                        data['arbitrary_start'],
+                        data['return_trip'],
+                        data['no_candle_circle'],
+                        data['stopped_within_30'],
+                        data['candle_detected'],
+                        to_int(data['number_of_rooms_searched']),
+                        data['kicked_dog'],
+                        data['touched_candle'],
+                        to_int(data['wall_contact_cms']),
+                        data['ramp_used'],
+                        data['baby_relocated'],
+                        data['all_candles'])
 
 def applied_factors(run_id, robot_id):
     query = ("""SELECT * FROM runs where id = %(run_id)s;""")

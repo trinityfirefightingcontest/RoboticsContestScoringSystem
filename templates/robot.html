@@ -28,7 +28,7 @@
 				{% for run in robot_runs %}
 					<tr>
 						<td>{{ loop.index }}</td>
-						<td>{{ run.get('is_disqualified',false) }}</td>
+						<td>{{ run.get('failed_trial',false) }}</td>
 						<td>{{ run.get('level') }}</td>
 						<td>{{ run.get('actual_time') }}</td>
 						<td>{{ applied_factors[loop.index - 1].get('applied_oms') }}</td>
