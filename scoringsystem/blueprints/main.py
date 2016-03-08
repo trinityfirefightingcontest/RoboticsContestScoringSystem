@@ -114,13 +114,21 @@ def robot_add_run(robot_id):
     if request.method == 'GET':
         #get data from previous run
         runs = r.get_registry()['RUNS'].get_runs_robot_level(robot['id'], robot['level'])
-        last_run = runs[-1]
+        if runs:
+            last_run = runs[-1]
+
+            return render_template(
+                "run.html",
+                level_number=1,
+                robot=robot,
+                input=get_data_from_prev(last_run)
+            )
 
         return render_template(
-            "run.html",
-            level_number=1,
-            robot=robot,
-            input=get_data_from_prev(last_run)
+                "run.html",
+                level_number=1,
+                robot=robot,
+                input=request.args
         )
     else:
         # get data from html form
