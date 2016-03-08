@@ -1,0 +1,6 @@
+.fixed-columns {
+	max-width: 185px !important;
+	white-space: normal;
+	word-wrap: break-word;
+	min-width: 185px;
+}

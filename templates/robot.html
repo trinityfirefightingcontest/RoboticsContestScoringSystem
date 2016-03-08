@@ -28,12 +28,12 @@
 				{% for run in robot_runs %}
 					<tr>
 						<td>{{ loop.index }}</td>
-						<td>{{ run.get('failed_trial',false) }}</td>
+						<td>{{ true if run.get('failed_trial') == 1 else false }}</td>
 						<td>{{ run.get('level') }}</td>
 						<td>{{ run.get('actual_time') }}</td>
-						<td>{{ applied_factors[loop.index - 1].get('applied_oms') }}</td>
-						<td>{{ applied_factors[loop.index - 1].get('applied_pp') }}</td>
-						<td>{{ applied_factors[loop.index - 1].get('applied_rf') }}</td>
+						<td class="fixed-columns">{{ applied_factors[loop.index - 1].get('applied_oms') }}</td>
+						<td class="fixed-columns">{{ applied_factors[loop.index - 1].get('applied_pp') }}</td>
+						<td class="fixed-columns">{{ applied_factors[loop.index - 1].get('applied_rf') }}</td>
 						<td>{{ run.get('score') }}</td>
 					</tr>
 				{% endfor %}
@@ -41,18 +41,16 @@
 			</table>
 		</div>
 		{% if robot_runs|length == 5 %}
-			<h2>Final score</h2>
+			<h2>Total Final Score</h2>
 			<div class="row">
 				<table class="table table-striped">
 					<thead class="thead-inverse">
 						<tr>
-							<th>Rounds qualified</th>
-							<th>Total score</th>
+							<th>Total Final Score (LS1 + LS2 + LS3) </th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr>
-							<td>{{ rounds_qualified }}</td>
 							<td>{{ total_score }}</td>
 						</tr>
 					</tbody>
