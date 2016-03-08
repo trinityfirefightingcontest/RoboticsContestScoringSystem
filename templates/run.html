@@ -1,5 +1,10 @@
 {% extends "header.html" %}
 {% block head %}
+<style>
+    #prev-runs td, #prev-runs th {
+       text-align: center;
+    }
+</style>
 {% endblock %}
 {% block main_content %}
 <div class="container container-fluid">
@@ -11,45 +16,80 @@
     </div>
     <div class="container container-fluid">
         <div class="col-lg-4">
-            <div class="panel panel-default">
-                <div class="panel-heading text-center">
-                    <h4>Generate Locations for Current Run</h4>
+            <div class="row">
+                <div class="panel panel-default">
+                    <div class="panel-heading text-center">
+                        <h4>Generate Locations for Current Run</h4>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <div class="btn btn-lg btn-primary default" id="candle-but" role="button">Candle Loc: &raquo;</div>
+                            </div>
+                            <div class="col-xs-4 text-center">
+                                <h4 class="alert-info"><strong id="candle">-</strong></h4>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <div class="btn btn-lg btn-primary" id="puppy-but" role="button">Puppy Loc: &raquo;</div>
+                            </div>
+                            <div class="col-xs-4 text-center">
+                                <h4 class="alert-info"><strong id="puppy">-</strong></h4>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <div class="btn btn-lg btn-primary" id="start-but" role="button">Start Loc: &raquo;</div>
+                            </div>
+                            <div class="col-xs-4 text-center">
+                                <h4 class="alert-info"><strong id="start">-</strong></h4>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <div class="btn btn-lg btn-primary" id="furniture-but" role="button">Furnit Loc: &raquo;</div>
+                            </div>
+                            <div class="col-xs-4 text-center">
+                            <h4 class="alert-info"><strong id="furniture">-</strong></h4>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="panel-body">
-                    <div class="row">
-                        <div class="col-xs-6">
-                            <div class="btn btn-lg btn-primary default" id="candle-but" role="button">Candle Loc: &raquo;</div>
-                        </div>
-                        <div class="col-xs-4 text-center">
-                            <h4 class="alert-info"><strong id="candle">-</strong></h4>
-                        </div>
+            </div>
+            <div class="row" id="prev-runs">
+                <div class="panel panel-default">
+                    <div class="panel-heading text-center">
+                        <h4>Previous Runs</h4>
                     </div>
-                    <br>
-                    <div class="row">
-                        <div class="col-xs-6">
-                            <div class="btn btn-lg btn-primary" id="puppy-but" role="button">Puppy Loc: &raquo;</div>
-                        </div>
-                        <div class="col-xs-4 text-center">
-                            <h4 class="alert-info"><strong id="puppy">-</strong></h4>
-                        </div>
-                    </div>
-                    <br>
-                    <div class="row">
-                        <div class="col-xs-6">
-                            <div class="btn btn-lg btn-primary" id="start-but" role="button">Start Loc: &raquo;</div>
-                        </div>
-                        <div class="col-xs-4 text-center">
-                            <h4 class="alert-info"><strong id="start">-</strong></h4>
-                        </div>
-                    </div>
-                    <br>
-                    <div class="row">
-                        <div class="col-xs-6">
-                            <div class="btn btn-lg btn-primary" id="furniture-but" role="button">Furnit Loc: &raquo;</div>
-                        </div>
-                        <div class="col-xs-4 text-center">
-                        <h4 class="alert-info"><strong id="furniture">-</strong></h4>
-                        </div>
+                    <div class="panel-body">
+                        {% if all_runs %}
+                            <table class="table table-striped">
+                                <thead class="thead-inverse">
+                                    <tr>
+                                        <th>Run #</th>
+                                        <th>Level</th>
+                                        <th>Disq?</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for run in all_runs %}
+                                    <tr>
+                                        <td>{{ loop.index }}</td>
+                                        <td>{{ run.get('level') }}</td>
+                                        <td>{{ run.get('failed_trial',false) }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        {% else %}
+                            <div class="col-lg-12 text-muted text-center">
+                                <h5>No previous runs.</h5>
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>

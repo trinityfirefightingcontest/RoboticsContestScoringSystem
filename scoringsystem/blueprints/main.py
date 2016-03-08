@@ -107,13 +107,17 @@ def robot_detail(robot_id):
 @main.route('/robot/<robot_id>/addrun', methods=['GET', 'POST'])
 def robot_add_run(robot_id):
     robot = r.get_registry()['ROBOTS'].get_robot(robot_id)
+    runs = r.get_registry()['RUNS'].get_runs(robot_id)
 
     if not robot:
         return render_template("not_found.html")
 
     if request.method == 'GET':
+        #get all previous runs
+        all_runs = r.get_registry()['RUNS'].get_runs(robot_id)
         #get data from previous run
         runs = r.get_registry()['RUNS'].get_runs_robot_level(robot['id'], robot['level'])
+
         if runs:
             last_run = runs[-1]
 
@@ -121,14 +125,16 @@ def robot_add_run(robot_id):
                 "run.html",
                 level_number=1,
                 robot=robot,
-                input=get_data_from_prev(last_run)
+                input=get_data_from_prev(last_run),
+                all_runs=all_runs
             )
 
         return render_template(
                 "run.html",
                 level_number=1,
                 robot=robot,
-                input=request.args
+                input=request.args,
+                all_runs=all_runs
         )
     else:
         # get data from html form
@@ -166,6 +172,11 @@ def robot_add_run(robot_id):
         r.get_registry()['RUNS'].record_run(*params_t)
 
         return redirect(url_for('main.robot_detail', robot_id = robot_id))
+
+@main.route('/scoreboard', methods=['GET', 'POST'])
+def scoreboard_home():
+    return render_template("scoreboard_home.html")
+
 
 @main.route('/scoreboard/<division>', methods=['GET', 'POST'])
 def scoreboard(division):
