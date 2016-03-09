@@ -80,7 +80,7 @@
                                     <tr>
                                         <td>{{ loop.index }}</td>
                                         <td>{{ run.get('level') }}</td>
-                                        <td>{{ run.get('failed_trial',false) }}</td>
+                                        <td>{{ true if run.get('failed_trial') == 1 else false }}</td>
                                     </tr>
                                 {% endfor %}
                                 </tbody>
