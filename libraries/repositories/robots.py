@@ -100,3 +100,11 @@ class Robots(object):
     def get_all_robots():
         query = """SELECT * FROM robots;"""
         return r.get_registry()['MY_SQL'].get_all(query)
+
+    @staticmethod
+    def get_all_robots_division(division):
+        query = """SELECT * FROM robots where division = %(division)s;"""
+        data = {
+            'division': division
+        }
+        return r.get_registry()['MY_SQL'].get_all(query, data)

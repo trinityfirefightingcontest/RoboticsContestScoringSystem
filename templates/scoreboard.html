@@ -1,0 +1,60 @@
+{% extends "header.html" %}
+{% block head %}
+<style>
+	#scoreboard td, #scoreboard th {
+	   text-align: center;
+	}
+</style>
+{% endblock %}
+{% block main_content %}
+<div class="container container-fluid">
+    <div class="row">
+        <div class="page-header">
+            <h1>{{division}} Scoreboard</h1>
+        </div>
+    </div>
+
+    {% if robots%}
+		<div class="row" id="scoreboard">
+			<table class="table table-striped">
+				<thead class="thead-inverse">
+					<tr>
+						<th>Rank</th>
+						<th>Name</th>
+						<th>Current Level</th>
+						<th>Lower Score Level 1</th>
+						<th>Lower Score Level 2</th>
+						<th>Lower Score Level 3</th>
+						<th>Total Final Score</th>
+					</tr>
+				</thead>
+				<tbody>
+				{% for robot in robots %}
+					<tr>
+						<td>{{ loop.index }}</td>
+						<td><a href="{{url_for('main.robot_detail', robot_id=robot['id'])}}">{{ robot.get('name') }}</a></td>
+						<td>{{ robot.get('level') }}</td>
+						{% if 1 in robot.get('completed') %}
+							<td>{{ robot.get('LS1') }}</td>
+						{% else %}
+							<td> - </td>
+						{% endif %}
+						{% if 2 in robot.get('completed') %}
+							<td>{{ robot.get('LS2') }}</td>
+						{% else %}
+							<td> - </td>
+						{% endif %}
+						{% if 3 in robot.get('completed') %}
+							<td>{{ robot.get('LS3') }}</td>
+						{% else %}
+							<td> - </td>
+						{% endif %}
+						<td>{{ robot.get('TFS') }}</td>
+					</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+		</div>
+    {% endif %}
+</div>
+{% endblock %}

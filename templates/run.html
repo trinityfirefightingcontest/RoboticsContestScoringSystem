@@ -1,5 +1,10 @@
 {% extends "header.html" %}
 {% block head %}
+<style>
+    #prev-runs td, #prev-runs th {
+       text-align: center;
+    }
+</style>
 {% endblock %}
 {% block main_content %}
 <div class="container container-fluid">
@@ -10,153 +15,243 @@
         </div>
     </div>
     <div class="container container-fluid">
-        <div class="input-group">
-            <span class="input-group-addon" id="basic-addon1">Sanity Check - Robot name:</span>
-            <input type="text" class="form-control" name="name" value="{{ input['name'] }}">
-        </div>
-        <div class="row">
-            <div class="col-xs-12 col-lg-12">
-                <h4>Versa Valve Option:</h4>
+        <div class="col-lg-4">
+            <div class="row">
+                <div class="panel panel-default">
+                    <div class="panel-heading text-center">
+                        <h4>Generate Locations for Current Run</h4>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <div class="btn btn-lg btn-primary default" id="candle-but" role="button">Candle Loc: &raquo;</div>
+                            </div>
+                            <div class="col-xs-4 text-center">
+                                <h4 class="alert-info"><strong id="candle">-</strong></h4>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <div class="btn btn-lg btn-primary" id="puppy-but" role="button">Puppy Loc: &raquo;</div>
+                            </div>
+                            <div class="col-xs-4 text-center">
+                                <h4 class="alert-info"><strong id="puppy">-</strong></h4>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <div class="btn btn-lg btn-primary" id="start-but" role="button">Start Loc: &raquo;</div>
+                            </div>
+                            <div class="col-xs-4 text-center">
+                                <h4 class="alert-info"><strong id="start">-</strong></h4>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <div class="btn btn-lg btn-primary" id="furniture-but" role="button">Furnit Loc: &raquo;</div>
+                            </div>
+                            <div class="col-xs-4 text-center">
+                            <h4 class="alert-info"><strong id="furniture">-</strong></h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="col-xs-12 checkbox">
-                <label>
-                    <input type="checkbox" name="versa_valve_used" {% if input['versa_valve_used'] %} checked {% endif %}/>Robot uses Versa Valve.
-                </label>
-            </div>
-        </div>
-        {% if robot['division'] in ['junior', 'walking'] and robot['level']==1 %}
-        <div class="row">
-            <div class="col-xs-12 col-lg-12">
-                <h4>Special deduction for Level 1 Junior and Walking divison:</h4>
-            </div>
-            <div class="col-xs-12 checkbox">
-                <label>
-                    <input type="checkbox" name="candle_detected" {% if input['candle_detected'] %} checked {% endif %}/>Candle detection notified with light or sound.
-                </label>
-            </div>
-            <div class="col-xs-12 checkbox">
-                <label>
-                    <input type="checkbox" name="stopped_within_30" {% if input['stopped_within_30'] %} checked {% endif %}/>Robot stopped with 30cm of candle without touching it.
-                </label>
-            </div>
-            <div class="col-xs-6 col-lg-6">
-                <label>Number of rooms searched:</label>
-                <input type="text" class="form-control" name="rooms_searched" value="{{input['rooms_searched']}}"/>
-            </div>
-        </div>
-        {% endif %}
-        <div class="row">
-            <div class="col-xs-12 col-lg-12">
-                <h4>Run Disqualified:</h4>
-            </div>
-            <div class="col-xs-12 checkbox">
-                <label>
-                    <input type="checkbox" name="run_disqualified" {% if input['run_disqualified'] %} checked {% endif %}/>Robot could not put out the flame within the time limit.
-                </label>
-            </div>
-        </div>
-        {%- if robot['level'] in [1, 2] -%}
-        <div class="row">
-            <div class="col-xs-12 col-lg-12">
-                <h4>Operating Mode Deductions:</h4>
-            </div>
-            <div class="col-xs-12 checkbox">
-                <label>
-                    <input type="checkbox" name="non_air" {% if input['non_air'] %} checked {% endif %}/>Non-air Extinguisher
-                </label>
-            </div>
-            <div class="col-xs-12 checkbox">
-                <label>
-                    <input type="checkbox" name="furniture" {% if input['furniture'] %} checked {% endif %}/>Furniture
-                </label>
-            </div>
-            <div class="col-xs-12 checkbox">
-                <label>
-                    <input type="checkbox" name="arbitrary_start" {% if input['arbitrary_start'] %} checked {% endif %}/>Abitrary Start Location.
-                </label>
-            </div>
-            <div class="col-xs-12 checkbox">
-                <label>
-                    <input type="checkbox" name="return_trip" {% if input['return_trip'] %} checked {% endif %}/>Returning Trip
-                </label>
-            </div>
-            {%- if robot['level']==1 -%}
-            <div class="col-xs-12 checkbox">
-                <label>
-                    <input type="checkbox" name="no_candle_circle" {% if input['no_candle_circle'] %} checked {% endif %}/>Found candle without a candle circle.
-                </label>
-            </div>
-            {%- endif -%}
-        </div>
-        {% endif %}
-        <div class="row">
-            <div class="col-xs-12 col-lg-12">
-                <h4>Actual Time:</h4>
-            </div>
-            <div {% if input['TIME_ERR'] == True %} class="col-xs-6 col-lg-6 has-error" {% else %} class="col-xs-6 col-lg-6" {% endif %} >
-                <label>Seconds taken to put out candle:</label>
-                <input type="text" class="form-control" name="seconds_to_put_out_candle" value="{{ input['seconds_to_put_out_candle'] }}"/>
-                {% if input['TIME_ERR'] == True %}<label class="control-label">Invalid input</label> {% endif %}
+            <div class="row" id="prev-runs">
+                <div class="panel panel-default">
+                    <div class="panel-heading text-center">
+                        <h4>Previous Runs</h4>
+                    </div>
+                    <div class="panel-body">
+                        {% if all_runs %}
+                            <table class="table table-striped">
+                                <thead class="thead-inverse">
+                                    <tr>
+                                        <th>Run #</th>
+                                        <th>Level</th>
+                                        <th>Disq?</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for run in all_runs %}
+                                    <tr>
+                                        <td>{{ loop.index }}</td>
+                                        <td>{{ run.get('level') }}</td>
+                                        <td>{{ true if run.get('failed_trial') == 1 else false }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        {% else %}
+                            <div class="col-lg-12 text-muted text-center">
+                                <h5>No previous runs.</h5>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
         </div>
-        {%- if robot['level'] in [1, 2] -%}
-        <div class="row">
-            <div class="col-xs-12 col-lg-12">
-                <h4>Room Factor:</h4>
+        <div class="col-lg-8">
+            <div {% if input['NAME_ERR'] == True %} class="input-group has-error" {% else %} class="input-group" {% endif %} >
+                <span class="input-group-addon" id="basic-addon1">Sanity Check - Robot name:</span>
+                <input type="text" class="form-control" name="name" value="{{ input['name'] }}">
+                <br>
+                {% if input['NAME_ERR'] == True %}<label class="control-label input-group-addon">Invalid name</label> {% endif %}
             </div>
-            <div {% if input['ROOM_ERR'] == True %} class="col-xs-6 col-lg-6 has-error" {% else %} class="col-xs-6 col-lg-6 " {% endif %} >
-                <label>Number of rooms searched:</label>
-                <input type="text" class="form-control" name="number_of_rooms_searched" value="{{ input['number_of_rooms_searched'] }}"/>
-                {% if input['ROOM_ERR'] == True %}<label class="control-label">Invalid input</label> {% endif %}
+            <div class="row">
+                <div class="col-xs-12 col-lg-12">
+                    <h2>Run Disqualified:</h2>
+                </div>
+                <div class="col-xs-12 checkbox">
+                    <label>
+                        <input type="checkbox" name="run_disqualified" {% if input['run_disqualified'] %} checked {% endif %}/>Robot could not put out the flame within the time limit.
+                    </label>
+                </div>
             </div>
-        </div>
-        {% endif %}
-        {%- if robot['level'] == 3 -%}
-        <div class="row">
-            <div class="col-xs-12 col-lg-12">
-                <h4>Level 3 Reductions:</h4>
+            <div class="row">
+                <div class="col-xs-12 col-lg-12">
+                    <h2>Versa Valve Option:</h2>
+                </div>
+                <div class="col-xs-12 checkbox">
+                    <label>
+                        <input type="checkbox" name="versa_valve_used" {% if input['versa_valve_used'] %} checked {% endif %}/>Robot uses Versa Valve.
+                    </label>
+                </div>
             </div>
-            <div class="col-xs-12 checkbox">
-                <label>
-                    <input type="checkbox" name="ramp_used" {% if input['ramp_used'] %} checked {% endif %}/>Ramp in the hallway.
-                </label>
+            {% if robot['division'] in ['junior', 'walking'] and robot['level']==1 %}
+            <div class="row">
+                <div class="col-xs-12 col-lg-12">
+                    <h2>Special deduction for Level 1 Junior and Walking divison:</h2>
+                </div>
+                <div class="col-xs-12 checkbox">
+                    <label>
+                        <input type="checkbox" name="candle_detected" {% if input['candle_detected'] %} checked {% endif %}/>Candle detection notified with light or sound.
+                    </label>
+                </div>
+                <div class="col-xs-12 checkbox">
+                    <label>
+                        <input type="checkbox" name="stopped_within_30" {% if input['stopped_within_30'] %} checked {% endif %}/>Robot stopped with 30cm of candle without touching it.
+                    </label>
+                </div>
             </div>
-            <div class="col-xs-12 checkbox">
-                <label>
-                    <input type="checkbox" name="baby_relocated" {% if input['baby_relocated'] %} checked {% endif %}/>Baby relocated.
-                </label>
+            {% endif %}
+            {%- if robot['level'] in [1, 2] -%}
+            <div class="row">
+                <div class="col-xs-12 col-lg-12">
+                    <h2>Operating Mode Deductions:</h2>
+                </div>
+                <div class="col-xs-12 checkbox">
+                    <label>
+                        <input type="checkbox" name="non_air" {% if input['non_air'] %} checked {% endif %}/>Non-air Extinguisher
+                    </label>
+                </div>
+                <div class="col-xs-12 checkbox">
+                    <label>
+                        <input type="checkbox" name="furniture" {% if input['furniture'] %} checked {% endif %}/>Furniture
+                    </label>
+                </div>
+                <div class="col-xs-12 checkbox">
+                    <label>
+                        <input type="checkbox" name="arbitrary_start" {% if input['arbitrary_start'] %} checked {% endif %}/>Abitrary Start Location.
+                    </label>
+                </div>
+                <div class="col-xs-12 checkbox">
+                    <label>
+                        <input type="checkbox" name="return_trip" {% if input['return_trip'] %} checked {% endif %}/>Returning Trip
+                    </label>
+                </div>
+                {%- if robot['level']==1 -%}
+                <div class="col-xs-12 checkbox">
+                    <label>
+                        <input type="checkbox" name="no_candle_circle" {% if input['no_candle_circle'] %} checked {% endif %}/>Found candle without a candle circle.
+                    </label>
+                </div>
+                {%- endif -%}
             </div>
-            <div class="col-xs-12 checkbox">
-                <label>
-                    <input type="checkbox" name="all_candles" {% if input['all_candles'] %} checked {% endif %}/>Put out all candles.
-                </label>
+            {% endif %}
+            <div class="row">
+                <div class="col-xs-12 col-lg-12">
+                    <h2>Actual Time:</h2>
+                </div>
+                <div class="col-xs-12 col-lg-12">
+                    <label>Seconds taken to put out candle:</label>
+                </div>
+                <div {% if input['TIME_ERR_1'] == True %} class="col-xs-3 col-lg-3 has-error" {% else %} class="col-xs-3 col-lg-3" {% endif %} >
+                    <label>Judge 1:</label>
+                    <input type="text" class="form-control" name="seconds_to_put_out_candle_1" value="{{ input['seconds_to_put_out_candle_1'] }}"/>
+                    {% if input['TIME_ERR_1'] == True %}<label class="control-label">Invalid value</label> {% endif %}
+                </div>
+                <div {% if input['TIME_ERR_2'] == True %} class="col-xs-3 col-lg-3 has-error" {% else %} class="col-xs-3 col-lg-3" {% endif %} >
+                    <label>Judge 2:</label>
+                    <input type="text" class="form-control" name="seconds_to_put_out_candle_2" value="{{ input['seconds_to_put_out_candle_2'] }}"/>
+                    {% if input['TIME_ERR_2'] == True %}<label class="control-label">Invalid value</label> {% endif %}
+                </div>
             </div>
-        </div>
-        {% endif %}
-        <div class="row">
-            <div class="col-xs-12 col-lg-12">
-                <h4>Penalty Points:</h4>
+            {%- if robot['level'] in [1, 2] -%}
+            <div class="row">
+                <div class="col-xs-12 col-lg-12">
+                    <h2>Room Factor:</h2>
+                </div>
+                <div {% if input['ROOM_ERR'] == True %} class="col-xs-6 col-lg-6 has-error" {% else %} class="col-xs-6 col-lg-6 " {% endif %} >
+                    <label>Number of rooms searched:</label>
+                    <input type="text" class="form-control" name="number_of_rooms_searched" value="{{ input['number_of_rooms_searched'] }}"/>
+                    {% if input['ROOM_ERR'] == True %}<label class="control-label">Invalid value</label> {% endif %}
+                </div>
             </div>
-            <div class="col-xs-12 checkbox">
-                <label>
-                    <input type="checkbox" name="touched_candle" {% if input['touched_candle'] %} checked {% endif %}/>Touched candle.
-                </label>
+            {% endif %}
+            {%- if robot['level'] == 3 -%}
+            <div class="row">
+                <div class="col-xs-12 col-lg-12">
+                    <h2>Level 3 Reductions:</h2>
+                </div>
+                <div class="col-xs-12 checkbox">
+                    <label>
+                        <input type="checkbox" name="ramp_used" {% if input['ramp_used'] %} checked {% endif %}/>Ramp in the hallway.
+                    </label>
+                </div>
+                <div class="col-xs-12 checkbox">
+                    <label>
+                        <input type="checkbox" name="baby_relocated" {% if input['baby_relocated'] %} checked {% endif %}/>Baby relocated.
+                    </label>
+                </div>
+                <div class="col-xs-12 checkbox">
+                    <label>
+                        <input type="checkbox" name="all_candles" {% if input['all_candles'] %} checked {% endif %}/>Put out all candles.
+                    </label>
+                </div>
             </div>
-            <div class="col-xs-12 checkbox">
-                <label>
-                    <input type="checkbox" name="kicked_dog" {% if input['kicked_dog'] %} checked {% endif %}/>Kicked the dog.
-                </label>
+            {% endif %}
+            <div class="row">
+                <div class="col-xs-12 col-lg-12">
+                    <h2>Penalty Points:</h2>
+                </div>
+                <div class="col-xs-12 checkbox">
+                    <label>
+                        <input type="checkbox" name="touched_candle" {% if input['touched_candle'] %} checked {% endif %}/>Touched candle.
+                    </label>
+                </div>
+                <div class="col-xs-12 checkbox">
+                    <label>
+                        <input type="checkbox" name="kicked_dog" {% if input['kicked_dog'] %} checked {% endif %}/>Kicked the dog.
+                    </label>
+                </div>
+                <div {% if input['WALL_ERR'] == True %} class="col-xs-6 col-lg-6 has-error" {% else %} class="col-xs-6 col-lg-6 " {% endif %} >
+                    <label>Centimeters of Wall Contact:</label>
+                    <input type="text" class="form-control" name="wall_contact_cms" value="{{input['wall_contact_cms']}}"/>
+                    {% if input['WALL_ERR'] == True %}<label class="control-label">Invalid value</label> {% endif %}
+                </div>
             </div>
-            <div {% if input['WALL_ERR'] == True %} class="col-xs-6 col-lg-6 has-error" {% else %} class="col-xs-6 col-lg-6 " {% endif %} >
-                <label>Centimeters of Wall Contact:</label>
-                <input type="text" class="form-control" name="wall_contact_cms" value="{{input['wall_contact_cms']}}"/>
-                {% if input['WALL_ERR'] == True %}<label class="control-label">Invalid input</label> {% endif %}
-            </div>
-        </div>
-        <div class="row">
-            <hr/>
-            <div class="col-xs-12 col-lg-12">
-                <input class="btn btn-large btn-primary" type="submit"/>
+            <div class="row">
+                <hr/>
+                <div class="col-xs-12 col-lg-12">
+                    {% if input['ERR'] == True %}<label class="alert-danger control-label">*Please fix all errors highlighted in red</label><br><br>{% endif %}
+                </div>
+                <div class="col-xs-12 col-lg-12">
+                    <input class="btn btn-large btn-primary" type="submit"/>
+                </div>
             </div>
         </div>
     </div>

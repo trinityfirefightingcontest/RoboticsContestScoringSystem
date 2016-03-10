@@ -18,8 +18,9 @@
 						<th>Disqualified</th>
 						<th>Level</th>
 						<th>Actual Time (AT)</th>
-						<th>Operating Modes(OM.x)<th>
-						<th>Penalty Points(PP)<th>
+						<th>Operating Modes(OM.x)</th>
+						<th>Penalty Points(PP)</th>
+						<th>Room Factor</th>
 						<th>Score</th>
 					</tr>
 				</thead>
@@ -27,37 +28,29 @@
 				{% for run in robot_runs %}
 					<tr>
 						<td>{{ loop.index }}</td>
-						<td>{{ run.get('is_disqualified',false) }}</td>
+						<td>{{ true if run.get('failed_trial') == 1 else false }}</td>
 						<td>{{ run.get('level') }}</td>
 						<td>{{ run.get('actual_time') }}</td>
-						<td>{{ false if run.get('used_versa_valve', 0) == 0 else true }}</td>
-						<td>{{ false if run.get('non_air', 0 == 0) else true }}</td>
-						<td>{{ false if run.get('furniture', 0 == 0) else true }}</td>
-						<td>{{ false if run.get('arbitrary_start', 0) == 0 else true }}</td>
-						<td>{{ run.get('return_trip') }}</td>
-						<td>{{ false if run.get('no_candle_circle', 0) == 0 else true }}</td>
-						<td>{{ false if run.get('touched_candle', 0) == 0 else true }}</td>
-						<td>{{ false if run.get('kicked_dog', 0) == 0 else true }}</td>
-						<td>{{ false if run.get('second_taken', 0) == 0 else true }}</td>
-						<td>{{ false if run.get('rooms_searched', 0) == 0 else true }}</td>	
+						<td class="fixed-columns">{{ applied_factors[loop.index - 1].get('applied_oms') }}</td>
+						<td class="fixed-columns">{{ applied_factors[loop.index - 1].get('applied_pp') }}</td>
+						<td class="fixed-columns">{{ applied_factors[loop.index - 1].get('applied_rf') }}</td>
+						<td>{{ run.get('score') }}</td>
 					</tr>
 				{% endfor %}
 				</tbody>
 			</table>
 		</div>
 		{% if robot_runs|length == 5 %}
-			<h2>Final score</h2>
+			<h2>Total Final Score</h2>
 			<div class="row">
 				<table class="table table-striped">
 					<thead class="thead-inverse">
 						<tr>
-							<th>Rounds qualified</th>
-							<th>Total score</th>
+							<th>Total Final Score (LS1 + LS2 + LS3) </th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr>
-							<td>{{ rounds_qualified }}</td>
 							<td>{{ total_score }}</td>
 						</tr>
 					</tbody>
