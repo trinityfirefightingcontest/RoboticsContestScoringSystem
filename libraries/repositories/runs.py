@@ -148,24 +148,23 @@ class Runs(object):
 
     @staticmethod
     def calculate_run_score(robot_div,
-                        level,
-                        failed_trial,
-                        actual_time,
-                        non_air ,
-                        furniture,
-                        arbitrary_start,
-                        return_trip,
-                        candle_location_mode,
-                        stopped_within_circle,
-                        signaled_detection,
-                        num_rooms_detected,
-                        kicked_dog,
-                        touched_candle,
-                        cont_wall_contact,
-                        ramp_hallway,
-                        alt_target,
-                        all_candles,
-                        used_versa_valve):
+                            level,
+                            failed_trial,
+                            actual_time,
+                            non_air,
+                            furniture,
+                            arbitrary_start,
+                            return_trip,
+                            candle_location_mode,
+                            stopped_within_circle,
+                            signaled_detection,
+                            num_rooms_detected,
+                            kicked_dog,
+                            touched_candle,
+                            cont_wall_contact,
+                            ramp_hallway,
+                            alt_target,
+                            all_candles):
 
         task_search = num_rooms_detected * (-30)
         task_detect = -30 if signaled_detection else 0
@@ -201,11 +200,11 @@ class Runs(object):
                 return 600 + task_detect + task_position + task_search;
             else:
                 return 600
-        
+
         if level == 1:
             return ((actual_time + pp_candle + pp_dog + pp_slide) *
                     (om_candle * om_start * om_return * om_extinguisher * om_furniture) * room_factor)
-        
+
         if level == 2:
             return ((actual_time + pp_candle + pp_dog + pp_slide) * 
                     (om_start * om_return * om_extinguisher * om_furniture) * room_factor)
@@ -213,4 +212,3 @@ class Runs(object):
         if level == 3:
             return ((actual_time + pp_candle + pp_dog + pp_slide) * 
                     om_alt_target * om_ramp_hallway * om_all_candles) 
-            
