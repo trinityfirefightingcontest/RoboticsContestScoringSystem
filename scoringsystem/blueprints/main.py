@@ -78,22 +78,33 @@ def not_found():
 @main.route('/robot/<robot_id>', methods=['GET', 'POST'])
 def robot_detail(robot_id):
     robot = r.get_registry()['ROBOTS'].get_robot(robot_id)
+
+    # if POST advance robot's level and redirect to add run page
+    if request.method == 'POST':
+        r.get_registry()['ROBOTS'].advance_level(robot_id, robot['level'])
+        return redirect(url_for('main.robot_add_run', robot_id = robot_id))
+
     runs = r.get_registry()['RUNS'].get_runs(robot_id)
     run_levels = get_values_of_dicts('id', list(runs))
-    '''
-    print(runs)
-    run_scor = [calculate_run_score(id, robot_id) for id in run_levels]
-    applied_factor = [applied_factors(id, robot_id) for id in run_levels]
-    print(run_scor)
-    print(applied_factor)
-    '''
+
+    # check if disqualifited and eligibility to advnace to next level
+    disqualified, eligible = check_if_eligible(runs, robot['level'])
+
+    # get current score data
+    scores= {}
+    scores['LS1'], scores['LS2'], scores['LS3'], scores['TFS'], scores['completed']= calculate_scores(runs)
+
+    print "Is disqulified: " + str(disqualified)
+    print "Is eligible: " + str(eligible)
+
     if not robot:
         return render_template("not_found.html")
     if not runs and robot:
         return render_template(
             "robot.html",
             robot_name=robot['name'],
-            robot_id=robot_id
+            robot_id=robot_id,
+            robot_level=robot['level']
         )
     else:
         return render_template(
@@ -101,6 +112,10 @@ def robot_detail(robot_id):
             robot_name=robot['name'],
             robot_id=robot_id,
             robot_runs = runs,
+            robot_level=robot['level'],
+            disqualified=disqualified,
+            eligible=eligible,
+            scores=scores,
             applied_factors = [applied_factors(id, robot_id) for id in run_levels]
         )
 
@@ -191,14 +206,8 @@ def scoreboard(division):
     for robot in robots:
         runs = r.get_registry()['RUNS'].get_runs(robot['id'])
 
-        # calculate lowes scores for each level and TFS
-        scores = calculate_scores(runs) #returns a tuple
-
-        robot['LS1'] = scores[0]
-        robot['LS2'] = scores[1]
-        robot['LS3'] = scores[2]
-        robot['TFS'] = scores[3]
-        robot['completed'] = scores[4]
+        # calculate lowes scores for each level and TFS, returns tuple
+        robot['LS1'], robot['LS2'], robot['LS3'], robot['TFS'], robot['completed']= calculate_scores(runs)
 
     # sort based on name then total score
     sorted_robots = sorted(list(robots), key=lambda k: k['name'])
@@ -258,6 +267,48 @@ def get_data_from_prev(prev_run):
         'no_candle_circle': prev_run['candle_location_mode'],
         'versa_valve_used': prev_run['used_versa_valve']
     }
+
+# check if robot is eligible to advnace to new level and if robot is disqulified
+def check_if_eligible(runs, current_level):
+    # initial values
+    disqualified = False
+    eligible = False
+
+    if runs:
+        current_level_runs = 0
+        cons_failed_count = 0
+        successful_trial = False
+
+        for run in runs:
+            if current_level == run['level']:
+                current_level_runs += 1
+                if run['failed_trial']:
+                    cons_failed_count += 1
+                else:
+                    successful_trial = True
+
+                    # reset consecutive failure counter
+                    cons_failed_count = 0
+
+                # if three consecutive failures
+                if cons_failed_count == 3:
+                    break
+
+        print "cons_failed count: " + str(cons_failed_count)
+
+        # if robot has attempted current level
+        if current_level_runs > 0:
+            # if atleast one succesful trial
+            if successful_trial:
+                eligible = True
+
+            # if has made three failed attempts at current level
+            if cons_failed_count == 3 and current_level in [1,2]:
+                disqualified = True
+
+    return (disqualified, eligible)
+
+
 
 #Getting values of specific key in the list of dictionaries
 def get_values_of_dicts(key, runs):
@@ -398,7 +449,7 @@ def validate_actual_time(time_s, level):
 def validate_num_rooms(num_s, level):
     # minimum and maximum allowed values
     min_123 = 1
-    max_123 = 8
+    max_123 = 4
 
     # check if input string is a number
     if level in [1,2]:

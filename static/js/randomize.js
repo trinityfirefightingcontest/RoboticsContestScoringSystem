@@ -25,15 +25,15 @@ function furniture_loc() {
 
 $(document).ready(function() {
     $('#candle-but').on('click', function (e) {
-        $('#candle').replaceWith(candle_loc());
+        $('#candle').html(candle_loc());
     })
     $('#puppy-but').on('click', function (e) {
-        $('#puppy').replaceWith(puppy_loc());
+        $('#puppy').html(puppy_loc());
     })
     $('#start-but').on('click', function (e) {
-        $('#start').replaceWith(start_loc());
+        $('#start').html(start_loc());
     })
     $('#furniture-but').on('click', function (e) {
-        $('#furniture').replaceWith(furniture_loc());
+        $('#furniture').html(furniture_loc());
     })
 });
