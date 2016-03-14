@@ -143,8 +143,6 @@ def robot_add_run(robot_id):
         # bind all paramters to associated values
         params_d = bind_params(input_data,robot_id, robot['level'])
 
-        print params_d
-
         # if invalide input data
         err = validate_params(params_d, robot['level'], robot['name'])
         if len(err) > 0:
@@ -161,16 +159,11 @@ def robot_add_run(robot_id):
 
         # calculate score
         score = get_score(robot, params_d)
-        print "DICT"
-        print params_d
 
         # convert dict values to tuple to prepare to insert to DB
         params_t = convert_to_tuple(params_d, robot_id, score)
-        print "TUPLE"
-        print params_t
 
         # insert into databse
-        print params_t
         r.get_registry()['RUNS'].record_run(*params_t)
 
         return redirect(url_for('main.robot_detail', robot_id = robot_id))
@@ -327,7 +320,6 @@ def validate_params(input_data, level, name):
             if p in data:
                 if p == 'name':
                     if not validate_name(data[p], name):
-                        print "name error"
                         err['NAME_ERR'] = True
                 elif p == 'seconds_to_put_out_candle_1':
                     if not validate_actual_time(data[p],level):
@@ -479,9 +471,6 @@ def applied_factors(run_id, robot_id):
     } 
     run_data = r.get_registry()['MY_SQL'].get(query, data)
 
-    print 'run data'
-    print run_data
-
     query = ("""SELECT division FROM robots where id = %(robot_id)s;""")
     data = {
         'robot_id': robot_id
@@ -490,9 +479,7 @@ def applied_factors(run_id, robot_id):
 
     run_level = run_data['level']
 
-    print robot_div
-
-    applied_oms = "" 
+    applied_oms = ""
     applied_rf = ""
     applied_pp = ""
 
@@ -507,7 +494,7 @@ def applied_factors(run_id, robot_id):
         if run_data.get('slide', 0) > 0:
             applied_pp += 'PP.slide=%d cm/2\n' % (run_data.get('cont_wall_contact', 0)) == 1
         applied_pp += 'PP.dog=50\n' if run_data.get('kicked_dog', 0) == 1 else ''
-        
+
         if run_level == 1:
             applied_oms += 'OM.candle=0.75\n' if run_data.get('candle_location_mode', 0) == 1 else ''
 
@@ -525,11 +512,10 @@ def applied_factors(run_id, robot_id):
                 applied_rf += 'Room Factor:0.5\n'
             elif run_data.get('num_rooms_searched') == 4:
                 applied_rf += 'Room Factor:0.35\n'
-   
+
         elif run_level == 3:
             applied_oms += 'OM.Alt_Target=0.6\n' if run_data.get('alt_target', 0) == 1 else ''
             applied_oms += 'OM.Ramp_Hallway=0.9\n' if run_data.get('ramp_hallway', 0) == 1 else ''
             applied_oms += 'OM.All_Candles=0.6\n' if run_data.get('all_candles', 0) == 1 else '' 
 
     return {'applied_oms': applied_oms, 'applied_rf': applied_rf, 'applied_pp': applied_pp}
- 
