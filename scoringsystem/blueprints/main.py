@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
-from flask import Blueprint, render_template, url_for, request, redirect
+from flask import (
+    Blueprint, render_template, url_for, request, redirect, session)
 import registry as r
-
+from libraries.utilities.authentication import AuthenticationUtilities
 main = Blueprint('main', __name__)
 
 # name of all html form inputs, order matters
@@ -49,6 +50,13 @@ input_params = ['name',
             'wall_contact_cms']
 
 
+@main.before_request
+def require_login():
+    if not AuthenticationUtilities.user_is_logged_in(session):
+        return redirect(url_for('auth.signin'))
+
+
+@main.route('/', methods=['GET', 'POST'])
 @main.route('/home', methods=['GET', 'POST'])
 def home():
     robots = r.get_registry()['ROBOTS'].get_all_robots()
@@ -58,11 +66,6 @@ def home():
         "home.html",
         robots=robots
     )
-
-
-@main.route('/', methods=['GET', 'POST'])
-def signin():
-    return render_template("signin.html")
 
 
 @main.route('/schedule', methods=['GET', 'POST'])
@@ -100,8 +103,8 @@ def robot_detail(robot_id):
             "robot.html",
             robot_name=robot['name'],
             robot_id=robot_id,
-            robot_runs = runs,
-            applied_factors = [applied_factors(id, robot_id) for id in run_levels]
+            robot_runs=runs,
+            applied_factors=[applied_factors(id, robot_id) for id in run_levels]
         )
 
 @main.route('/robot/<robot_id>/addrun', methods=['GET', 'POST'])
@@ -464,11 +467,12 @@ def get_score(robot, data):
                         data['baby_relocated'],
                         data['all_candles'])
 
+
 def applied_factors(run_id, robot_id):
     query = ("""SELECT * FROM runs where id = %(run_id)s;""")
     data = {
         'run_id': run_id
-    } 
+    }
     run_data = r.get_registry()['MY_SQL'].get(query, data)
 
     query = ("""SELECT division FROM robots where id = %(robot_id)s;""")
