@@ -50,8 +50,7 @@ function candle_img(id) {
 
 function start_loc_img(loc_id, orient_id) {
     var location = {
-        'Room 1': '/static/img/_THUMBNAILS_/ArbitraryStart.Thumbnails/',
-
+        'Room 1': '/static/img/_THUMBNAILS_/ArbitraryStart.Thumbnails/'
     }
 
     var orients = {
@@ -70,14 +69,14 @@ function start_loc_img(loc_id, orient_id) {
 
 function furniture_img(id) {
     var dict = {
-        '01': '/static/img/_THUMBNAILS_/Furniture.Thumbnails/01.png',
-        '02': '/static/img/_THUMBNAILS_/Furniture.Thumbnails/02.png',
-        '03': '/static/img/_THUMBNAILS_/Furniture.Thumbnails/03.png',
-        '04': '/static/img/_THUMBNAILS_/Furniture.Thumbnails/04.png',
-        '05': '/static/img/_THUMBNAILS_/Furniture.Thumbnails/05.png',
-        '06': '/static/img/_THUMBNAILS_/Furniture.Thumbnails/06.png',
-        '07': '/static/img/_THUMBNAILS_/Furniture.Thumbnails/07.png',
-        '08': '/static/img/_THUMBNAILS_/Furniture.Thumbnails/08.png'
+        'O1': '/static/img/_THUMBNAILS_/Furniture.Thumbnails/O1.png',
+        'O2': '/static/img/_THUMBNAILS_/Furniture.Thumbnails/O2.png',
+        'O3': '/static/img/_THUMBNAILS_/Furniture.Thumbnails/O3.png',
+        'O4': '/static/img/_THUMBNAILS_/Furniture.Thumbnails/O4.png',
+        'O5': '/static/img/_THUMBNAILS_/Furniture.Thumbnails/O5.png',
+        'O6': '/static/img/_THUMBNAILS_/Furniture.Thumbnails/O6.png',
+        'O7': '/static/img/_THUMBNAILS_/Furniture.Thumbnails/O7.png',
+        'O8': '/static/img/_THUMBNAILS_/Furniture.Thumbnails/O8.png'
     }
 
     return dict[id];
@@ -107,7 +106,7 @@ $(document).ready(function() {
         $('#start').html(randomRoom + ' ' + randomOrient);
 
         $('#startLocationDiv').removeClass('hidden');
-        var randomStartLinks = start_loc_img();
+        var randomStartLinks = start_loc_img(randomRoom, randomOrient);
         var randRoomLink = randomStartLinks[0];
         var randOrientLink = randomStartLinks[1];
         $('#startRoomImg').attr('src', randRoomLink);
@@ -118,7 +117,7 @@ $(document).ready(function() {
         $('#furniture').html(furniture_loc_id);
 
         $('#furnitureLocationDiv').removeClass('hidden');
-        $('#furnitureLocationImg').attr('src', furniture_loc_img(furniture_loc_id));
+        $('#furnitureLocationImg').attr('src', furniture_img(furniture_loc_id));
 
     })
 });
