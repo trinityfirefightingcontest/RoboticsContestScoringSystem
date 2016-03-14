@@ -111,8 +111,9 @@ class Robots(object):
 
     @staticmethod
     def advance_level(robot_id, current_level):
-        query = """UPDATE robots SET level = %(level)s;"""
+        query = """UPDATE robots SET level = %(level)s where id = %(robot_id)s;"""
         data = {
-            'level': current_level + 1
+            'level': current_level + 1,
+            'robot_id': robot_id
         }
         return r.get_registry()['MY_SQL'].insert(query, data)
