@@ -420,8 +420,7 @@ def run():
 							run['cont_wall_contact'],
 							run['ramp_hallway'],
 							run['alt_target'],
-							run['all_candles'],
-							run['used_versa_valve'])
+							run['all_candles'])
 
 		r.get_registry()['RUNS'].record_run(run['level'],
 											run['failed_trial'],
@@ -440,7 +439,6 @@ def run():
 											run['ramp_hallway'],
 											run['alt_target'],
 											run['all_candles'],
-											run['used_versa_valve'],
 											calculate_run_score(*score_components),
 											robot_id)
 
@@ -466,8 +464,7 @@ def run():
 							run['cont_wall_contact'],
 							run['ramp_hallway'],
 							run['alt_target'],
-							run['all_candles'],
-							run['used_versa_valve'])
+							run['all_candles'])
 
 		print "score components:"
 		print(score_components)
@@ -489,7 +486,6 @@ def run():
 											run['ramp_hallway'],
 											run['alt_target'],
 											run['all_candles'],
-											run['used_versa_valve'],
 											calculate_run_score(*score_components),
 											robot_id)
 	
@@ -515,8 +511,7 @@ def run():
 							run['cont_wall_contact'],
 							run['ramp_hallway'],
 							run['alt_target'],
-							run['all_candles'],
-							run['used_versa_valve'])
+							run['all_candles'])
 		
 		r.get_registry()['RUNS'].record_run(run['level'],
 											run['failed_trial'],
@@ -535,7 +530,6 @@ def run():
 											run['ramp_hallway'],
 											run['alt_target'],
 											run['all_candles'],
-											run['used_versa_valve'],
 											calculate_run_score(*score_components),
 											robot_id)
 
@@ -556,8 +550,7 @@ def calculate_run_score(robot_div,
 						cont_wall_contact,
 						ramp_hallway,
 						alt_target,
-						all_candles,
-						used_versa_valve):
+						all_candles):
 
 		task_search = num_rooms_detected * (-30)
 		task_detect = -30 if signaled_detection else 0
@@ -593,20 +586,6 @@ def calculate_run_score(robot_div,
 				return 600 + task_detect + task_position + task_search;
 			else:
 				return 600
-
-		print om_candle
-		print om_start
-		print om_return
-		print om_extinguisher
-		print om_furniture
-		print room_factor
-		print pp_candle
-		print pp_slide
-		print pp_dog
-		print om_alt_target
-		print om_ramp_hallway
-		print om_all_candles
-		print '-----'
 
 		if level == 1:
 			return ((actual_time + pp_candle + pp_dog + pp_slide) *
