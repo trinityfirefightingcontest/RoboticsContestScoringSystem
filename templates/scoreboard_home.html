@@ -11,6 +11,11 @@
        font-size: 22px;
        list-style: none;
     }
+    h4 {
+      font-size: 13px;
+      text-decoration: none;
+      color: black;
+    }
 </style>
 {% endblock %}
 {% block main_content %}
@@ -29,6 +34,11 @@
                 <li><a href="/scoreboard/senior">Senior Division</a></li>
             </ul>
         </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-6 text-right">
+        <h4><a href="/scoreboardcsv">Export to CSV</a></h4>
+      </div>
     </div>
 </div>
 {% endblock %}

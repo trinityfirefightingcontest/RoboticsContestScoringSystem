@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-from flask import Blueprint, render_template, url_for, request, redirect
+from flask import Blueprint, render_template, url_for, request, redirect, make_response
 import registry as r
+import csv, StringIO
 
 main = Blueprint('main', __name__)
 
@@ -194,6 +195,40 @@ def robot_add_run(robot_id):
 def scoreboard_home():
     return render_template("scoreboard_home.html")
 
+@main.route('/scoreboardcsv', methods=['GET', 'POST']) 
+def export_to_csv():
+    divisions = ['junior', 'walking', 'high_school', 'senior']
+
+    all_robots = {}
+
+    for division in divisions:
+        all_robots[division] = r.get_registry()['ROBOTS'].get_all_robots_division(division);
+
+    si = StringIO.StringIO();
+    cw = csv.writer(si);
+    cw.writerow(['Rank','Division', 'Name', 'LS1', 'LS2', 'LS3', 'TFS'])
+
+    for div in all_robots:
+        for robot in all_robots[div]:
+            runs = r.get_registry()['RUNS'].get_runs(robot['id'])
+
+            # calculate lowes scores for each level and TFS, returns tuple
+            robot['LS1'], robot['LS2'], robot['LS3'], robot['TFS'], robot['completed']= calculate_scores(runs)
+
+        # sort based on name then total score
+        sorted_robots = sorted(list(all_robots[div]), key=lambda k: k['name'])
+        sorted_robots = sorted(list(sorted_robots), key=lambda k: k['TFS'])
+
+        for index, sorted_r in enumerate(sorted_robots, start=1):
+            cw.writerow([index, sorted_r['division'], sorted_r['name'],sorted_r['LS1'], sorted_r['LS2'], sorted_r['LS3'], sorted_r['TFS']])
+
+        cw.writerow('\n')
+
+    output = make_response(si.getvalue())
+    si.close()
+    output.headers["Content-Disposition"] = "attachment; filename=scoreboard.csv"
+    output.headers["Content-type"] = "text/csv"
+    return output    
 
 @main.route('/scoreboard/<division>', methods=['GET', 'POST'])
 def scoreboard(division):
