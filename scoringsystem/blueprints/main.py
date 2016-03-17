@@ -1,15 +1,8 @@
 # -*- coding: utf-8 -*-
-<<<<<<< HEAD
-from flask import Blueprint, render_template, url_for, request, redirect, make_response
-import registry as r
-import csv, StringIO
-
-=======
 from flask import (
-    Blueprint, render_template, url_for, request, redirect, session)
+    Blueprint, render_template, url_for, request, redirect, session, make_response)
 import registry as r
 from libraries.utilities.authentication import AuthenticationUtilities
->>>>>>> b482f7b25abce6e53a5b869dd742f6fb28319d16
 main = Blueprint('main', __name__)
 
 # name of all html form inputs, order matters
@@ -64,7 +57,6 @@ def require_login():
 
 
 @main.route('/', methods=['GET', 'POST'])
-@main.route('/home', methods=['GET', 'POST'])
 def home():
     robots = r.get_registry()['ROBOTS'].get_all_robots()
     for rb in robots:
@@ -121,17 +113,12 @@ def robot_detail(robot_id):
             "robot.html",
             robot_name=robot['name'],
             robot_id=robot_id,
-<<<<<<< HEAD
-            robot_runs = runs,
             robot_level=robot['level'],
             disqualified=disqualified,
             eligible=eligible,
             scores=scores,
-            applied_factors = [applied_factors(id, robot_id) for id in run_levels]
-=======
             robot_runs=runs,
             applied_factors=[applied_factors(id, robot_id) for id in run_levels]
->>>>>>> b482f7b25abce6e53a5b869dd742f6fb28319d16
         )
 
 @main.route('/robot/<robot_id>/addrun', methods=['GET', 'POST'])

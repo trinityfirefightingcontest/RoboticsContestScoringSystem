@@ -13,7 +13,6 @@ def get_id(id_counter, robot_data):
 
 def run():
     load_registry()
-<<<<<<< HEAD
     robots = [
         {
             'division': 'junior',
@@ -132,8 +131,7 @@ def run():
             used_versa_valve=data['used_versa_valve'],
             level=data['level'],
             is_disqualified=data['is_disqualified'],
-            passed_inspection=data['passed_inspection']
-=======
+            passed_inspection=data['passed_inspection'])
     division_map = {
         'fire fighting high school division': 'high_school',
         'fire fighting junior division': 'junior',
@@ -148,8 +146,6 @@ def run():
         'yes, please ship one to me.': True,
         'no, not at this time.  we will contact you if we change our mind.': (
             False
->>>>>>> b482f7b25abce6e53a5b869dd742f6fb28319d16
-        )
     }
     fields_index = {
         'email': 3,
