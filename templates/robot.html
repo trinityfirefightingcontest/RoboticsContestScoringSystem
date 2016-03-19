@@ -37,7 +37,7 @@
                         <td>{{ loop.index }}</td>
                         <td>{{ true if run.get('failed_trial') == 1 else false }}</td>
                         <td>{{ run.get('level') }}</td>
-                        <td>{{ run.get('actual_time') }}</td>
+                        <td>{{ run.get('actual_time') if run.get('failed_trial') == 0 or run in [400,450,500] else 600}}</td>
                         <td class="fixed-columns">{{ applied_factors[loop.index - 1].get('applied_oms') }}</td>
                         <td class="fixed-columns">{{ applied_factors[loop.index - 1].get('applied_pp') }}</td>
                         <td class="fixed-columns">{{ applied_factors[loop.index - 1].get('applied_rf') }}</td>

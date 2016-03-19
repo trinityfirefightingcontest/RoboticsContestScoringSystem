@@ -198,6 +198,8 @@ class Runs(object):
         if failed_trial:
             if robot_div in ['junior', 'walking'] and level == 1:
                 return 600 + task_detect + task_position + task_search;
+            elif level == 3 and actual_time in [400, 450, 500]:
+                return actual_time
             else:
                 return 600
 

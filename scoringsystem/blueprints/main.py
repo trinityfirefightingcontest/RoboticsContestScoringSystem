@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
-from flask import Blueprint, render_template, url_for, request, redirect
+from flask import (
+    Blueprint, render_template, url_for, request, redirect, session, make_response)
 import registry as r
-
+import StringIO
+import csv
+from libraries.utilities.authentication import AuthenticationUtilities
 main = Blueprint('main', __name__)
 
 # name of all html form inputs, order matters
@@ -49,7 +52,13 @@ input_params = ['name',
             'wall_contact_cms']
 
 
-@main.route('/home', methods=['GET', 'POST'])
+@main.before_request
+def require_login():
+    if not AuthenticationUtilities.user_is_logged_in(session):
+        return redirect(url_for('auth.signin'))
+
+
+@main.route('/', methods=['GET', 'POST'])
 def home():
     robots = r.get_registry()['ROBOTS'].get_all_robots()
     for rb in robots:
@@ -58,11 +67,6 @@ def home():
         "home.html",
         robots=robots
     )
-
-
-@main.route('/', methods=['GET', 'POST'])
-def signin():
-    return render_template("signin.html")
 
 
 @main.route('/schedule', methods=['GET', 'POST'])
@@ -111,12 +115,12 @@ def robot_detail(robot_id):
             "robot.html",
             robot_name=robot['name'],
             robot_id=robot_id,
-            robot_runs = runs,
             robot_level=robot['level'],
             disqualified=disqualified,
             eligible=eligible,
             scores=scores,
-            applied_factors = [applied_factors(id, robot_id) for id in run_levels]
+            robot_runs=runs,
+            applied_factors=[applied_factors(id, robot_id) for id in run_levels]
         )
 
 @main.route('/robot/<robot_id>/addrun', methods=['GET', 'POST'])
@@ -156,10 +160,9 @@ def robot_add_run(robot_id):
         # bind all paramters to associated values
         params_d = bind_params(input_data,robot_id, robot['level'])
 
-        print params_d
-
         # if invalid input data
         err = validate_params(params_d, robot['level'], robot['division'], robot['name'])
+
         if len(err) > 0:
             err['ERR'] = True
             params_and_errors = {}
@@ -175,20 +178,14 @@ def robot_add_run(robot_id):
 
         # calculate score
         score = get_score(robot, params_d)
-        print "DICT"
-        print params_d
 
         # convert dict values to tuple to prepare to insert to DB
         params_t = convert_to_tuple(params_d, robot_id, score)
-        print "TUPLE"
-        print params_t
-
-        # insert into databse
-        print params_t
 
         # make sure not more than 5 runs are entered into database
         if(len(runs) < 5):
             r.get_registry()['RUNS'].record_run(*params_t)
+
 
         return redirect(url_for('main.robot_detail', robot_id = robot_id))
 
@@ -196,6 +193,40 @@ def robot_add_run(robot_id):
 def scoreboard_home():
     return render_template("scoreboard_home.html")
 
+@main.route('/scoreboardcsv', methods=['GET', 'POST']) 
+def export_to_csv():
+    divisions = ['junior', 'walking', 'high_school', 'senior']
+
+    all_robots = {}
+
+    for division in divisions:
+        all_robots[division] = r.get_registry()['ROBOTS'].get_all_robots_division(division);
+
+    si = StringIO.StringIO();
+    cw = csv.writer(si);
+    cw.writerow(['Rank','Division', 'Name', 'LS1', 'LS2', 'LS3', 'TFS'])
+
+    for div in all_robots:
+        for robot in all_robots[div]:
+            runs = r.get_registry()['RUNS'].get_runs(robot['id'])
+
+            # calculate lowes scores for each level and TFS, returns tuple
+            robot['LS1'], robot['LS2'], robot['LS3'], robot['TFS'], robot['completed']= calculate_scores(runs)
+
+        # sort based on name then total score
+        sorted_robots = sorted(list(all_robots[div]), key=lambda k: k['name'])
+        sorted_robots = sorted(list(sorted_robots), key=lambda k: k['TFS'])
+
+        for index, sorted_r in enumerate(sorted_robots, start=1):
+            cw.writerow([index, sorted_r['division'], sorted_r['name'],sorted_r['LS1'], sorted_r['LS2'], sorted_r['LS3'], sorted_r['TFS']])
+
+        cw.writerow('\n')
+
+    output = make_response(si.getvalue())
+    si.close()
+    output.headers["Content-Disposition"] = "attachment; filename=scoreboard.csv"
+    output.headers["Content-type"] = "text/csv"
+    return output    
 
 @main.route('/scoreboard/<division>', methods=['GET', 'POST'])
 def scoreboard(division):
@@ -392,7 +423,6 @@ def validate_params(input_data, level, div, name):
             if p in data:
                 if p == 'name':
                     if not validate_name(data[p], name):
-                        print "name error"
                         err['NAME_ERR'] = True
                 elif p == 'seconds_to_put_out_candle_1':
                     if not validate_actual_time(data[p],level, False):
@@ -544,15 +574,13 @@ def get_score(robot, data):
                         data['baby_relocated'],
                         data['all_candles'])
 
+
 def applied_factors(run_id, robot_id):
     query = ("""SELECT * FROM runs where id = %(run_id)s;""")
     data = {
         'run_id': run_id
-    } 
+    }
     run_data = r.get_registry()['MY_SQL'].get(query, data)
-
-    print 'run data'
-    print run_data
 
     query = ("""SELECT division FROM robots where id = %(robot_id)s;""")
     data = {
@@ -562,9 +590,7 @@ def applied_factors(run_id, robot_id):
 
     run_level = run_data['level']
 
-    print robot_div
-
-    applied_oms = "" 
+    applied_oms = ""
     applied_rf = ""
     applied_pp = ""
 
@@ -579,7 +605,7 @@ def applied_factors(run_id, robot_id):
         if run_data.get('slide', 0) > 0:
             applied_pp += 'PP.slide=%d cm/2\n' % (run_data.get('cont_wall_contact', 0)) == 1
         applied_pp += 'PP.dog=50\n' if run_data.get('kicked_dog', 0) == 1 else ''
-        
+
         if run_level == 1:
             applied_oms += 'OM.candle=0.75\n' if run_data.get('candle_location_mode', 0) == 1 else ''
 
@@ -597,11 +623,10 @@ def applied_factors(run_id, robot_id):
                 applied_rf += 'Room Factor:0.5\n'
             elif run_data.get('num_rooms_searched') == 4:
                 applied_rf += 'Room Factor:0.35\n'
-   
+
         elif run_level == 3:
             applied_oms += 'OM.Alt_Target=0.6\n' if run_data.get('alt_target', 0) == 1 else ''
             applied_oms += 'OM.Ramp_Hallway=0.9\n' if run_data.get('ramp_hallway', 0) == 1 else ''
             applied_oms += 'OM.All_Candles=0.6\n' if run_data.get('all_candles', 0) == 1 else '' 
 
     return {'applied_oms': applied_oms, 'applied_rf': applied_rf, 'applied_pp': applied_pp}
- 
