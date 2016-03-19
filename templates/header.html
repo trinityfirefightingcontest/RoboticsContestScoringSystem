@@ -18,6 +18,7 @@
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
     <script data-main="/static/js/main" src="/static/js/require.js"></script>
+    <script data-main="/static/js/main" src="/static/js/randomize.js"></script>
     <style type="text/css">
       body {
         padding-top: 40px;
@@ -67,6 +68,12 @@
       }
       .center {
         text-align: center;
+      }
+      .fixed-columns {
+        max-width: 185px !important;
+        white-space: normal;
+        word-wrap: break-word;
+        min-width: 185px;
       }
     </style>
     {% block head %}
