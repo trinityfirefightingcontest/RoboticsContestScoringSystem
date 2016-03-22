@@ -1,55 +1,15 @@
 # -*- coding: utf-8 -*-
 from flask import (
-    Blueprint, render_template, url_for, request, redirect, session, make_response)
+    Blueprint, render_template, url_for, request,
+    redirect, session, make_response)
 import registry as r
 import StringIO
 import csv
 from libraries.utilities.authentication import AuthenticationUtilities
+from libraries.utilities.level_progress_handler import LevelProgressHandler
+from libraries.utilities.score_calculator import ScoreCalculator
+from libraries.utilities.run_parameters import RunParameters
 main = Blueprint('main', __name__)
-
-# name of all html form inputs, order matters
-params_all = ['name',
-        'run_disqualified',
-        'seconds_to_put_out_candle_1',
-        'seconds_to_put_out_candle_2',
-        'non_air',
-        'furniture',
-        'arbitrary_start',
-        'return_trip',
-        'no_candle_circle',
-        'stopped_within_30',
-        'candle_detected',
-        'number_of_rooms_searched',
-        'kicked_dog',
-        'touched_candle',
-        'wall_contact_cms',
-        'ramp_used',
-        'baby_relocated',
-        'all_candles',
-        'versa_valve_used']
-
-# sublist of name of all checkboxes
-boolean_params = ['run_disqualified',
-                'non_air',
-                'furniture',
-                'arbitrary_start',
-                'return_trip',
-                'no_candle_circle',
-                'stopped_within_30',
-                'candle_detected',
-                'kicked_dog',
-                'touched_candle',
-                'ramp_used',
-                'baby_relocated',
-                'all_candles',
-                'versa_valve_used']
-
-# sublist of name of inputs that need string input
-input_params = ['name',
-            'seconds_to_put_out_candle_1',
-            'seconds_to_put_out_candle_2',
-            'number_of_rooms_searched',
-            'wall_contact_cms']
 
 
 @main.before_request
@@ -82,46 +42,42 @@ def not_found():
 @main.route('/robot/<robot_id>', methods=['GET', 'POST'])
 def robot_detail(robot_id):
     robot = r.get_registry()['ROBOTS'].get_robot(robot_id)
+    if not robot:
+        return render_template("not_found.html")
 
     # if POST advance robot's level and redirect to add run page
     if request.method == 'POST':
+        # TODO: Please use a different url for this.
+        # also make sure that the level that it need to moved
+        # to is sent from the html.
         r.get_registry()['ROBOTS'].advance_level(robot_id, robot['level'])
-        return redirect(url_for('main.robot_add_run', robot_id = robot_id))
+        return redirect(url_for('main.robot_add_run', robot_id=robot_id))
 
     runs = r.get_registry()['RUNS'].get_runs(robot_id)
-    run_levels = get_values_of_dicts('id', list(runs))
+    run_levels = [run['id'] for run in runs]
 
     # check if disqualifited and eligibility to advnace to next level
-    disqualified, eligible = check_if_eligible(runs, robot['level'])
+    eligibility = LevelProgressHandler.get_eligibility_for_next_run(
+        runs, robot['level']
+    )
+    # get current best scores
+    best_scores, attempted_levels, total_score = (
+        ScoreCalculator.get_best_scores(runs)
+    )
+    return render_template(
+        "robot.html",
+        attempted_levels=attempted_levels,
+        total_score=total_score,
+        robot_name=robot['name'],
+        robot_id=robot_id,
+        robot_level=robot['level'],
+        disqualified=eligibility['disqualified'],
+        eligible=eligibility['can_level_up'],
+        best_scores=best_scores,
+        robot_runs=runs,
+        applied_factors=[applied_factors(id, robot_id) for id in run_levels]
+    )
 
-    # get current score data
-    scores= {}
-    scores['LS1'], scores['LS2'], scores['LS3'], scores['TFS'], scores['completed']= calculate_scores(runs)
-
-    print "Is disqulified: " + str(disqualified)
-    print "Is eligible: " + str(eligible)
-
-    if not robot:
-        return render_template("not_found.html")
-    if not runs and robot:
-        return render_template(
-            "robot.html",
-            robot_name=robot['name'],
-            robot_id=robot_id,
-            robot_level=robot['level']
-        )
-    else:
-        return render_template(
-            "robot.html",
-            robot_name=robot['name'],
-            robot_id=robot_id,
-            robot_level=robot['level'],
-            disqualified=disqualified,
-            eligible=eligible,
-            scores=scores,
-            robot_runs=runs,
-            applied_factors=[applied_factors(id, robot_id) for id in run_levels]
-        )
 
 @main.route('/robot/<robot_id>/addrun', methods=['GET', 'POST'])
 def robot_add_run(robot_id):
@@ -132,66 +88,68 @@ def robot_add_run(robot_id):
         return render_template("not_found.html")
 
     if request.method == 'GET':
-        #get data from previous run
-        runs_level = r.get_registry()['RUNS'].get_runs_robot_level(robot['id'], robot['level'])
+        # get all previous runs
+        all_runs = r.get_registry()['RUNS'].get_runs(robot_id)
+        # get data from previous run
+        this_level_runs = r.get_registry()['RUNS'].get_runs_robot_level(robot['id'], robot['level'])
 
-        if runs_level:
-            last_run = runs_level[-1]
+        if this_level_runs:
+            last_run = this_level_runs[-1]
 
             return render_template(
                 "run.html",
                 level_number=1,
                 robot=robot,
                 input=get_data_from_prev(last_run),
-                all_runs=runs
+                all_runs=all_runs
             )
 
         return render_template(
-                "run.html",
-                level_number=1,
-                robot=robot,
-                input=request.args,
-                all_runs=runs
+            "run.html",
+            level_number=1,
+            robot=robot,
+            input=request.args,
+            all_runs=all_runs
         )
-    else:
-        # get data from html form
-        input_data = request.form
+    # For post request
 
-        # bind all paramters to associated values
-        params_d = bind_params(input_data,robot_id, robot['level'])
+    # get data from html form
+    input_data = request.form
 
-        # if invalid input data
-        err = validate_params(params_d, robot['level'], robot['division'], robot['name'])
+    # bind all paramters to associated values
+    params_d = bind_params(input_data, robot_id, robot['level'])
 
-        if len(err) > 0:
-            err['ERR'] = True
-            params_and_errors = {}
-            params_and_errors.update(params_d) # leave data already entered unchanged
-            params_and_errors.update(err) # include errors
-            return render_template(
-                "run.html",
-                level_number=1,
-                robot=robot,
-                input=params_and_errors,
-                all_runs=runs
-            )
+    # if invalide input data
+    err = validate_params(params_d, robot['level'], robot['division'], robot['name'])
+    if len(err) > 0:
+        err['ERR'] = True
+        params_and_errors = {}
+        params_and_errors.update(params_d)  # leave data already entered unchanged
+        params_and_errors.update(err)  # include errors
+        return render_template(
+            "run.html",
+            level_number=1,
+            robot=robot,
+            input=params_and_errors,
+            all_runs=all_runs
+        )
 
-        # calculate score
-        score = get_score(robot, params_d)
+    # calculate score
+    score = get_score(robot, params_d)
 
-        # convert dict values to tuple to prepare to insert to DB
-        params_t = convert_to_tuple(params_d, robot_id, score)
+    # convert dict values to tuple to prepare to insert to DB
+    params_t = convert_to_tuple(params_d, robot_id, score)
 
-        # make sure not more than 5 runs are entered into database
-        if(len(runs) < 5):
-            r.get_registry()['RUNS'].record_run(*params_t)
+    # insert into databse
+    r.get_registry()['RUNS'].record_run(*params_t)
 
+    return redirect(url_for('main.robot_detail', robot_id=robot_id))
 
-        return redirect(url_for('main.robot_detail', robot_id = robot_id))
 
 @main.route('/scoreboard', methods=['GET', 'POST'])
 def scoreboard_home():
     return render_template("scoreboard_home.html")
+
 
 @main.route('/scoreboardcsv', methods=['GET', 'POST']) 
 def export_to_csv():
@@ -202,16 +160,21 @@ def export_to_csv():
     for division in divisions:
         all_robots[division] = r.get_registry()['ROBOTS'].get_all_robots_division(division);
 
-    si = StringIO.StringIO();
-    cw = csv.writer(si);
-    cw.writerow(['Rank','Division', 'Name', 'LS1', 'LS2', 'LS3', 'TFS'])
+    si = StringIO.StringIO()
+    cw = csv.writer(si)
+    cw.writerow(['Rank', 'Division', 'Name', 'LS1', 'LS2', 'LS3', 'TFS'])
 
     for div in all_robots:
         for robot in all_robots[div]:
             runs = r.get_registry()['RUNS'].get_runs(robot['id'])
-
+            # get current best scores
+            best_scores, attempted_levels, total_score = (
+                ScoreCalculator.get_best_scores(runs)
+            )
+            robot.update(best_scores)
+            robot['TFS'] = total_score
             # calculate lowes scores for each level and TFS, returns tuple
-            robot['LS1'], robot['LS2'], robot['LS3'], robot['TFS'], robot['completed']= calculate_scores(runs)
+            robot['completed'] = attempted_levels
 
         # sort based on name then total score
         sorted_robots = sorted(list(all_robots[div]), key=lambda k: k['name'])
@@ -226,7 +189,8 @@ def export_to_csv():
     si.close()
     output.headers["Content-Disposition"] = "attachment; filename=scoreboard.csv"
     output.headers["Content-type"] = "text/csv"
-    return output    
+    return output
+
 
 @main.route('/scoreboard/<division>', methods=['GET', 'POST'])
 def scoreboard(division):
@@ -238,9 +202,13 @@ def scoreboard(division):
     # get score for each level and total score
     for robot in robots:
         runs = r.get_registry()['RUNS'].get_runs(robot['id'])
-
+        best_scores, attempted_levels, total_score = (
+            ScoreCalculator.get_best_scores(runs)
+        )
+        robot.update(best_scores)
+        robot['TFS'] = total_score
         # calculate lowes scores for each level and TFS, returns tuple
-        robot['LS1'], robot['LS2'], robot['LS3'], robot['TFS'], robot['completed']= calculate_scores(runs)
+        robot['completed'] = attempted_levels
 
     # sort based on name then total score
     sorted_robots = sorted(list(robots), key=lambda k: k['name'])
@@ -258,38 +226,10 @@ def scoreboard(division):
 
     return render_template(
         "scoreboard.html",
-        robots = sorted_robots,
-        division = label
+        robots=sorted_robots,
+        division=label
     )
 
-#Calculate LS1, LS2, LS3, TFS to be displayed on the scoreboard
-def calculate_scores(runs):
-    LS1 = 600.0
-    LS2 = 600.0
-    LS3 = 600.0
-
-    completed = []
-
-    for run in runs:
-        if run['level'] == 1:
-            if 1 not in completed:
-                completed.append(1)
-            if run['score'] <= LS1:
-                LS1 = run['score']
-        if run['level'] == 2:
-            if 2 not in completed:
-                completed.append(2)
-            if run['score'] <= LS2:
-                LS2 = run['score']
-        if run['level'] == 3:
-            if 3 not in completed:
-                completed.append(3)
-            if run['score'] <= LS3:
-                LS3 = run['score']
-
-    TFS = LS1 + LS2 + LS3
-
-    return (LS1, LS2, LS3, TFS, completed)
 
 def get_data_from_prev(prev_run):
     return {
@@ -301,54 +241,6 @@ def get_data_from_prev(prev_run):
         'versa_valve_used': prev_run['used_versa_valve']
     }
 
-# check if robot is eligible to advnace to new level and if robot is disqulified
-def check_if_eligible(runs, current_level):
-    # initial values
-    disqualified = False
-    eligible = False
-
-    if runs:
-        current_level_runs = 0
-        cons_failed_count = 0
-        successful_trial = False
-
-        for run in runs:
-            if current_level == run['level']:
-                current_level_runs += 1
-                if run['failed_trial']:
-                    cons_failed_count += 1
-                else:
-                    successful_trial = True
-
-                    # reset consecutive failure counter
-                    cons_failed_count = 0
-
-                # if three consecutive failures
-                if cons_failed_count == 3:
-                    break
-
-        print "cons_failed count: " + str(cons_failed_count)
-
-        # if robot has attempted current level
-        if current_level_runs > 0:
-            # if atleast one succesful trial
-            if successful_trial:
-                eligible = True
-
-            # if has made three failed attempts at current level
-            if cons_failed_count == 3 and current_level in [1,2]:
-                disqualified = True
-
-    return (disqualified, eligible)
-
-
-
-#Getting values of specific key in the list of dictionaries
-def get_values_of_dicts(key, runs):
-    result = []
-    for entries in runs:
-        result.append(entries.get(key))
-    return result
 
 # convert dict values to tuple to prepare to insert to DB
 def convert_to_tuple(dic, robot_id, score):
@@ -358,7 +250,8 @@ def convert_to_tuple(dic, robot_id, score):
     l.append(dic['level'])
     l.append(dic['run_disqualified'])
     l.append((to_float(dic['seconds_to_put_out_candle_1']) +
-              to_float(dic['seconds_to_put_out_candle_2']))/2.0) # average times by the 2 judges
+              to_float(dic['seconds_to_put_out_candle_2'])) / 2.0)
+    # average times by the 2 judges
     l.append(dic['non_air'])
     l.append(dic['furniture'])
     l.append(dic['arbitrary_start'])
@@ -450,16 +343,16 @@ def validate_actual_time_compare(time_j1, time_j2):
 # valide actual time
 def validate_actual_time(time_s, level, failed):
     # minimum and maximum time allowed for each level
-    min_123 = 0 # minimum for any level
-    max_1 = 180 # 3 minutes for level 1
-    max_2 = 240 # 4 minutes for level 2
-    max_3 = 300 # 5 minutes for level 3
+    min_123 = 0  # minimum for any level
+    max_1 = 180  # 3 minutes for level 1
+    max_2 = 240  # 4 minutes for level 2
+    max_3 = 300  # 5 minutes for level 3
 
     # special AT values in case of a failed trial
-    fail_123 = 600 # trial failed (any level)
-    traversed_3 = 500 # failed but traversed from arean A to B (level 3)
-    found_baby_3 = 450 # failed but found baby (level 3)
-    picked_baby_3 = 400 # failed but picked up baby (level 3)
+    fail_123 = 600  # trial failed (any level)
+    traversed_3 = 500  # failed but traversed from arean A to B (level 3)
+    found_baby_3 = 450  # failed but found baby (level 3)
+    picked_baby_3 = 400  # failed but picked up baby (level 3)
 
     # check if input string is a number
     if not time_s.isdigit():
@@ -496,6 +389,7 @@ def validate_actual_time(time_s, level, failed):
             return False
     return True
 
+
 # validate number of rooms
 def validate_num_rooms(num_s, level):
     # minimum and maximum allowed values
@@ -503,13 +397,14 @@ def validate_num_rooms(num_s, level):
     max_123 = 4
 
     # check if input string is a number
-    if level in [1,2]:
+    if level in [1, 2]:
         if not num_s.isdigit():
             return False
 
         return (int(num_s) >= min_123) and (int(num_s) <= max_123)
 
     return True
+
 
 # validate wall contact distance
 def validate_wall_contact(num_s):
@@ -523,56 +418,46 @@ def validate_wall_contact(num_s):
 
     return (int(num_s) >= min_123) and (int(num_s) <= max_123)
 
+
 # creates a dictionary out of data entered for new run
 def bind_params(input_data, id, level):
     # create a dictionary out of input data
     data = dict(input_data)
-
     # create a dictionary of all parameters
-    args = dict()
-
+    args = {}
     args['level'] = level
-
-    for p in params_all:
-        # if key exists
-        if p in data:
-            if p in boolean_params:
-                # if boolean and exists add True
-                args[p] = True
-            else:
-                # data dict is of form {key:value} where value is of form [u'str']
-                args[p] = data[p][0]
+    for p in RunParameters.ALL:
+        if p in RunParameters.BOOLEANS:
+            args[p] = bool(args.get(p))
         else:
-            if p in boolean_params:
-                # if boolean and doesnt exist add False
-                args[p] = False
-            else:
-                # add null for other non exisiting inputs params
-                args[p] = None
+            # data dict is of form {key:value}
+            # where value is of form [u'str']
+            args[p] = data[p][0] if data.get(p) else None
     return args
+
 
 # calculate and return score of current run
 def get_score(robot, data):
     return r.get_registry()['RUNS'].calculate_run_score(
-                        robot['division'],
-                        robot['level'],
-                        data['run_disqualified'],
-                        (to_float(data['seconds_to_put_out_candle_1']) +
-                        to_float(data['seconds_to_put_out_candle_2']))/2.0,
-                        data['non_air'],
-                        data['furniture'],
-                        data['arbitrary_start'],
-                        data['return_trip'],
-                        data['no_candle_circle'],
-                        data['stopped_within_30'],
-                        data['candle_detected'],
-                        to_int(data['number_of_rooms_searched']),
-                        data['kicked_dog'],
-                        data['touched_candle'],
-                        to_int(data['wall_contact_cms']),
-                        data['ramp_used'],
-                        data['baby_relocated'],
-                        data['all_candles'])
+        robot['division'],
+        robot['level'],
+        data['run_disqualified'],
+        (to_float(data['seconds_to_put_out_candle_1']) +
+         to_float(data['seconds_to_put_out_candle_2'])) / 2.0,
+        data['non_air'],
+        data['furniture'],
+        data['arbitrary_start'],
+        data['return_trip'],
+        data['no_candle_circle'],
+        data['stopped_within_30'],
+        data['candle_detected'],
+        to_int(data['number_of_rooms_searched']),
+        data['kicked_dog'],
+        data['touched_candle'],
+        to_int(data['wall_contact_cms']),
+        data['ramp_used'],
+        data['baby_relocated'],
+        data['all_candles'])
 
 
 def applied_factors(run_id, robot_id):
