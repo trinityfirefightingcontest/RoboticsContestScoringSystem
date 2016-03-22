@@ -82,7 +82,6 @@ def robot_detail(robot_id):
 @main.route('/robot/<robot_id>/addrun', methods=['GET', 'POST'])
 def robot_add_run(robot_id):
     robot = r.get_registry()['ROBOTS'].get_robot(robot_id)
-    runs = r.get_registry()['RUNS'].get_runs(robot_id)
 
     if not robot:
         return render_template("not_found.html")
@@ -90,20 +89,6 @@ def robot_add_run(robot_id):
     if request.method == 'GET':
         # get all previous runs
         all_runs = r.get_registry()['RUNS'].get_runs(robot_id)
-        # get data from previous run
-        this_level_runs = r.get_registry()['RUNS'].get_runs_robot_level(robot['id'], robot['level'])
-
-        if this_level_runs:
-            last_run = this_level_runs[-1]
-
-            return render_template(
-                "run.html",
-                level_number=1,
-                robot=robot,
-                input=get_data_from_prev(last_run),
-                all_runs=all_runs
-            )
-
         return render_template(
             "run.html",
             level_number=1,
