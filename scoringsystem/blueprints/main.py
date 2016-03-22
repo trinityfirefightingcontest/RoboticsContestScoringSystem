@@ -12,10 +12,10 @@ from libraries.utilities.run_parameters import RunParameters
 main = Blueprint('main', __name__)
 
 
-#@main.before_request
-#def require_login():
-#    if not AuthenticationUtilities.user_is_logged_in(session):
-#        return redirect(url_for('auth.signin'))
+@main.before_request
+def require_login():
+    if not AuthenticationUtilities.user_is_logged_in(session):
+        return redirect(url_for('auth.signin'))
 
 
 @main.route('/', methods=['GET', 'POST'])
