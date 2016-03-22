@@ -34,22 +34,10 @@
 						<td>{{ loop.index }}</td>
 						<td><a href="{{url_for('main.robot_detail', robot_id=robot['id'])}}">{{ robot.get('name') }}</a></td>
 						<td>{{ robot.get('level') }}</td>
-						{% if 1 in robot.get('completed') %}
-							<td>{{ robot.get('LS1') }}</td>
-						{% else %}
-							<td> - </td>
-						{% endif %}
-						{% if 2 in robot.get('completed') %}
-							<td>{{ robot.get('LS2') }}</td>
-						{% else %}
-							<td> - </td>
-						{% endif %}
-						{% if 3 in robot.get('completed') %}
-							<td>{{ robot.get('LS3') }}</td>
-						{% else %}
-							<td> - </td>
-						{% endif %}
-						<td>{{ robot.get('TFS') }}</td>
+						<td>{{ robot.get('LS1') }}</td>
+						<td>{{ robot.get('LS2') }}</td>
+						<td>{{ robot.get('LS3') }}</td>
+                        <td>{{ robot.get('TFS') }}</td>
 					</tr>
 				{% endfor %}
 				</tbody>
