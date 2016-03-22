@@ -86,9 +86,9 @@ def robot_add_run(robot_id):
     if not robot:
         return render_template("not_found.html")
 
+    all_runs = r.get_registry()['RUNS'].get_runs(robot_id)
     if request.method == 'GET':
         # get all previous runs
-        all_runs = r.get_registry()['RUNS'].get_runs(robot_id)
         return render_template(
             "run.html",
             level_number=1,
