@@ -78,7 +78,7 @@ def callback():
         message = "Could not extract authorization code from Google callback."
     session.clear()
     _oauth2_error_handler(message)
-    return redirect(url_for('main.signin'))
+    return redirect(url_for('auth.signin'))
 
 
 def _build_redirect_uri(request):

@@ -14,4 +14,4 @@ class ScoreCalculator(object):
             'LS3': min(l3_scores) if l3_scores else 600.0
         }
         attempted_levels = set([run['level'] for run in runs])
-        return best_scores, attempted_levels, sum(best_scores.val())
+        return best_scores, attempted_levels, sum(best_scores.values())
