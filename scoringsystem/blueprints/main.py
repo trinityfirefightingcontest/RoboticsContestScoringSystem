@@ -97,19 +97,18 @@ def robot_add_run(robot_id):
             all_runs=all_runs
         )
     # For post request
+    params_d = bind_params(request.form, robot_id, robot['level'])
 
-    # get data from html form
-    input_data = request.form
-
-    # bind all paramters to associated values
-    params_d = bind_params(input_data, robot_id, robot['level'])
-
-    # if invalide input data
-    err = validate_params(params_d, robot['level'], robot['division'], robot['name'])
-    if len(err) > 0:
+    # if invalidate input data
+    err = validate_params(params_d,
+                          robot['level'],
+                          robot['division'],
+                          robot['name'])
+    if err:
         err['ERR'] = True
         params_and_errors = {}
-        params_and_errors.update(params_d)  # leave data already entered unchanged
+        params_and_errors.update(params_d)
+        # leave data already entered unchanged
         params_and_errors.update(err)  # include errors
         return render_template(
             "run.html",
@@ -121,13 +120,10 @@ def robot_add_run(robot_id):
 
     # calculate score
     score = get_score(robot, params_d)
-
     # convert dict values to tuple to prepare to insert to DB
     params_t = convert_to_tuple(params_d, robot_id, score)
-
     # insert into databse
     r.get_registry()['RUNS'].record_run(*params_t)
-
     return redirect(url_for('main.robot_detail', robot_id=robot_id))
 
 
@@ -292,12 +288,12 @@ def validate_params(input_data, level, div, name):
             err["TIME_ERR_DIFF"] = True
         if ((level == 1)
             and (div in ['junior', 'walking'])
-            and (not validate_num_rooms(data['number_of_rooms_searched'],level))):
+            and (not validate_num_rooms(data['number_of_rooms_searched'], level))):
             err["ROOM_ERR"] = True
 
     # else validate every input
-    else: 
-        for p in input_params:
+    else:
+        for p in input_data:
             if p in data:
                 if p == 'name':
                     if not validate_name(data[p], name):

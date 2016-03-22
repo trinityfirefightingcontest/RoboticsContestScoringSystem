@@ -61,11 +61,3 @@ class RunParameters(object):
         ALL_CANDLES,
         VERSA_VALVE_USED
     ]
-
-    STRING_PARAMS = [
-        NAME,
-        SECONDS_JUDGE_1,
-        SECONDS_JUDGE_2,
-        NUM_ROOMS_SEARCHED,
-        WALL_CONTACT_CMS
-    ]
