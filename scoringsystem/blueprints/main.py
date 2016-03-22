@@ -82,28 +82,13 @@ def robot_detail(robot_id):
 @main.route('/robot/<robot_id>/addrun', methods=['GET', 'POST'])
 def robot_add_run(robot_id):
     robot = r.get_registry()['ROBOTS'].get_robot(robot_id)
-    runs = r.get_registry()['RUNS'].get_runs(robot_id)
 
     if not robot:
         return render_template("not_found.html")
 
+    all_runs = r.get_registry()['RUNS'].get_runs(robot_id)
     if request.method == 'GET':
         # get all previous runs
-        all_runs = r.get_registry()['RUNS'].get_runs(robot_id)
-        # get data from previous run
-        this_level_runs = r.get_registry()['RUNS'].get_runs_robot_level(robot['id'], robot['level'])
-
-        if this_level_runs:
-            last_run = this_level_runs[-1]
-
-            return render_template(
-                "run.html",
-                level_number=1,
-                robot=robot,
-                input=get_data_from_prev(last_run),
-                all_runs=all_runs
-            )
-
         return render_template(
             "run.html",
             level_number=1,
@@ -111,6 +96,7 @@ def robot_add_run(robot_id):
             input=request.args,
             all_runs=all_runs
         )
+<<<<<<< HEAD
     # For post request 
 
     # Database query for showing runs if the POST fails
@@ -126,9 +112,21 @@ def robot_add_run(robot_id):
     # if invalide input data
     err = validate_params(params_d, robot['level'], robot['division'], robot['name'])
     if len(err) > 0:
+=======
+    # For post request
+    params_d = bind_params(request.form, robot_id, robot['level'])
+
+    # if invalidate input data
+    err = validate_params(params_d,
+                          robot['level'],
+                          robot['division'],
+                          robot['name'])
+    if err:
+>>>>>>> 49642e2f76ae3cd56e918df388ea6a4159b160bc
         err['ERR'] = True
         params_and_errors = {}
-        params_and_errors.update(params_d)  # leave data already entered unchanged
+        params_and_errors.update(params_d)
+        # leave data already entered unchanged
         params_and_errors.update(err)  # include errors
         return render_template(
             "run.html",
@@ -140,13 +138,10 @@ def robot_add_run(robot_id):
 
     # calculate score
     score = get_score(robot, params_d)
-
     # convert dict values to tuple to prepare to insert to DB
     params_t = convert_to_tuple(params_d, robot_id, score)
-
     # insert into databse
     r.get_registry()['RUNS'].record_run(*params_t)
-
     return redirect(url_for('main.robot_detail', robot_id=robot_id))
 
 
@@ -311,7 +306,7 @@ def validate_params(input_data, level, div, name):
             err["TIME_ERR_DIFF"] = True
         if ((level == 1)
             and (div in ['junior', 'walking'])
-            and (not validate_num_rooms(data['number_of_rooms_searched'],level))):
+            and (not validate_num_rooms(data['number_of_rooms_searched'], level))):
             err["ROOM_ERR"] = True
 
     # else validate every input
