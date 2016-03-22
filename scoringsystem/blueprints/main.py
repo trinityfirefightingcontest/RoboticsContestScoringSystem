@@ -91,10 +91,10 @@ def robot_add_run(robot_id):
         # get all previous runs
         all_runs = r.get_registry()['RUNS'].get_runs(robot_id)
         # get data from previous run
-        runs = r.get_registry()['RUNS'].get_runs_robot_level(robot['id'], robot['level'])
+        this_level_runs = r.get_registry()['RUNS'].get_runs_robot_level(robot['id'], robot['level'])
 
-        if runs:
-            last_run = runs[-1]
+        if this_level_runs:
+            last_run = this_level_runs[-1]
 
             return render_template(
                 "run.html",
@@ -120,7 +120,7 @@ def robot_add_run(robot_id):
     params_d = bind_params(input_data, robot_id, robot['level'])
 
     # if invalide input data
-    err = validate_params(params_d, robot['level'], robot['name'])
+    err = validate_params(params_d, robot['level'], robot['division'], robot['name'])
     if len(err) > 0:
         err['ERR'] = True
         params_and_errors = {}
@@ -130,7 +130,8 @@ def robot_add_run(robot_id):
             "run.html",
             level_number=1,
             robot=robot,
-            input=params_and_errors
+            input=params_and_errors,
+            all_runs=all_runs
         )
 
     # calculate score
@@ -142,7 +143,7 @@ def robot_add_run(robot_id):
     # insert into databse
     r.get_registry()['RUNS'].record_run(*params_t)
 
-    return redirect(url_for('main.robot_detail', robot_id = robot_id))
+    return redirect(url_for('main.robot_detail', robot_id=robot_id))
 
 
 @main.route('/scoreboard', methods=['GET', 'POST'])
@@ -288,15 +289,27 @@ def to_int(input_s):
     return 0
 
 # validate input
-def validate_params(input_data, level, name):
+def validate_params(input_data, level, div, name):
     # create a dictionary out of input data
     data = dict(input_data)
 
     err = dict()
-    # if disqualified, only need to check for name
+    # if disqualified, need to check for name, AT and num of rooms
     if(data['run_disqualified']): 
         if not validate_name(data['name'], name):
             err['NAME_ERR'] = True
+        if not validate_actual_time(data['seconds_to_put_out_candle_1'],level, True):
+            err["TIME_ERR_1"] = True
+        if not validate_actual_time(data['seconds_to_put_out_candle_2'],level, True):
+            err["TIME_ERR_2"] = True
+        if not validate_actual_time_compare(data['seconds_to_put_out_candle_1'],
+                                            data['seconds_to_put_out_candle_2']):
+            err["TIME_ERR_DIFF"] = True
+        if ((level == 1)
+            and (div in ['junior', 'walking'])
+            and (not validate_num_rooms(data['number_of_rooms_searched'],level))):
+            err["ROOM_ERR"] = True
+
     # else validate every input
     else: 
         for p in input_params:
@@ -305,10 +318,10 @@ def validate_params(input_data, level, name):
                     if not validate_name(data[p], name):
                         err['NAME_ERR'] = True
                 elif p == 'seconds_to_put_out_candle_1':
-                    if not validate_actual_time(data[p],level):
+                    if not validate_actual_time(data[p],level, False):
                         err["TIME_ERR_1"] = True
                 elif p == 'seconds_to_put_out_candle_2':
-                    if not validate_actual_time(data[p],level):
+                    if not validate_actual_time(data[p],level, False):
                         err["TIME_ERR_2"] = True
                 elif p == 'number_of_rooms_searched':
                     if not validate_num_rooms(data[p], level):
@@ -322,9 +335,13 @@ def validate_params(input_data, level, name):
 def validate_name(name, robot_name):
     return name == robot_name
 
+def validate_actual_time_compare(time_j1, time_j2):
+    if time_j1.isdigit() and time_j2.isdigit():
+        return float(time_j1) == float(time_j2)
+    return False
 
 # valide actual time
-def validate_actual_time(time_s, level):
+def validate_actual_time(time_s, level, failed):
     # minimum and maximum time allowed for each level
     min_123 = 0  # minimum for any level
     max_1 = 180  # 3 minutes for level 1
@@ -345,29 +362,31 @@ def validate_actual_time(time_s, level):
     time = float(time_s)
 
     # validation for level 1
-    if ((level == 1)
-        and (time < min_123 or time > max_1)
-        and (time != fail_123)):
-
-        return False
+    if level == 1:
+        if failed and (time != fail_123):
+            return False;
+        elif (not failed) and  (time < min_123 or time > max_1):
+            return False
 
     # validation for level 2
-    elif ((level == 2)
-        and (time < min_123 or time > max_2)
-        and (time != fail_123)):
-
-        return False
+    elif level == 2:
+        if failed and (time != fail_123):
+            return False;
+        elif (not failed) and  (time < min_123 or time > max_2):
+            return False
 
     # validation for level 3
-    elif ((level == 3)
-        and (time < min_123 or time > max_3)
-        and (time != fail_123)
-        and (time != traversed_3)
-        and (time != found_baby_3)
-        and (time != picked_baby_3)):
+    elif level == 3:
+        if (failed
+            and (time != fail_123)
+            and (time != traversed_3)
+            and (time != found_baby_3)
+            and (time != picked_baby_3)):
 
-        return False
+            return False;
 
+        elif (not failed) and  (time < min_123 or time > max_3):
+            return False
     return True
 
 
@@ -391,7 +410,7 @@ def validate_num_rooms(num_s, level):
 def validate_wall_contact(num_s):
     # minimum and maximum allowed values
     min_123 = 0
-    max_123 = 250  # length of arena
+    max_123 = 500 # length of arena
 
     # check if input string is a number
     if not num_s.isdigit():

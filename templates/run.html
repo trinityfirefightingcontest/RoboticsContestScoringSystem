@@ -94,7 +94,7 @@
                                     <tr>
                                         <th>Run #</th>
                                         <th>Level</th>
-                                        <th>Disq?</th>
+                                        <th>Failed</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -129,7 +129,7 @@
                 </div>
                 <div class="col-xs-12 checkbox">
                     <label>
-                        <input type="checkbox" name="run_disqualified" {% if input['run_disqualified'] %} checked {% endif %}/>Robot could not put out the flame within the time limit.
+                        <input type="checkbox" name="run_disqualified" {% if input['run_disqualified'] %} checked {% endif %}/>Robot failed the trial or could not put out the flame within the time limit.
                     </label>
                 </div>
             </div>
@@ -139,7 +139,7 @@
                 </div>
                 <div class="col-xs-12 checkbox">
                     <label>
-                        <input type="checkbox" name="versa_valve_used" {% if input['versa_valve_used'] %} checked {% endif %}/>Robot uses Versa Valve.
+                        <input type="checkbox" name="versa_valve_used" {% if input['versa_valve_used'] %} checked {% endif %}/>Robot used Versa Valve.
                     </label>
                 </div>
             </div>
@@ -201,16 +201,19 @@
                 <div class="col-xs-12 col-lg-12">
                     <label>Seconds taken to put out candle:</label>
                 </div>
-                <div {% if input['TIME_ERR_1'] == True %} class="col-xs-3 col-lg-3 has-error" {% else %} class="col-xs-3 col-lg-3" {% endif %} >
+                <div {% if input['TIME_ERR_1'] or input['TIME_ERR_DIFF'] %} class="col-xs-3 col-lg-3 has-error" {% else %} class="col-xs-3 col-lg-3" {% endif %} >
                     <label>Judge 1:</label>
                     <input type="text" class="form-control" name="seconds_to_put_out_candle_1" value="{{ input['seconds_to_put_out_candle_1'] }}"/>
                     {% if input['TIME_ERR_1'] == True %}<label class="control-label">Invalid value</label> {% endif %}
                 </div>
-                <div {% if input['TIME_ERR_2'] == True %} class="col-xs-3 col-lg-3 has-error" {% else %} class="col-xs-3 col-lg-3" {% endif %} >
+                <div {% if input['TIME_ERR_2'] or input['TIME_ERR_DIFF'] %} class="col-xs-3 col-lg-3 has-error" {% else %} class="col-xs-3 col-lg-3" {% endif %} >
                     <label>Judge 2:</label>
                     <input type="text" class="form-control" name="seconds_to_put_out_candle_2" value="{{ input['seconds_to_put_out_candle_2'] }}"/>
                     {% if input['TIME_ERR_2'] == True %}<label class="control-label">Invalid value</label> {% endif %}
                 </div>
+                 <div {% if input['TIME_ERR_DIFF'] %} class="col-xs-12 col-lg-12 has-error" {% else %} class="col-xs-12 col-lg-12" {% endif %} >
+                    {% if input['TIME_ERR_DIFF'] == True %}<label class="control-label">If robot failed the trial, both judges should enter the same AT</label> {% endif %}
+                 </div>
             </div>
             {%- if robot['level'] in [1, 2] -%}
             <div class="row">
