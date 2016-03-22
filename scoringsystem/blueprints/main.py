@@ -12,10 +12,10 @@ from libraries.utilities.run_parameters import RunParameters
 main = Blueprint('main', __name__)
 
 
-@main.before_request
-def require_login():
-    if not AuthenticationUtilities.user_is_logged_in(session):
-        return redirect(url_for('auth.signin'))
+#@main.before_request
+#def require_login():
+#    if not AuthenticationUtilities.user_is_logged_in(session):
+#        return redirect(url_for('auth.signin'))
 
 
 @main.route('/', methods=['GET', 'POST'])
@@ -96,33 +96,24 @@ def robot_add_run(robot_id):
             input=request.args,
             all_runs=all_runs
         )
-<<<<<<< HEAD
     # For post request 
 
-    # Database query for showing runs if the POST fails
+    # Database query for showing past runs if the POST fails
 
     all_runs = r.get_registry()['RUNS'].get_runs(robot_id)
 
     # get data from html form
     input_data = request.form
-
-    # bind all paramters to associated values
-    params_d = bind_params(input_data, robot_id, robot['level'])
-
-    # if invalide input data
-    err = validate_params(params_d, robot['level'], robot['division'], robot['name'])
-    if len(err) > 0:
-=======
-    # For post request
+    
+    # if invalidate input data
     params_d = bind_params(request.form, robot_id, robot['level'])
 
-    # if invalidate input data
-    err = validate_params(params_d,
+    err = validate_params(params_d, 
                           robot['level'],
                           robot['division'],
                           robot['name'])
+       
     if err:
->>>>>>> 49642e2f76ae3cd56e918df388ea6a4159b160bc
         err['ERR'] = True
         params_and_errors = {}
         params_and_errors.update(params_d)
