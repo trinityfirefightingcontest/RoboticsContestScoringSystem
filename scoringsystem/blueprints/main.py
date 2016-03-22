@@ -111,7 +111,11 @@ def robot_add_run(robot_id):
             input=request.args,
             all_runs=all_runs
         )
-    # For post request
+    # For post request 
+
+    # Database query for showing runs if the POST fails
+
+    all_runs = r.get_registry()['RUNS'].get_runs(robot_id)
 
     # get data from html form
     input_data = request.form
@@ -312,7 +316,7 @@ def validate_params(input_data, level, div, name):
 
     # else validate every input
     else: 
-        for p in input_params:
+        for p in input_data:
             if p in data:
                 if p == 'name':
                     if not validate_name(data[p], name):

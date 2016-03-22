@@ -78,7 +78,23 @@
                             <div class="col-xs-6 hidden" id="furnitureLocationDiv">
                                 <img id="furnitureLocationImg" src="/static/img/_THUMBNAILS_/Furniture.Thumbnails/O1.png" height="300" width="300">
                             </div>
-                        </div>    
+                        </div>
+                        {% if robot['level'] == 3 %}
+                        <br>
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <div class="btn btn-lg btn-primary" id="baby-placement-but" role="button">Baby Placement: &raquo;</div>
+                            </div>
+                            <div class="col-xs-4 text-center">
+                            <h4 class="alert-info"><strong id="baby-placement">-</strong></h4>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-6 hidden" id="babyLocationDiv">
+                                <img id="babyLocationImg" src="/static/img/_THUMBNAILS_/Targets.Thumbnails/W1.png" height="300" width="300">
+                            </div>
+                        </div>
+                        {% endif %}    
                     </div>
                 </div>
             </div>
