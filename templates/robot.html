@@ -22,7 +22,7 @@
                 <thead class="thead-inverse">
                     <tr>
                         <th>#</th>
-                        <th>Disqualified</th>
+                        <th>Failed Trial</th>
                         <th>Level</th>
                         <th>Actual Time (AT)</th>
                         <th>Operating Modes(OM.x)</th>
@@ -52,7 +52,7 @@
     {% endif %}
 
     <div class="row">
-        {% if not disqualified and robot_runs|length != 5 %}
+        {% if not disqualified and robot_runs|length < 5 %}
             <a href="{{url_for('main.robot_add_run', robot_id=robot_id)}}">
                 <button class="btn btn-large btn-primary">Add Run</button>
             </a>
@@ -62,7 +62,7 @@
                 <input class="btn btn-large btn-primary" type="submit" value="Advance to Level {{ robot_level + 1 }} and Add Run"/>
             </form>
             {% endif %}
-        {% elif disqualified %}
+        {% elif robot_runs|length != 5 %}
             <span class="bg-info text-danger" id="disq-notice">Robot disqualified due to three successive failed attempts at Level {{robot_level}}</span>
         {% endif %}
     </div>
@@ -76,31 +76,19 @@
                         <tr>
                             <td>Lowest Socre Level 1:</td>
                             <td class="text-center">
-                                {% if 1 in scores.get('completed') %}
-                                    {{scores.get('LS1')}}</td>
-                                {% else %}
-                                    -
-                                {% endif %}
+                                {{scores.get('LS1')}}
                             </td>
                         </tr>
                         <tr>
                             <td>Lowest Socre Level 2:</td>
                             <td class="text-center">
-                                {% if 2 in scores.get('completed') %}
-                                    {{scores.get('LS2')}}</td>
-                                {% else %}
-                                    -
-                                {% endif %}
+                                {{scores.get('LS2')}}
                             </td>
                         </tr>
                         <tr>
                             <td>Lowest Socre Level 3:</td>
                             <td class="text-center">
-                                {% if 3 in scores.get('completed') %}
-                                    {{scores.get('LS3')}}</td>
-                                {% else %}
-                                    -
-                                {% endif %}
+                                {{scores.get('LS3')}}
                             </td>
                         </tr>
                         <tr>
