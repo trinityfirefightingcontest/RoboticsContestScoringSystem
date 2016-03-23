@@ -19,7 +19,7 @@ def run():
             'id': 'j-42',
             'volume': 345,
             'school': 'Taft',
-            'name': 'astrid',
+            'name': 'astrid2',
             'teammates': 3,
             'is_unique': True,
             'used_versa_valve': False,
@@ -126,7 +126,6 @@ def run():
             volume=data['volume'],
             school=data['school'],
             name=data['name'],
-            teammates=data['teammates'],
             is_unique=data['is_unique'],
             used_versa_valve=data['used_versa_valve'],
             level=data['level'],
@@ -144,7 +143,7 @@ def run():
     }
     versa_valve_map = {
         'yes, please ship one to me.': True,
-        'no, not at this time.  we will contact you if we change our mind.': (
+        'no, not at this time.  we will contact you if we change our mind.':
             False
     }
     fields_index = {
