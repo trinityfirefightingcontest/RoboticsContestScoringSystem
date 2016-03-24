@@ -21,8 +21,8 @@
     <script data-main="/static/js/main" src="/static/js/randomize.js"></script>
     <style type="text/css">
       body {
-        padding-top: 40px;
-        padding-bottom: 40px;
+        padding-top: 0px;
+        padding-bottom: 0px;
       }
       .content-wrapper {
         background-color: #fff;
@@ -89,9 +89,10 @@
 </head>
 <body>
     {% if not hide_nav %}
-      <div class="center"> <a href="{{ url_for('auth.sign_out') }}">Sign Out</a></div>
+    {% include 'nav_bar.html' %}
+<!--       <div class="center"> <a href="{{ url_for('auth.sign_out') }}">Sign Out</a></div>
       <div class="center"> <a href="{{ url_for('main.home') }}">Home</a></div>
-    {% endif %}
+ -->    {% endif %}
     {% block main_content %}
     {% endblock %}
 </body>
