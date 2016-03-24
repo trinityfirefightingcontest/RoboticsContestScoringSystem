@@ -15,92 +15,10 @@
         </div>
     </div>
     {% include 'robot_info.html' %}
-    <h4>Previous Runs</h4>
-    {% if robot_runs %}
-        <div class="row">
-            <table class="table table-striped">
-                <thead class="thead-inverse">
-                    <tr>
-                        <th>#</th>
-                        <th>Failed Trial</th>
-                        <th>Level</th>
-                        <th>Actual Time (AT)</th>
-                        <th>Operating Modes(OM.x)</th>
-                        <th>Penalty Points(PP)</th>
-                        <th>Room Factor</th>
-                        <th>Score</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {% for run in robot_runs %}
-                    <tr>
-                        <td>{{ loop.index }}</td>
-                        <td>{{ true if run.get('failed_trial') == 1 else false }}</td>
-                        <td>{{ run.get('level') }}</td>
-                        <td>{{ run.get('actual_time') if run.get('failed_trial') == 0 or run in [400,450,500] else 600}}</td>
-                        <td class="fixed-columns">{{ applied_factors[loop.index - 1].get('applied_oms') }}</td>
-                        <td class="fixed-columns">{{ applied_factors[loop.index - 1].get('applied_pp') }}</td>
-                        <td class="fixed-columns">{{ applied_factors[loop.index - 1].get('applied_rf') }}</td>
-                        <td>{{ run.get('score') }}</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
+    {% if robot['passed_inspection'] and robot['volume']!=0 %}
+        {% include 'robot_run_info.html' %}
     {% else %}
-        <h4 class="text-muted">No previous runs.</h4><br><br>
-    {% endif %}
-
-    <div class="row">
-        {% if not disqualified and robot_runs|length < 5 %}
-            <a href="{{url_for('main.robot_add_run', robot_id=robot_id)}}">
-                <button class="btn btn-large btn-primary">Add Run</button>
-            </a>
-            <br><br>
-            {% if robot['level'] in [1,2] and eligible%}
-            <form method="post">
-                <input class="btn btn-large btn-primary" type="submit" value="Advance to Level {{ robot['level'] + 1 }} and Add Run"/>
-            </form>
-            {% endif %}
-        {% elif robot_runs|length != 5 %}
-            <span class="bg-info text-danger" id="disq-notice">Robot disqualified due to three successive failed attempts at Level {{robot['level']}}</span>
-        {% endif %}
-    </div>
-
-    {% if robot_runs|length == 5 or disqualified %}
-        <h2>Total Final Score</h2>
-        <div class="row">
-            <div class="col-lg-4">
-                <table class="table table-striped">
-                    <tbody>
-                        <tr>
-                            <td>Lowest Socre Level 1:</td>
-                            <td class="text-center">
-                                {{best_scores.get('LS1')}}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Lowest Socre Level 2:</td>
-                            <td class="text-center">
-                                {{best_scores.get('LS2')}}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Lowest Socre Level 3:</td>
-                            <td class="text-center">
-                                {{best_scores.get('LS3')}}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Total Final Score:</td>
-                            <td class="text-center">
-                                {{total_score}}</td>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+        {% include 'robot_inspection_table_form.html' %}
     {% endif %}
 </div>
 {% endblock %}
