@@ -11,11 +11,11 @@
 <div class="container container-fluid">
     <div class="row">
         <div class="page-header">
-            <h1>{{robot_name}} (Level {{ robot_level}})</h1>
-            <h2>{{robot}}<h2>
+            <h3>{{robot['name']}} (Level {{ robot['level']}})</h3>
         </div>
     </div>
-    <h2>Previous Runs</h2>
+    {% include 'robot_info.html' %}
+    <h4>Previous Runs</h4>
     {% if robot_runs %}
         <div class="row">
             <table class="table table-striped">
@@ -57,13 +57,13 @@
                 <button class="btn btn-large btn-primary">Add Run</button>
             </a>
             <br><br>
-            {% if robot_level in [1,2] and eligible%}
+            {% if robot['level'] in [1,2] and eligible%}
             <form method="post">
-                <input class="btn btn-large btn-primary" type="submit" value="Advance to Level {{ robot_level + 1 }} and Add Run"/>
+                <input class="btn btn-large btn-primary" type="submit" value="Advance to Level {{ robot['level'] + 1 }} and Add Run"/>
             </form>
             {% endif %}
         {% elif robot_runs|length != 5 %}
-            <span class="bg-info text-danger" id="disq-notice">Robot disqualified due to three successive failed attempts at Level {{robot_level}}</span>
+            <span class="bg-info text-danger" id="disq-notice">Robot disqualified due to three successive failed attempts at Level {{robot['level']}}</span>
         {% endif %}
     </div>
 

@@ -64,13 +64,13 @@ def robot_detail(robot_id):
     best_scores, attempted_levels, total_score = (
         ScoreCalculator.get_best_scores(runs)
     )
+    print robot
     return render_template(
         "robot.html",
         attempted_levels=attempted_levels,
         total_score=total_score,
-        robot_name=robot['name'],
         robot_id=robot_id,
-        robot_level=robot['level'],
+        robot=robot,
         disqualified=eligibility['disqualified'],
         eligible=eligibility['can_level_up'],
         best_scores=best_scores,
@@ -91,7 +91,7 @@ def robot_add_run(robot_id):
         # get all previous runs
         return render_template(
             "run.html",
-            level_number=1,
+            level_number=robot['level'],
             robot=robot,
             input=request.args,
             all_runs=all_runs
@@ -112,7 +112,7 @@ def robot_add_run(robot_id):
         params_and_errors.update(err)  # include errors
         return render_template(
             "run.html",
-            level_number=1,
+            level_number=robot['level'],
             robot=robot,
             input=params_and_errors,
             all_runs=all_runs
@@ -210,17 +210,6 @@ def scoreboard(division):
         robots=sorted_robots,
         division=label
     )
-
-
-def get_data_from_prev(prev_run):
-    return {
-        'non_air': prev_run['non_air'],
-        'furniture': prev_run['furniture'],
-        'arbitrary_start': prev_run['arbitrary_start'],
-        'return_trip': prev_run['return_trip'],
-        'no_candle_circle': prev_run['candle_location_mode'],
-        'versa_valve_used': prev_run['used_versa_valve']
-    }
 
 
 # convert dict values to tuple to prepare to insert to DB
