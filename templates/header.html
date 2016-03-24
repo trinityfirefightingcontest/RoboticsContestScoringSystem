@@ -88,6 +88,10 @@
     {% endblock %}
 </head>
 <body>
+    {% if not hide_nav %}
+      <div class="center"> <a href="{{ url_for('auth.sign_out') }}">Sign Out</a></div>
+      <div class="center"> <a href="{{ url_for('main.home') }}">Home</a></div>
+    {% endif %}
     {% block main_content %}
     {% endblock %}
 </body>
