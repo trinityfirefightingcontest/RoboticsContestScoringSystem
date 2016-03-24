@@ -12,10 +12,10 @@ from libraries.utilities.run_parameters import RunParameters
 main = Blueprint('main', __name__)
 
 
-@main.before_request
-def require_login():
-    if not AuthenticationUtilities.user_is_logged_in(session):
-        return redirect(url_for('auth.signin'))
+#@main.before_request
+#def require_login():
+#    if not AuthenticationUtilities.user_is_logged_in(session):
+#        return redirect(url_for('auth.signin'))
 
 
 @main.route('/', methods=['GET', 'POST'])
@@ -482,8 +482,8 @@ def applied_factors(run_id, robot_id):
             applied_oms += 'Task.position:-30\n' if run_data.get('stopped_within_circle', 0) == 1 else ''
     else:
         applied_pp += 'PP.candle=50\n' if run_data.get('touched_candle', 0) == 1 else ''
-        if run_data.get('slide', 0) > 0:
-            applied_pp += 'PP.slide=%d cm/2\n' % (run_data.get('cont_wall_contact', 0)) == 1
+        if run_data.get('cont_wall_contact', 0) > 0:
+            applied_pp += 'PP.slide=%dcm/2\n' % (run_data.get('cont_wall_contact', 0))
         applied_pp += 'PP.dog=50\n' if run_data.get('kicked_dog', 0) == 1 else ''
 
         if run_level == 1:
