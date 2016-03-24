@@ -282,7 +282,7 @@ def validate_params(input_data, level, div, name):
 
     # else validate every input
     else:
-        for p in input_data:
+        for p in RunParameters.ALL:
             if p in data:
                 if p == 'name':
                     if not validate_name(data[p], name):
@@ -363,7 +363,7 @@ def validate_actual_time(time_s, level, failed):
 # validate number of rooms
 def validate_num_rooms(num_s, level):
     # minimum and maximum allowed values
-    min_123 = 1
+    min_123 = 0
     max_123 = 4
 
     # check if input string is a number
@@ -398,7 +398,7 @@ def bind_params(input_data, id, level):
     args['level'] = level
     for p in RunParameters.ALL:
         if p in RunParameters.BOOLEANS:
-            args[p] = bool(args.get(p))
+            args[p] = bool(data.get(p))
         else:
             # data dict is of form {key:value}
             # where value is of form [u'str']
