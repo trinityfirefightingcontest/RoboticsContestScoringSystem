@@ -13,7 +13,7 @@
     <form method="post">
     <div class="row">
         <div class="page-header">
-            <h1>Add Run: {{robot['name']}} (Level {{ robot['level'] }})</h1>
+            <h3>Add Run: <a href="{{ url_for('main.robot_detail', robot_id=robot['id']) }}">{{robot['name']}} (Level {{ robot['level'] }})</a></h3>
         </div>
     </div>
     <div class="container container-fluid">
@@ -141,7 +141,7 @@
             </div>
             <div class="row">
                 <div class="col-xs-12 col-lg-12">
-                    <h2>Run Disqualified:</h2>
+                    <h4>Run Disqualified:</h4>
                 </div>
                 <div class="col-xs-12 checkbox">
                     <label>
@@ -151,7 +151,7 @@
             </div>
             <div class="row">
                 <div class="col-xs-12 col-lg-12">
-                    <h2>Versa Valve Option:</h2>
+                    <h4>Versa Valve Option:</h4>
                 </div>
                 <div class="col-xs-12 checkbox">
                     <label>
@@ -162,7 +162,7 @@
             {% if robot['division'] in ['junior', 'walking'] and robot['level']==1 %}
             <div class="row">
                 <div class="col-xs-12 col-lg-12">
-                    <h2>Special deduction for Level 1 Junior and Walking divison:</h2>
+                    <h4>Special deduction for Level 1 Junior and Walking divison:</h4>
                 </div>
                 <div class="col-xs-12 checkbox">
                     <label>
@@ -179,7 +179,7 @@
             {%- if robot['level'] in [1, 2] -%}
             <div class="row">
                 <div class="col-xs-12 col-lg-12">
-                    <h2>Operating Mode Deductions:</h2>
+                    <h4>Operating Mode Deductions:</h4>
                 </div>
                 <div class="col-xs-12 checkbox">
                     <label>
@@ -212,7 +212,7 @@
             {% endif %}
             <div class="row">
                 <div class="col-xs-12 col-lg-12">
-                    <h2>Actual Time:</h2>
+                    <h4>Actual Time:</h4>
                 </div>
                 <div class="col-xs-12 col-lg-12">
                     <label>Seconds taken to put out candle:</label>
@@ -234,7 +234,7 @@
             {%- if robot['level'] in [1, 2] -%}
             <div class="row">
                 <div class="col-xs-12 col-lg-12">
-                    <h2>Room Factor:</h2>
+                    <h4>Room Factor:</h4>
                 </div>
                 <div {% if input['ROOM_ERR'] == True %} class="col-xs-6 col-lg-6 has-error" {% else %} class="col-xs-6 col-lg-6 " {% endif %} >
                     <label>Number of rooms searched:</label>
@@ -246,7 +246,7 @@
             {%- if robot['level'] == 3 -%}
             <div class="row">
                 <div class="col-xs-12 col-lg-12">
-                    <h2>Level 3 Reductions:</h2>
+                    <h4>Level 3 Reductions:</h4>
                 </div>
                 <div class="col-xs-12 checkbox">
                     <label>
@@ -267,7 +267,7 @@
             {% endif %}
             <div class="row">
                 <div class="col-xs-12 col-lg-12">
-                    <h2>Penalty Points:</h2>
+                    <h4>Penalty Points:</h4>
                 </div>
                 <div class="col-xs-12 checkbox">
                     <label>

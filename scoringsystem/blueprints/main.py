@@ -9,6 +9,9 @@ from libraries.utilities.authentication import AuthenticationUtilities
 from libraries.utilities.level_progress_handler import LevelProgressHandler
 from libraries.utilities.score_calculator import ScoreCalculator
 from libraries.utilities.run_parameters import RunParameters
+from libraries.utilities.robot_inspection_table_handler import (
+    RobotInspectionTableHandler
+)
 main = Blueprint('main', __name__)
 
 
@@ -34,24 +37,38 @@ def schedule():
     return render_template("schedule.html")
 
 
+@main.route('/rit_inspection_approval/<robot_id>', methods=['POST'])
+def rit_inspection_approval(robot_id):
+    valid, inputs = RobotInspectionTableHandler.validate_inputs(request.form)
+    if valid:
+        RobotInspectionTableHandler.approve_and_store_volume(
+            inputs[RobotInspectionTableHandler.HEIGHT],
+            inputs[RobotInspectionTableHandler.WIDTH],
+            inputs[RobotInspectionTableHandler.BREADTH],
+            robot_id
+        )
+    return robot_detail(robot_id=robot_id, inputs=inputs)
+
+
 @main.route('/not_found', methods=['GET', 'POST'])
 def not_found():
     return render_template("not_found.html")
 
 
+@main.route('/robot/<robot_id>', methods=['POST'])
+def advance_level(robot_id):
+    robot = r.get_registry()['ROBOTS'].get_robot(robot_id)
+    # also make sure that the level that it need to moved
+    # to is sent from the html.
+    r.get_registry()['ROBOTS'].advance_level(robot_id, robot['level'])
+    return redirect(url_for('main.robot_add_run', robot_id=robot_id))
+
+
 @main.route('/robot/<robot_id>', methods=['GET', 'POST'])
-def robot_detail(robot_id):
+def robot_detail(robot_id, inputs=None):
     robot = r.get_registry()['ROBOTS'].get_robot(robot_id)
     if not robot:
         return render_template("not_found.html")
-
-    # if POST advance robot's level and redirect to add run page
-    if request.method == 'POST':
-        # TODO: Please use a different url for this.
-        # also make sure that the level that it need to moved
-        # to is sent from the html.
-        r.get_registry()['ROBOTS'].advance_level(robot_id, robot['level'])
-        return redirect(url_for('main.robot_add_run', robot_id=robot_id))
 
     runs = r.get_registry()['RUNS'].get_runs(robot_id)
     run_levels = [run['id'] for run in runs]
@@ -68,14 +85,14 @@ def robot_detail(robot_id):
         "robot.html",
         attempted_levels=attempted_levels,
         total_score=total_score,
-        robot_name=robot['name'],
         robot_id=robot_id,
-        robot_level=robot['level'],
+        robot=robot,
         disqualified=eligibility['disqualified'],
         eligible=eligibility['can_level_up'],
         best_scores=best_scores,
         robot_runs=runs,
-        applied_factors=[applied_factors(id, robot_id) for id in run_levels]
+        applied_factors=[applied_factors(id, robot_id) for id in run_levels],
+        inputs=inputs
     )
 
 
@@ -91,7 +108,7 @@ def robot_add_run(robot_id):
         # get all previous runs
         return render_template(
             "run.html",
-            level_number=1,
+            level_number=robot['level'],
             robot=robot,
             input=request.args,
             all_runs=all_runs
@@ -121,7 +138,7 @@ def robot_add_run(robot_id):
         params_and_errors.update(err)  # include errors
         return render_template(
             "run.html",
-            level_number=1,
+            level_number=robot['level'],
             robot=robot,
             input=params_and_errors,
             all_runs=all_runs
@@ -171,7 +188,7 @@ def export_to_csv():
         sorted_robots = sorted(list(sorted_robots), key=lambda k: k['TFS'])
 
         for index, sorted_r in enumerate(sorted_robots, start=1):
-            cw.writerow([index, sorted_r['division'], sorted_r['name'],sorted_r['LS1'], sorted_r['LS2'], sorted_r['LS3'], sorted_r['TFS']])
+            cw.writerow([index, sorted_r['division'], sorted_r['name'], sorted_r['LS1'], sorted_r['LS2'], sorted_r['LS3'], sorted_r['TFS']])
 
         cw.writerow('\n')
 
@@ -219,17 +236,6 @@ def scoreboard(division):
         robots=sorted_robots,
         division=label
     )
-
-
-def get_data_from_prev(prev_run):
-    return {
-        'non_air': prev_run['non_air'],
-        'furniture': prev_run['furniture'],
-        'arbitrary_start': prev_run['arbitrary_start'],
-        'return_trip': prev_run['return_trip'],
-        'no_candle_circle': prev_run['candle_location_mode'],
-        'versa_valve_used': prev_run['used_versa_valve']
-    }
 
 
 # convert dict values to tuple to prepare to insert to DB

@@ -112,3 +112,15 @@ class Robots(object):
             'robot_id': robot_id
         }
         return r.get_registry()['MY_SQL'].insert(query, data)
+
+    @staticmethod
+    def approve_and_store_volume(robot_id, volume):
+        query = """UPDATE robots SET volume = %(volume)s,
+            passed_inspection = %(passed_inspection)s
+            where id = %(robot_id)s;"""
+        data = {
+            'volume': volume,
+            'robot_id': robot_id,
+            'passed_inspection': True
+        }
+        return r.get_registry()['MY_SQL'].insert(query, data)

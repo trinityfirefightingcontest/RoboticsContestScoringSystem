@@ -30,7 +30,9 @@ def sign_out():
 
 @authentication.route('/', methods=['GET', 'POST'])
 def signin():
-    return render_template("signin.html")
+    return render_template(
+        "signin.html", hide_nav=True
+    )
 
 
 def _get_web_server_flow():
