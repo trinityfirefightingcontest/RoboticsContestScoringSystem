@@ -257,7 +257,7 @@ def convert_to_tuple(dic, robot_id, score):
     l.append(dic['candle_detected'])
     l.append(to_int(dic['number_of_rooms_searched']))
     l.append(dic['kicked_dog'])
-    l.append(dic['touched_candle'])
+    l.append(to_int(dic['touched_candle']))
     l.append(to_int(dic['wall_contact_cms']))
     l.append(dic['ramp_used'])
     l.append(dic['baby_relocated'])
@@ -301,19 +301,16 @@ def validate_params(input_data, level, div, name):
         if not validate_actual_time_compare(data['seconds_to_put_out_candle_1'],
                                             data['seconds_to_put_out_candle_2']):
             err["TIME_ERR_DIFF"] = True
+        if not validate_touched_candle(data['touched_candle']):
+            err["CANDLE_ERR"] = True
         if ((level == 1)
             and (div in ['junior', 'walking'])
             and (not validate_num_rooms(data['number_of_rooms_searched'], level))):
             err["ROOM_ERR"] = True
 
     # else validate every input
-<<<<<<< HEAD
-    else: 
-        for p in input_data:
-=======
     else:
         for p in RunParameters.ALL:
->>>>>>> 08979f9ab9ee8a8b48269d37acbfd9b1c4687270
             if p in data:
                 if p == 'name':
                     if not validate_name(data[p], name):
@@ -330,6 +327,9 @@ def validate_params(input_data, level, div, name):
                 elif p == 'wall_contact_cms':
                     if not validate_wall_contact(data[p]):
                         err["WALL_ERR"] = True
+                elif p == 'touched_candle':
+                    if not validate_touched_candle(data[p]):
+                        err["CANDLE_ERR"] = True
     return err
 
 
@@ -419,6 +419,13 @@ def validate_wall_contact(num_s):
 
     return (int(num_s) >= min_123) and (int(num_s) <= max_123)
 
+#validate touched_candle 
+def validate_touched_candle(num_s):
+    # Just check if it's digit for now
+    if not num_s.isdigit():
+        return False
+    else:
+        return True
 
 # creates a dictionary out of data entered for new run
 def bind_params(input_data, id, level):
@@ -454,7 +461,7 @@ def get_score(robot, data):
         data['candle_detected'],
         to_int(data['number_of_rooms_searched']),
         data['kicked_dog'],
-        data['touched_candle'],
+        to_int(data['touched_candle']),
         to_int(data['wall_contact_cms']),
         data['ramp_used'],
         data['baby_relocated'],
@@ -487,7 +494,8 @@ def applied_factors(run_id, robot_id):
             applied_oms += 'Task.detect:-30\n' if run_data.get('signaled_detection', 0) == 1 else ''
             applied_oms += 'Task.position:-30\n' if run_data.get('stopped_within_circle', 0) == 1 else ''
     else:
-        applied_pp += 'PP.candle=50\n' if run_data.get('touched_candle', 0) == 1 else ''
+        if run_data.get('touched_candle', 0) > 0:
+            applied_pp += 'PP.candle=%d\n' % (run_data.get('touched_candle', 0) * 50)
         if run_data.get('cont_wall_contact', 0) > 0:
             applied_pp += 'PP.slide=%dcm/2\n' % (run_data.get('cont_wall_contact', 0))
         applied_pp += 'PP.dog=50\n' if run_data.get('kicked_dog', 0) == 1 else ''
