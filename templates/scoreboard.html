@@ -21,10 +21,11 @@
 					<tr>
 						<th>Rank</th>
 						<th>Name</th>
+						<th># of Runs</th>
 						<th>Current Level</th>
-						<th>Lower Score Level 1</th>
-						<th>Lower Score Level 2</th>
-						<th>Lower Score Level 3</th>
+						<th>Lowest Score Level 1</th>
+						<th>Lowest Score Level 2</th>
+						<th>Lowest Score Level 3</th>
 						<th>Total Final Score</th>
 					</tr>
 				</thead>
@@ -33,6 +34,7 @@
 					<tr>
 						<td>{{ loop.index }}</td>
 						<td><a href="{{url_for('main.robot_detail', robot_id=robot['id'])}}">{{ robot.get('name') }}</a></td>
+						<td>{{ robot.get('num_runs') }}
 						<td>{{ robot.get('level') }}</td>
 						<td>{{ robot.get('LS1') }}</td>
 						<td>{{ robot.get('LS2') }}</td>

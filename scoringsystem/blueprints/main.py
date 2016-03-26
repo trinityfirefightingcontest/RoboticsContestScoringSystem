@@ -108,8 +108,8 @@ def robot_add_run(robot_id):
         # get all previous runs
         return render_template(
             "run.html",
-            level_number=robot['level'],
             robot=robot,
+            division = get_division_label(robot['division']),
             input=request.args,
             all_runs=all_runs
         )
@@ -138,8 +138,8 @@ def robot_add_run(robot_id):
         params_and_errors.update(err)  # include errors
         return render_template(
             "run.html",
-            level_number=robot['level'],
             robot=robot,
+            division = get_division_label(robot['division']),
             input=params_and_errors,
             all_runs=all_runs
         )
@@ -216,20 +216,14 @@ def scoreboard(division):
         robot['TFS'] = total_score
         # calculate lowes scores for each level and TFS, returns tuple
         robot['completed'] = attempted_levels
+        robot['num_runs'] = len(runs)
 
     # sort based on name then total score
     sorted_robots = sorted(list(robots), key=lambda k: k['name'])
     sorted_robots = sorted(list(sorted_robots), key=lambda k: k['TFS'])
 
     # page header label
-    if division == 'junior':
-        label = "Junior Division"
-    elif division == 'walking':
-        label = "Walking Division"
-    elif division == 'high_school':
-        label = "High School Division"
-    else:
-        label = "Senior Division"
+    label = get_division_label(division)
 
     return render_template(
         "scoreboard.html",
@@ -267,6 +261,17 @@ def convert_to_tuple(dic, robot_id, score):
     l.append(robot_id)
 
     return tuple(l)
+
+def get_division_label(division):
+    # page header label
+    if division == 'junior':
+        return "Junior Division"
+    elif division == 'walking':
+        return "Walking Division"
+    elif division == 'high_school':
+        return "High School Division"
+    else:
+        return "Senior Division"
 
 # convert string to float
 def to_float(input_s):
