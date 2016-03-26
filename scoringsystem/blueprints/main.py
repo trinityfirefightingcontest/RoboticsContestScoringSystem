@@ -307,13 +307,8 @@ def validate_params(input_data, level, div, name):
             err["ROOM_ERR"] = True
 
     # else validate every input
-<<<<<<< HEAD
-    else: 
-        for p in input_data:
-=======
     else:
         for p in RunParameters.ALL:
->>>>>>> 08979f9ab9ee8a8b48269d37acbfd9b1c4687270
             if p in data:
                 if p == 'name':
                     if not validate_name(data[p], name):
