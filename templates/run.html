@@ -10,10 +10,10 @@
 {% endblock %}
 {% block main_content %}
 <div class="container container-fluid">
-    <form method="post">
+    <form method="post" onsubmit="return confirm_newrun();">
     <div class="row">
         <div class="page-header">
-            <h3>Add Run: <a href="{{ url_for('main.robot_detail', robot_id=robot['id']) }}">{{robot['name']}} (Level {{ robot['level'] }})</a></h3>
+            <h3>Add Run: <a href="{{ url_for('main.robot_detail', robot_id=robot['id']) }}">{{robot['name']}} (Level {{ robot['level'] }}, {{ division }})</a></h3>
         </div>
     </div>
     <div class="container container-fluid">
@@ -94,7 +94,7 @@
                                     <tr>
                                         <th>Run #</th>
                                         <th>Level</th>
-                                        <th>Failed</th>
+                                        <th>Succeeded?</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -102,7 +102,7 @@
                                     <tr>
                                         <td>{{ loop.index }}</td>
                                         <td>{{ run.get('level') }}</td>
-                                        <td>{{ true if run.get('failed_trial') == 1 else false }}</td>
+                                        <td>{{ "Falied" if run.get('failed_trial') == 1 else "Succeeded" }}</td>
                                     </tr>
                                 {% endfor %}
                                 </tbody>
