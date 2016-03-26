@@ -12,7 +12,9 @@ redis_db = 9
 ALLOWED_ADMINS = [
     'adamtnorton@gmail.com',
     'binay150@gmail.com',
-    'david.Ahlgren@trincoll.edu'
+    'david.Ahlgren@trincoll.edu',
+    'imanabasileal@gmail.com',
+    'aba1731@gmail.com'
 ]
 
 CLIENT_ID = '904731183016-rhpk64herjjr80mgufhmghs9f88c57v7.apps.googleusercontent.com'  # NOQA
