@@ -15,10 +15,10 @@ from libraries.utilities.robot_inspection_table_handler import (
 main = Blueprint('main', __name__)
 
 
-#@main.before_request
-#def require_login():
-#    if not AuthenticationUtilities.user_is_logged_in(session):
-#        return redirect(url_for('auth.signin'))
+@main.before_request
+def require_login():
+    if not AuthenticationUtilities.user_is_logged_in(session):
+        return redirect(url_for('auth.signin'))
 
 
 @main.route('/', methods=['GET', 'POST'])
@@ -70,7 +70,7 @@ def advance_level(robot_id):
         r.get_registry()['ROBOTS'].advance_level(robot_id, robot['level'])
         return redirect(url_for('main.robot_add_run', robot_id=robot_id))
 
-    return "Robot not eligible to advnace to next level.\n"
+    return "Robot not eligible to advance to next level.\n"
 
 
 @main.route('/robot/<robot_id>', methods=['GET', 'POST'])
