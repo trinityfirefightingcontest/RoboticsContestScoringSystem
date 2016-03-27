@@ -10,10 +10,11 @@ redis_host = 'localhost'
 redis_port = 6379
 redis_db = 9
 ALLOWED_ADMINS = [
-    'adamtnorton@gmail.com',
     'binay150@gmail.com',
     'david.Ahlgren@trincoll.edu',
-    'fsd@acm.org'
+    'fsd@acm.org',
+    'imanabasileal@gmail.com',
+    'aba1731@gmail.com'
 ]
 
 CLIENT_ID = '904731183016-rhpk64herjjr80mgufhmghs9f88c57v7.apps.googleusercontent.com'  # NOQA
