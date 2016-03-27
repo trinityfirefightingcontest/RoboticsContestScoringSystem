@@ -8,9 +8,9 @@
 {% endblock %}
 {% block main_content %}
 <div class="container container-fluid">
-    <div class="row">
+    <div class="row text-center">
         <div class="page-header">
-            <h1>{{division}} Scoreboard</h1>
+            <h1>{{scoreboard_name}} Scoreboard</h1>
         </div>
     </div>
 
@@ -21,7 +21,7 @@
 					<tr>
 						<th>Rank</th>
 						<th>Name</th>
-						<th># of Runs</th>
+						<th># of Successful Runs</th>
 						<th>Current Level</th>
 						<th>Lowest Score Level 1</th>
 						<th>Lowest Score Level 2</th>
@@ -34,7 +34,7 @@
 					<tr>
 						<td>{{ loop.index }}</td>
 						<td><a href="{{url_for('main.robot_detail', robot_id=robot['id'])}}">{{ robot.get('name') }}</a></td>
-						<td>{{ robot.get('num_runs') }}
+						<td>{{ robot.get('num_successful') }}
 						<td>{{ robot.get('level') }}</td>
 						<td>{{ robot.get('LS1') }}</td>
 						<td>{{ robot.get('LS2') }}</td>
