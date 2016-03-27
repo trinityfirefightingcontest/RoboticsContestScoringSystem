@@ -58,10 +58,19 @@ def not_found():
 @main.route('/robot/<robot_id>', methods=['POST'])
 def advance_level(robot_id):
     robot = r.get_registry()['ROBOTS'].get_robot(robot_id)
-    # also make sure that the level that it need to moved
-    # to is sent from the html.
-    r.get_registry()['ROBOTS'].advance_level(robot_id, robot['level'])
-    return redirect(url_for('main.robot_add_run', robot_id=robot_id))
+
+    if not robot:
+        return render_template("not_found.html")
+
+    runs = r.get_registry()['RUNS'].get_runs(robot_id)
+
+    eligible = LevelProgressHandler.get_eligibility_for_next_run(runs, robot['level'])
+
+    if eligible.get('can_level_up') and not eligible['disqualified']:
+        r.get_registry()['ROBOTS'].advance_level(robot_id, robot['level'])
+        return redirect(url_for('main.robot_add_run', robot_id=robot_id))
+
+    return "Robot not eligible to advnace to next level.\n"
 
 
 @main.route('/robot/<robot_id>', methods=['GET', 'POST'])
@@ -78,7 +87,7 @@ def robot_detail(robot_id, inputs=None):
         runs, robot['level']
     )
     # get current best scores
-    best_scores, attempted_levels, total_score = (
+    best_scores, attempted_levels, total_score, num_successful = (
         ScoreCalculator.get_best_scores(runs)
     )
     return render_template(
@@ -199,38 +208,103 @@ def export_to_csv():
     return output
 
 
-@main.route('/scoreboard/<division>', methods=['GET', 'POST'])
-def scoreboard(division):
+@main.route('/scoreboard/brd/<division>', methods=['GET', 'POST'])
+def scoreboard_brd(division):
     robots = r.get_registry()['ROBOTS'].get_all_robots_division(division)
 
     if not robots:
         return render_template("not_found.html")
 
-    # get score for each level and total score
-    for robot in robots:
-        runs = r.get_registry()['RUNS'].get_runs(robot['id'])
-        best_scores, attempted_levels, total_score = (
-            ScoreCalculator.get_best_scores(runs)
-        )
-        robot.update(best_scores)
-        robot['TFS'] = total_score
-        # calculate lowes scores for each level and TFS, returns tuple
-        robot['completed'] = attempted_levels
-        robot['num_runs'] = len(runs)
+    # add additional parameters to be displayed on scoreboard
+    robots = add_scoreboard_params(robots)
 
     # sort based on name then total score
     sorted_robots = sorted(list(robots), key=lambda k: k['name'])
     sorted_robots = sorted(list(sorted_robots), key=lambda k: k['TFS'])
 
-    # page header label
-    label = get_division_label(division)
+    return render_template(
+            "scoreboard_brd_gpmp.html",
+            robots=sorted_robots,
+            scoreboard_name=get_division_label(division)
+        )
+
+@main.route('/scoreboard/gpmp', methods=['GET', 'POST'])
+def scoreboard_gpmp():
+    robots = r.get_registry()['ROBOTS'].get_all_robots()
+
+    if not robots:
+        return render_template("not_found.html")
+
+    # add additional parameters to be displayed on scoreboard
+    robots = add_scoreboard_params(robots)
+
+    # sort based on name then total score
+    sorted_robots = sorted(list(robots), key=lambda k: k['name'])
+    sorted_robots = sorted(list(sorted_robots), key=lambda k: k['TFS'])
+
 
     return render_template(
-        "scoreboard.html",
+        "scoreboard_brd_gpmp.html",
         robots=sorted_robots,
-        division=label
+        scoreboard_name="Grand Performance"
     )
 
+@main.route('/scoreboard/lisp/<level>', methods=['GET', 'POST'])
+def scoreboard_lisp(level):
+    if not level.isdigit():
+        return render_template("not_found.html")
+    if int(level) not in [1,2,3]:
+        return render_template("not_found.html")
+
+    robots = r.get_registry()['ROBOTS'].get_all_robots()
+
+    if not robots:
+        return render_template("not_found.html")
+
+    # add additional parameters to be displayed on scoreboard
+    robots = add_scoreboard_params(robots)
+
+    # filter robots
+    filtered_robots = filter_robots(robots, int(level))
+
+    # key used for sorting
+    score_name = "LS" + level
+
+    # sort based on name then this level's lowest score
+    sorted_robots = sorted(list(filtered_robots), key=lambda k: k['name'])
+    sorted_robots = sorted(list(sorted_robots), key=lambda k: k[score_name])
+
+    return render_template(
+        "scoreboard_lisp.html",
+        robots=sorted_robots,
+        level=level,
+        score_name=score_name
+    )
+
+# adds necessary parameters to be displayed on the scoreboard
+def add_scoreboard_params(robots):
+    for robot in robots:
+        runs = r.get_registry()['RUNS'].get_runs(robot['id'])
+        best_scores, attempted_levels, total_score, num_successful = (
+            ScoreCalculator.get_best_scores(runs)
+        )
+        robot.update(best_scores)
+        robot['TFS'] = total_score
+        robot['completed'] = attempted_levels
+        robot['num_successful'] = num_successful
+
+    return robots
+
+# filter robots that should be shown on scoreboard
+def filter_robots(robots, level):
+    if level == 1:
+        filtered = [robot for robot in robots if 1 in robot['completed'] and 2 not in robot['completed']]
+    elif level == 2:
+        filtered = [robot for robot in robots if 2 in robot['completed']]
+    else:
+        filtered = [robot for robot in robots if 3 in robot['completed']]
+
+    return filtered
 
 # convert dict values to tuple to prepare to insert to DB
 def convert_to_tuple(dic, robot_id, score):
