@@ -58,10 +58,19 @@ def not_found():
 @main.route('/robot/<robot_id>', methods=['POST'])
 def advance_level(robot_id):
     robot = r.get_registry()['ROBOTS'].get_robot(robot_id)
-    # also make sure that the level that it need to moved
-    # to is sent from the html.
-    r.get_registry()['ROBOTS'].advance_level(robot_id, robot['level'])
-    return redirect(url_for('main.robot_add_run', robot_id=robot_id))
+
+    if not robot:
+        return render_template("not_found.html")
+
+    runs = r.get_registry()['RUNS'].get_runs(robot_id)
+
+    eligible = LevelProgressHandler.get_eligibility_for_next_run(runs, robot['level'])
+
+    if eligible.get('can_level_up') and not eligible['disqualified']:
+        r.get_registry()['ROBOTS'].advance_level(robot_id, robot['level'])
+        return redirect(url_for('main.robot_add_run', robot_id=robot_id))
+
+    return "Robot not eligible to advnace to next level.\n"
 
 
 @main.route('/robot/<robot_id>', methods=['GET', 'POST'])
