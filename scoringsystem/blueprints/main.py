@@ -5,6 +5,7 @@ from flask import (
 import registry as r
 import StringIO
 import csv
+import logging
 from libraries.utilities.authentication import AuthenticationUtilities
 from libraries.utilities.level_progress_handler import LevelProgressHandler
 from libraries.utilities.score_calculator import ScoreCalculator
@@ -15,10 +16,10 @@ from libraries.utilities.robot_inspection_table_handler import (
 main = Blueprint('main', __name__)
 
 
-#@main.before_request
-#def require_login():
-#    if not AuthenticationUtilities.user_is_logged_in(session):
-#        return redirect(url_for('auth.signin'))
+@main.before_request
+def require_login():
+    if not AuthenticationUtilities.user_is_logged_in(session):
+        return redirect(url_for('auth.signin'))
 
 
 @main.route('/', methods=['GET', 'POST'])
@@ -118,27 +119,24 @@ def robot_add_run(robot_id):
         return render_template(
             "run.html",
             robot=robot,
-            division = get_division_label(robot['division']),
+            division=get_division_label(robot['division']),
             input=request.args,
             all_runs=all_runs
         )
-    # For post request 
+    # For post request
 
     # Database query for showing past runs if the POST fails
 
     all_runs = r.get_registry()['RUNS'].get_runs(robot_id)
 
-    # get data from html form
-    input_data = request.form
-    
     # if invalidate input data
     params_d = bind_params(request.form, robot_id, robot['level'])
 
-    err = validate_params(params_d, 
+    err = validate_params(params_d,
                           robot['level'],
                           robot['division'],
                           robot['name'])
-       
+
     if err:
         err['ERR'] = True
         params_and_errors = {}
@@ -148,7 +146,7 @@ def robot_add_run(robot_id):
         return render_template(
             "run.html",
             robot=robot,
-            division = get_division_label(robot['division']),
+            division=get_division_label(robot['division']),
             input=params_and_errors,
             all_runs=all_runs
         )
