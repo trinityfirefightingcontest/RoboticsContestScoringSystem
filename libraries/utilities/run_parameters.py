@@ -55,7 +55,6 @@ class RunParameters(object):
         STOPPED_WITHIN_30,
         CANDLE_DETECTED,
         KICKED_DOG,
-        TOUCHED_CANDLE,
         RAMP_USED,
         BABY_RELOCATED,
         ALL_CANDLES,

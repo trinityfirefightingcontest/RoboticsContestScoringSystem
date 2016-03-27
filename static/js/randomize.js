@@ -25,6 +25,11 @@ function furniture_loc() {
     return arr[Math.floor(Math.random()*arr.length)]; 
 }
 
+function baby_placement_loc() {
+    var arr = ["W1", "W2", "W3", "W4"];
+    return arr[Math.floor(Math.random()*arr.length)];
+}
+
 function puppy_img(id) {
     var dict = {
         'A': '/static/img/_THUMBNAILS_/Dogs.Thumbnails/dog1.png',
@@ -82,6 +87,16 @@ function furniture_img(id) {
     return dict[id];
 }
 
+function baby_loc_img(id) {
+    var dict = {
+        'W1': '/static/img/_THUMBNAILS_/Targets.Thumbnails/W1.png',
+        'W2': '/static/img/_THUMBNAILS_/Targets.Thumbnails/W2.png',
+        'W3': '/static/img/_THUMBNAILS_/Targets.Thumbnails/W3.png',
+        'W4': '/static/img/_THUMBNAILS_/Targets.Thumbnails/W4.png'
+    }
+
+    return dict[id];
+}
 
 $(document).ready(function() {
     $('#candle-but').on('click', function (e) {
@@ -119,5 +134,12 @@ $(document).ready(function() {
         $('#furnitureLocationDiv').removeClass('hidden');
         $('#furnitureLocationImg').attr('src', furniture_img(furniture_loc_id));
 
+    })
+    $('#baby-placement-but').on('click', function (e) {
+        var baby_placement_id = baby_placement_loc();
+        $('#baby-placement').html(baby_placement_id);
+        
+        $('#babyLocationDiv').removeClass('hidden');
+        $('#babyLocationImg').attr('src', baby_loc_img(baby_placement_id));
     })
 });
