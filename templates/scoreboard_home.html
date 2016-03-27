@@ -11,6 +11,11 @@
        font-size: 22px;
        list-style: none;
     }
+    h4 {
+      font-size: 13px;
+      text-decoration: none;
+      color: black;
+    }
 </style>
 {% endblock %}
 {% block main_content %}
@@ -22,13 +27,35 @@
     </div>
     <div class="row">
         <div class="col-lg-6 col-lg-offset-3 text-center">
+            <h3>Grand Performance Master Scoreboard</h3>
             <ul>
-                <li><a href="/scoreboard/junior">Junior Devision</a></li>
-                <li><a href="/scoreboard/walking">Walking Division</a></li>
-                <li><a href="/scoreboard/high_school">Highschool Division</a></li>
-                <li><a href="/scoreboard/senior">Senior Division</a></li>
+                <li><a href="{{url_for('main.scoreboard_gpmp')}}">All Devision & Levels</a></li>
             </ul>
         </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-6 text-center">
+            <h3>Best Robot in Division Scoreboard</h3>
+            <ul>
+                <li><a href="{{url_for('main.scoreboard_brd', division='junior')}}">Junior Devision</a></li>
+                <li><a href="{{url_for('main.scoreboard_brd', division='walking')}}">Walking Division</a></li>
+                <li><a href="{{url_for('main.scoreboard_brd', division='high_school')}}">Highschool Division</a></li>
+                <li><a href="{{url_for('main.scoreboard_brd', division='senior')}}">Senior Division</a></li>
+            </ul>
+        </div>
+        <div class="col-lg-6 text-center">
+            <h3>Lowest Individual Score Scoreboard</h3>
+            <ul>
+                <li><a href="{{url_for('main.scoreboard_lisp', level=1)}}">Level 1</a></li>
+                <li><a href="{{url_for('main.scoreboard_lisp', level=2)}}">Level 2</a></li>
+                <li><a href="{{url_for('main.scoreboard_lisp', level=3)}}">Level 3</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-12 text-center">
+        <h4><a href="/scoreboardcsv">Export to CSV</a></h4>
+      </div>
     </div>
 </div>
 {% endblock %}

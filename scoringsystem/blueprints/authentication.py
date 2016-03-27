@@ -3,32 +3,36 @@
 import requests
 from flask import (
     Blueprint, current_app, session, request,
-    redirect, url_for, flash,
+    redirect, url_for, flash, render_template
 )
 from oauth2client.client import OAuth2WebServerFlow, Error
 from constants import settings
+from libraries.utilities.authentication import AuthenticationUtilities
 
 
 authentication = Blueprint('auth', __name__)
-
-
-def is_logged_in(active_session):
-    return 'credentials' in active_session
 
 
 @authentication.before_request
 def redirect_if_logged_in():
     if request.path == url_for('.sign_out'):
         pass
-    elif is_logged_in(session):
-        return redirect(url_for('main.index'))
+    elif AuthenticationUtilities.user_is_logged_in(session):
+        return redirect(url_for('main.home'))
 
 
 @authentication.route('/sign-out')
 def sign_out():
     session.clear()
     flash('You have been signed out', 'info')
-    return redirect(url_for('main.index'))
+    return redirect(url_for('auth.signin'))
+
+
+@authentication.route('/', methods=['GET', 'POST'])
+def signin():
+    return render_template(
+        "signin.html", hide_nav=True
+    )
 
 
 def _get_web_server_flow():
@@ -76,7 +80,7 @@ def callback():
         message = "Could not extract authorization code from Google callback."
     session.clear()
     _oauth2_error_handler(message)
-    return redirect(url_for('main.signin'))
+    return redirect(url_for('auth.signin'))
 
 
 def _build_redirect_uri(request):

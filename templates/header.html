@@ -17,12 +17,14 @@
 
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    <script src="/static/js/bootbox.min.js"></script>
+    <script src="/static/js/confirmation.js"></script>
     <script data-main="/static/js/main" src="/static/js/require.js"></script>
-    <script data-main="/static/js/main" src="/static/js/randomize.js"></script>
+    <script  src="/static/js/randomize.js"></script>
     <style type="text/css">
       body {
-        padding-top: 40px;
-        padding-bottom: 40px;
+        padding-top: 0px;
+        padding-bottom: 0px;
       }
       .content-wrapper {
         background-color: #fff;
@@ -75,11 +77,24 @@
         word-wrap: break-word;
         min-width: 185px;
       }
+      .bold-text {
+        font-weight: 500;
+        text-align: left;
+      }
+      .simple-text {
+        font-weight: 200;
+        text-align: left;
+      }
     </style>
     {% block head %}
     {% endblock %}
 </head>
 <body>
+    {% if not hide_nav %}
+    {% include 'nav_bar.html' %}
+<!--       <div class="center"> <a href="{{ url_for('auth.sign_out') }}">Sign Out</a></div>
+      <div class="center"> <a href="{{ url_for('main.home') }}">Home</a></div>
+ -->    {% endif %}
     {% block main_content %}
     {% endblock %}
 </body>

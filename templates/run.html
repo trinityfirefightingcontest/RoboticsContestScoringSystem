@@ -1,5 +1,7 @@
 {% extends "header.html" %}
 {% block head %}
+<script data-main="/static/js/main" src="/static/js/expand.js"></script> 
+<script data-main="/static/js/main" src="/static/js/randomize.js"></script>
 <style>
     #prev-runs td, #prev-runs th {
        text-align: center;
@@ -8,14 +10,14 @@
 {% endblock %}
 {% block main_content %}
 <div class="container container-fluid">
-    <form method="post">
+    <form method="post" onsubmit="return confirm_newrun();">
     <div class="row">
         <div class="page-header">
-            <h1>Add Run: {{robot['name']}} (Level {{ robot['level'] }})</h1>
+            <h3>Add Run: <a href="{{ url_for('main.robot_detail', robot_id=robot['id']) }}">{{robot['name']}} (Level {{ robot['level'] }}, {{ division }})</a></h3>
         </div>
     </div>
     <div class="container container-fluid">
-        <div class="col-lg-4">
+        <div id="buttonPanel" class="col-lg-4">
             <div class="row">
                 <div class="panel panel-default">
                     <div class="panel-heading text-center">
@@ -24,10 +26,15 @@
                     <div class="panel-body">
                         <div class="row">
                             <div class="col-xs-6">
-                                <div class="btn btn-lg btn-primary default" id="candle-but" role="button">Candle Loc: &raquo;</div>
+                                <div class="btn btn-lg btn-primary default" id="candle-but" role="button" >Candle Loc: &raquo;</div>
                             </div>
                             <div class="col-xs-4 text-center">
                                 <h4 class="alert-info"><strong id="candle">-</strong></h4>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-6 hidden" id="candleLocationDiv">
+                                <img id="candleLocationImg" src="/static/img/_THUMBNAILS_/Flames.Thumbnails/flame1.png" height="300" width="300">
                             </div>
                         </div>
                         <br>
@@ -39,6 +46,11 @@
                                 <h4 class="alert-info"><strong id="puppy">-</strong></h4>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-xs-6 hidden" id="puppyLocationDiv">
+                                <img id="puppyLocationImg" src="/static/img/_THUMBNAILS_/Dogs.Thumbnails/dog1.png" height="300" width="300">
+                            </div>
+                        </div>
                         <br>
                         <div class="row">
                             <div class="col-xs-6">
@@ -48,7 +60,12 @@
                                 <h4 class="alert-info"><strong id="start">-</strong></h4>
                             </div>
                         </div>
-                        <br>
+                        <div class="row">
+                            <div class="col-xs-6 hidden" id="startLocationDiv">
+                                <img id="startOrientImg" src="/static/img/_THUMBNAILS_/ArbitraryStart.Thumbnails/AS1.png" height="150" width="150">
+                            </div>
+                        </div>      
+                        <br>                  
                         <div class="row">
                             <div class="col-xs-6">
                                 <div class="btn btn-lg btn-primary" id="furniture-but" role="button">Furnit Loc: &raquo;</div>
@@ -57,6 +74,27 @@
                             <h4 class="alert-info"><strong id="furniture">-</strong></h4>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-xs-6 hidden" id="furnitureLocationDiv">
+                                <img id="furnitureLocationImg" src="/static/img/_THUMBNAILS_/Furniture.Thumbnails/O1.png" height="300" width="300">
+                            </div>
+                        </div>
+                        {% if robot['level'] == 3 %}
+                        <br>
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <div class="btn btn-lg btn-primary" id="baby-placement-but" role="button">Baby Placement: &raquo;</div>
+                            </div>
+                            <div class="col-xs-4 text-center">
+                            <h4 class="alert-info"><strong id="baby-placement">-</strong></h4>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-6 hidden" id="babyLocationDiv">
+                                <img id="babyLocationImg" src="/static/img/_THUMBNAILS_/Targets.Thumbnails/W1.png" height="300" width="300">
+                            </div>
+                        </div>
+                        {% endif %}    
                     </div>
                 </div>
             </div>
@@ -72,7 +110,7 @@
                                     <tr>
                                         <th>Run #</th>
                                         <th>Level</th>
-                                        <th>Failed</th>
+                                        <th>Succeeded?</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -80,7 +118,7 @@
                                     <tr>
                                         <td>{{ loop.index }}</td>
                                         <td>{{ run.get('level') }}</td>
-                                        <td>{{ true if run.get('failed_trial') == 1 else false }}</td>
+                                        <td>{{ "Falied" if run.get('failed_trial') == 1 else "Succeeded" }}</td>
                                     </tr>
                                 {% endfor %}
                                 </tbody>
@@ -94,7 +132,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-8">
+        <div id="addRunOptions" class="col-lg-8">
             <div {% if input['NAME_ERR'] == True %} class="input-group has-error" {% else %} class="input-group" {% endif %} >
                 <span class="input-group-addon" id="basic-addon1">Sanity Check - Robot name:</span>
                 <input type="text" class="form-control" name="name" value="{{ input['name'] }}">
@@ -103,28 +141,28 @@
             </div>
             <div class="row">
                 <div class="col-xs-12 col-lg-12">
-                    <h2>Run Disqualified:</h2>
+                    <h4>Run Disqualified:</h4>
                 </div>
                 <div class="col-xs-12 checkbox">
                     <label>
-                        <input type="checkbox" name="run_disqualified" {% if input['run_disqualified'] %} checked {% endif %}/>Robot could not put out the flame within the time limit.
+                        <input type="checkbox" name="run_disqualified" {% if input['run_disqualified'] %} checked {% endif %}/>Robot failed the trial or could not put out the flame within the time limit.
                     </label>
                 </div>
             </div>
             <div class="row">
                 <div class="col-xs-12 col-lg-12">
-                    <h2>Versa Valve Option:</h2>
+                    <h4>Versa Valve Option:</h4>
                 </div>
                 <div class="col-xs-12 checkbox">
                     <label>
-                        <input type="checkbox" name="versa_valve_used" {% if input['versa_valve_used'] %} checked {% endif %}/>Robot uses Versa Valve.
+                        <input type="checkbox" name="versa_valve_used" {% if input['versa_valve_used'] %} checked {% endif %}/>Robot used Versa Valve.
                     </label>
                 </div>
             </div>
             {% if robot['division'] in ['junior', 'walking'] and robot['level']==1 %}
             <div class="row">
                 <div class="col-xs-12 col-lg-12">
-                    <h2>Special deduction for Level 1 Junior and Walking divison:</h2>
+                    <h4>Special deduction for Level 1 Junior and Walking divison:</h4>
                 </div>
                 <div class="col-xs-12 checkbox">
                     <label>
@@ -141,7 +179,7 @@
             {%- if robot['level'] in [1, 2] -%}
             <div class="row">
                 <div class="col-xs-12 col-lg-12">
-                    <h2>Operating Mode Deductions:</h2>
+                    <h4>Operating Mode Deductions:</h4>
                 </div>
                 <div class="col-xs-12 checkbox">
                     <label>
@@ -174,7 +212,7 @@
             {% endif %}
             <div class="row">
                 <div class="col-xs-12 col-lg-12">
-                    <h2>Actual Time:</h2>
+                    <h4>Actual Time:</h4>
                 </div>
                 <div class="col-xs-12 col-lg-12">
                     <label>Seconds taken to put out candle:</label>
@@ -190,13 +228,13 @@
                     {% if input['TIME_ERR_2'] == True %}<label class="control-label">Invalid value</label> {% endif %}
                 </div>
                  <div {% if input['TIME_ERR_DIFF'] %} class="col-xs-12 col-lg-12 has-error" {% else %} class="col-xs-12 col-lg-12" {% endif %} >
-                    {% if input['TIME_ERR_DIFF'] == True %}<label class="control-label">If robot fails the trial, both judges should enter the same AT</label> {% endif %}
+                    {% if input['TIME_ERR_DIFF'] == True %}<label class="control-label">If robot failed the trial, both judges should enter the same AT</label> {% endif %}
                  </div>
             </div>
             {%- if robot['level'] in [1, 2] -%}
             <div class="row">
                 <div class="col-xs-12 col-lg-12">
-                    <h2>Room Factor:</h2>
+                    <h4>Room Factor:</h4>
                 </div>
                 <div {% if input['ROOM_ERR'] == True %} class="col-xs-6 col-lg-6 has-error" {% else %} class="col-xs-6 col-lg-6 " {% endif %} >
                     <label>Number of rooms searched:</label>
@@ -208,7 +246,7 @@
             {%- if robot['level'] == 3 -%}
             <div class="row">
                 <div class="col-xs-12 col-lg-12">
-                    <h2>Level 3 Reductions:</h2>
+                    <h4>Level 3 Reductions:</h4>
                 </div>
                 <div class="col-xs-12 checkbox">
                     <label>
@@ -221,7 +259,7 @@
                     </label>
                 </div>
                 <div class="col-xs-12 checkbox">
-                    <label>
+                    <label for="all_candle">
                         <input type="checkbox" name="all_candles" {% if input['all_candles'] %} checked {% endif %}/>Put out all candles.
                     </label>
                 </div>
@@ -229,11 +267,11 @@
             {% endif %}
             <div class="row">
                 <div class="col-xs-12 col-lg-12">
-                    <h2>Penalty Points:</h2>
+                    <h4>Penalty Points:</h4>
                 </div>
-                <div class="col-xs-12 checkbox">
-                    <label>
-                        <input type="checkbox" name="touched_candle" {% if input['touched_candle'] %} checked {% endif %}/>Touched candle.
+                <div {% if input['CANDLE_ERR'] == True %} class="col-xs-12 col-lg-12 has-error row checkbox" {% else %} class="col-xs-12 col-lg-12 row checkbox" {% endif %}>
+                    <label for="touched_candle">  
+                        <input type="text" name="touched_candle" class="col-xs-2" value="{{ input['touched_candle']}}"/> Number of candle contact.
                     </label>
                 </div>
                 <div class="col-xs-12 checkbox">

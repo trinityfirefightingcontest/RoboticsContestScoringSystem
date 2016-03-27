@@ -1,21 +1,17 @@
 from initialize_registry import load_registry
 import registry as r
 
-import sys
-sys.path.append('libraries/repositories')
-
-from runs import *
+from libraries.repositories.runs import Runs
 
 def run():
 	load_registry()
 	robots = [
 				{
 					'division': 'junior',
-					'id': 'j-100',
+					'id': 'test-1',
 					'volume': 365,
-					'school': 'Taft',
+					'school': 'Test',
 					'name': 'Jazz',
-					'teammates': 3,
 					'is_unique': True,
 					'used_versa_valve': False,
 					'level': 1,
@@ -24,11 +20,10 @@ def run():
 				},
 				{
 					'division': 'high_school',
-					'id': 'j-101',
+					'id': 'test-2',
 					'volume': 345,
-					'school': 'Taft',
+					'school': 'Test',
 					'name': 'Hanley',
-					'teammates': 3,
 					'is_unique': True,
 					'used_versa_valve': False,
 					'level': 1,
@@ -37,11 +32,10 @@ def run():
 				},
 				{
 					'division': 'senior',
-					'id': 'j-102',
+					'id': 'test-3',
 					'volume': 345,
-					'school': 'Taft',
+					'school': 'Test',
 					'name': 'Spazz',
-					'teammates': 3,
 					'is_unique': True,
 					'used_versa_valve': False,
 					'level': 1,
@@ -57,7 +51,6 @@ def run():
 			volume=data['volume'],
 			school=data['school'],
 			name=data['name'],
-			teammates=data['teammates'],
 			is_unique=data['is_unique'],
 			used_versa_valve=data['used_versa_valve'],
 			level=data['level'],
@@ -198,7 +191,7 @@ def run():
 			'num_rooms_detected': 2,
 			'kicked_dog': False,
 			'touched_candle': False,
-			'cont_wall_contact': 3,
+			'cont_wall_contact': 0,
 			'ramp_hallway': False,
 			'alt_target': False,
 			'all_candles': False,
@@ -282,7 +275,7 @@ def run():
 			'num_rooms_detected': 2,
 			'kicked_dog': False,
 			'touched_candle': False,
-			'cont_wall_contact': 3,
+			'cont_wall_contact': 0,
 			'ramp_hallway': False,
 			'alt_target': False,
 			'all_candles': True,
@@ -327,7 +320,7 @@ def run():
 			'num_rooms_detected': 2,
 			'kicked_dog': False,
 			'touched_candle': False,
-			'cont_wall_contact': 3,
+			'cont_wall_contact': 0,
 			'ramp_hallway': False,
 			'alt_target': False,
 			'all_candles': False,
@@ -339,7 +332,7 @@ def run():
 			'actual_time': 285.742,
 			'reached_time_limit': False,
 			'non_air': False,
-			'furniture': True,
+			'furniture': False,
 			'arbitrary_start': False,
 			'return_trip': False,
 			'candle_location_mode': False,
@@ -348,7 +341,7 @@ def run():
 			'num_rooms_detected': 2,
 			'kicked_dog': False,
 			'touched_candle': False,
-			'cont_wall_contact': 3,
+			'cont_wall_contact': 0,
 			'ramp_hallway': False,
 			'alt_target': False,
 			'all_candles': False,
@@ -369,7 +362,7 @@ def run():
 			'num_rooms_detected': 4,
 			'kicked_dog': True,
 			'touched_candle': True,
-			'cont_wall_contact': 3,
+			'cont_wall_contact': 0,
 			'ramp_hallway': False,
 			'alt_target': False,
 			'all_candles': False,
@@ -390,7 +383,7 @@ def run():
 			'num_rooms_detected': 2,
 			'kicked_dog': False,
 			'touched_candle': False,
-			'cont_wall_contact': 3,
+			'cont_wall_contact': 0,
 			'ramp_hallway': True,
 			'alt_target': True,
 			'all_candles': True,
@@ -420,8 +413,7 @@ def run():
 							run['cont_wall_contact'],
 							run['ramp_hallway'],
 							run['alt_target'],
-							run['all_candles'],
-							run['used_versa_valve'])
+							run['all_candles'])
 
 		r.get_registry()['RUNS'].record_run(run['level'],
 											run['failed_trial'],
@@ -441,7 +433,7 @@ def run():
 											run['alt_target'],
 											run['all_candles'],
 											run['used_versa_valve'],
-											calculate_run_score(*score_components),
+											Runs.calculate_run_score(*score_components),
 											robot_id)
 
 	for run in hanley_runs:
@@ -466,8 +458,7 @@ def run():
 							run['cont_wall_contact'],
 							run['ramp_hallway'],
 							run['alt_target'],
-							run['all_candles'],
-							run['used_versa_valve'])
+							run['all_candles'])
 
 		print "score components:"
 		print(score_components)
@@ -490,7 +481,7 @@ def run():
 											run['alt_target'],
 											run['all_candles'],
 											run['used_versa_valve'],
-											calculate_run_score(*score_components),
+											Runs.calculate_run_score(*score_components),
 											robot_id)
 	
 	for run in spazz_runs:
@@ -515,8 +506,7 @@ def run():
 							run['cont_wall_contact'],
 							run['ramp_hallway'],
 							run['alt_target'],
-							run['all_candles'],
-							run['used_versa_valve'])
+							run['all_candles'])
 		
 		r.get_registry()['RUNS'].record_run(run['level'],
 											run['failed_trial'],
@@ -536,90 +526,10 @@ def run():
 											run['alt_target'],
 											run['all_candles'],
 											run['used_versa_valve'],
-											calculate_run_score(*score_components),
+											Runs.calculate_run_score(*score_components),
 											robot_id)
 
-def calculate_run_score(robot_div,
-						level,
-						failed_trial,
-						actual_time,
-						non_air ,
-						furniture,
-						arbitrary_start,
-						return_trip,
-						candle_location_mode,
-						stopped_within_circle,
-						signaled_detection,
-						num_rooms_detected,
-						kicked_dog,
-						touched_candle,
-						cont_wall_contact,
-						ramp_hallway,
-						alt_target,
-						all_candles,
-						used_versa_valve):
 
-		task_search = num_rooms_detected * (-30)
-		task_detect = -30 if signaled_detection else 0
-		task_position = -30 if stopped_within_circle else 0
-
-		om_candle = 0.75 if candle_location_mode else 1
-
-		om_start = 0.8 if arbitrary_start else 1
-		om_return = 0.8 if return_trip else 1
-		om_extinguisher = 0.75 if non_air else 1
-		om_furniture = 0.75 if furniture else 1
-
-		if num_rooms_detected == 0 or num_rooms_detected == 1:
-			room_factor = 1
-		elif num_rooms_detected == 2:
-			room_factor = 0.85
-		elif num_rooms_detected == 3:
-			room_factor = 0.5
-		elif num_rooms_detected == 4:
-			room_factor = 0.35
-
-		pp_candle = 50 if touched_candle else 0
-		pp_slide = cont_wall_contact / 2
-		pp_dog = 50 if kicked_dog else 0
-
-		om_alt_target = 0.6 if alt_target else 1
-		om_ramp_hallway = 0.9 if ramp_hallway else 1
-		om_all_candles = 0.6 if all_candles else 1
-
-		#Scores
-		if failed_trial:
-			if robot_div in ['junior', 'walking'] and level == 1:
-				return 600 + task_detect + task_position + task_search;
-			else:
-				return 600
-
-		print om_candle
-		print om_start
-		print om_return
-		print om_extinguisher
-		print om_furniture
-		print room_factor
-		print pp_candle
-		print pp_slide
-		print pp_dog
-		print om_alt_target
-		print om_ramp_hallway
-		print om_all_candles
-		print '-----'
-
-		if level == 1:
-			return ((actual_time + pp_candle + pp_dog + pp_slide) *
-					(om_candle * om_start * om_return * om_extinguisher * om_furniture) * room_factor)
-		
-		if level == 2:
-			return ((actual_time + pp_candle + pp_dog + pp_slide) * 
-					(om_start * om_return * om_extinguisher * om_furniture) * room_factor)
-
-		if level == 3:
-			return ((actual_time + pp_candle + pp_dog + pp_slide) * 
-					om_alt_target * om_ramp_hallway * om_all_candles) 
-			
 
 if __name__ == "__main__":
 	run()

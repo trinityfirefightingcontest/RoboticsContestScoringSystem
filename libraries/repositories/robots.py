@@ -19,9 +19,8 @@ class Robots(object):
             division VARCHAR(16),
             id VARCHAR(10) UNIQUE,
             volume INT,
-            school VARCHAR(50),
-            name VARCHAR(50),
-            teammates INT,
+            school VARCHAR(100),
+            name VARCHAR(100),
             is_unique BOOLEAN,
             used_versa_valve BOOLEAN,
             level INT,
@@ -42,7 +41,6 @@ class Robots(object):
                      volume,
                      school,
                      name,
-                     teammates,
                      is_unique,
                      used_versa_valve,
                      level,
@@ -54,7 +52,6 @@ class Robots(object):
             volume,
             school,
             name,
-            teammates,
             is_unique,
             used_versa_valve,
             level,
@@ -66,7 +63,6 @@ class Robots(object):
             %(volume)s,
             %(school)s,
             %(name)s,
-            %(teammates)s,
             %(is_unique)s,
             %(used_versa_valve)s,
             %(level)s,
@@ -79,7 +75,6 @@ class Robots(object):
             'volume': volume,
             'school': school,
             'name': name,
-            'teammates': teammates,
             'is_unique': is_unique,
             'used_versa_valve': used_versa_valve,
             'level': level,
@@ -115,5 +110,17 @@ class Robots(object):
         data = {
             'level': current_level + 1,
             'robot_id': robot_id
+        }
+        return r.get_registry()['MY_SQL'].insert(query, data)
+
+    @staticmethod
+    def approve_and_store_volume(robot_id, volume):
+        query = """UPDATE robots SET volume = %(volume)s,
+            passed_inspection = %(passed_inspection)s
+            where id = %(robot_id)s;"""
+        data = {
+            'volume': volume,
+            'robot_id': robot_id,
+            'passed_inspection': True
         }
         return r.get_registry()['MY_SQL'].insert(query, data)

@@ -28,7 +28,7 @@ class Runs(object):
                 signaled_detection BOOLEAN,
                 num_rooms_searched INT,
                 kicked_dog BOOLEAN,
-                touched_candle BOOLEAN,
+                touched_candle INT,
                 cont_wall_contact INT,
                 ramp_hallway BOOLEAN,
                 alt_target BOOLEAN,
@@ -186,7 +186,7 @@ class Runs(object):
         elif num_rooms_detected == 4:
             room_factor = 0.35
 
-        pp_candle = 50 if touched_candle else 0
+        pp_candle = 50 * touched_candle
         pp_slide = cont_wall_contact / 2
         pp_dog = 50 if kicked_dog else 0
 
@@ -198,17 +198,25 @@ class Runs(object):
         if failed_trial:
             if robot_div in ['junior', 'walking'] and level == 1:
                 return 600 + task_detect + task_position + task_search;
+            elif level == 3 and actual_time in [400, 450, 500]:
+                return actual_time
             else:
                 return 600
 
         if level == 1:
-            return ((actual_time + pp_candle + pp_dog + pp_slide) *
+            score = ((actual_time + pp_candle + pp_dog + pp_slide) *
                     (om_candle * om_start * om_return * om_extinguisher * om_furniture) * room_factor)
 
         if level == 2:
-            return ((actual_time + pp_candle + pp_dog + pp_slide) * 
+            score = ((actual_time + pp_candle + pp_dog + pp_slide) * 
                     (om_start * om_return * om_extinguisher * om_furniture) * room_factor)
 
         if level == 3:
-            return ((actual_time + pp_candle + pp_dog + pp_slide) * 
+            score = ((actual_time + pp_candle + pp_dog + pp_slide) * 
                     om_alt_target * om_ramp_hallway * om_all_candles) 
+
+        if score > 600:
+            return 600
+        else: 
+            return score
+
