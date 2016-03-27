@@ -14,7 +14,8 @@ ALLOWED_ADMINS = [
     'david.Ahlgren@trincoll.edu',
     'fsd@acm.org',
     'imanabasileal@gmail.com',
-    'aba1731@gmail.com'
+    'aba1731@gmail.com',
+    'robotics.scoring.test@gmail.com'
 ]
 
 CLIENT_ID = '904731183016-rhpk64herjjr80mgufhmghs9f88c57v7.apps.googleusercontent.com'  # NOQA
