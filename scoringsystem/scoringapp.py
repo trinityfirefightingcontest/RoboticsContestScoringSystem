@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
 
 import os
+import logging
 from datetime import datetime
 import hashlib
 from initialize_registry import load_registry
-load_registry()
 from flask import Flask, request
 from werkzeug.wsgi import SharedDataMiddleware
 from libraries.sentry_client import SentryClient
+load_registry()
+
 
 app = Flask('robotics_scoring_system')
 app.debug = True
@@ -62,4 +64,6 @@ def cache_control(response):
     return response
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.DEBUG)
+    logging.info("System started")
     app.run()

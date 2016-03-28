@@ -4,6 +4,11 @@
 class ScoreCalculator(object):
     @staticmethod
     def get_best_scores(runs):
+        num_successful = 0
+        for run in runs:
+            if not run['failed_trial']:
+                num_successful += 1
+
         l1_scores = [run['score'] for run in runs if run['level'] == 1]
         l2_scores = [run['score'] for run in runs if run['level'] == 2]
         l3_scores = [run['score'] for run in runs if run['level'] == 3]
@@ -14,4 +19,4 @@ class ScoreCalculator(object):
             'LS3': min(l3_scores) if l3_scores else 600.0
         }
         attempted_levels = set([run['level'] for run in runs])
-        return best_scores, attempted_levels, sum(best_scores.values())
+        return best_scores, attempted_levels, sum(best_scores.values()), num_successful
