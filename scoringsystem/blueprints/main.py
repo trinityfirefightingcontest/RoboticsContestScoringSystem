@@ -16,10 +16,10 @@ from libraries.utilities.robot_inspection_table_handler import (
 main = Blueprint('main', __name__)
 
 
-#@main.before_request
-#def require_login():
-#    if not AuthenticationUtilities.user_is_logged_in(session):
-#        return redirect(url_for('auth.signin'))
+@main.before_request
+def require_login():
+    if not AuthenticationUtilities.user_is_logged_in(session):
+        return redirect(url_for('auth.signin'))
 
 
 @main.route('/', methods=['GET', 'POST'])
@@ -528,6 +528,7 @@ def validate_wall_contact(num_s):
 def validate_touched_candle(num_s):
 
     num_s = num_s.strip()
+    
     # Just check if it's digit for now
     if not num_s.isdigit():
         return False
