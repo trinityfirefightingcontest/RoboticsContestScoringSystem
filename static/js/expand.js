@@ -27,12 +27,25 @@ $(document).ready(function() {
 
 	$('#startOrientImg').on('click', function() {
 		if ($(this).height() === 150) {
-			$(this).animate({height: '400px', width: '400px'});
+			$(this).animate({height: '300px', width: '300px'});
 			$('#buttonPanel').attr('class', 'col-lg-6');
 			$('#addRunOptions').attr('class', 'col-lg-6');
 		}
 		else {
-			$(this).animate({height: "150px", width: "150px"});
+			$(this).animate({height: '150px', width: '150px'});
+			$('#buttonPanel').attr('class', 'col-lg-4');
+			$('#addRunOptions').attr('class', 'col-lg-8');
+		}
+	});
+
+	$('#roomImg').on('click', function() {
+		if ($(this).height() == 500) {
+			$(this).animate({height:'600px', width: '500px'});
+			$('#buttonPanel').attr('class', 'col-lg-6');
+			$('#addRunOptions').attr('class', 'col-lg-6');	
+		} 
+		else {
+			$(this).animate({height: '500px', width: '350px'});
 			$('#buttonPanel').attr('class', 'col-lg-4');
 			$('#addRunOptions').attr('class', 'col-lg-8');
 		}

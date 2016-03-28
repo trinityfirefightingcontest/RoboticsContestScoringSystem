@@ -53,11 +53,7 @@ function candle_img(id) {
     return dict[id];
 }
 
-function start_loc_img(loc_id, orient_id) {
-    var location = {
-        'Room 1': '/static/img/_THUMBNAILS_/ArbitraryStart.Thumbnails/'
-    }
-
+function start_loc_img(orient_id) {
     var orients = {
         '0D': '/static/img/_THUMBNAILS_/ArbitraryStart.Thumbnails/AS1.png',
         '45D': '/static/img/_THUMBNAILS_/ArbitraryStart.Thumbnails/AS2.png',
@@ -69,7 +65,7 @@ function start_loc_img(loc_id, orient_id) {
         '315D': '/static/img/_THUMBNAILS_/ArbitraryStart.Thumbnails/AS8.png'    
     }
 
-    return [location[loc_id], orients[orient_id]];
+    return orients[orient_id];
 }
 
 function furniture_img(id) {
@@ -121,10 +117,8 @@ $(document).ready(function() {
         $('#start').html(randomRoom + ' ' + randomOrient);
 
         $('#startLocationDiv').removeClass('hidden');
-        var randomStartLinks = start_loc_img(randomRoom, randomOrient);
-        var randRoomLink = randomStartLinks[0];
-        var randOrientLink = randomStartLinks[1];
-        $('#startRoomImg').attr('src', randRoomLink);
+        $('#roomImgDiv').removeClass('hidden');
+        var randOrientLink = start_loc_img(randomOrient);
         $('#startOrientImg').attr('src', randOrientLink);
     })
     $('#furniture-but').on('click', function (e) {
