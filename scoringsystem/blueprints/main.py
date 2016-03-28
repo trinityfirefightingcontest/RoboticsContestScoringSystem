@@ -16,10 +16,10 @@ from libraries.utilities.robot_inspection_table_handler import (
 main = Blueprint('main', __name__)
 
 
-@main.before_request
-def require_login():
-    if not AuthenticationUtilities.user_is_logged_in(session):
-        return redirect(url_for('auth.signin'))
+#@main.before_request
+#def require_login():
+#    if not AuthenticationUtilities.user_is_logged_in(session):
+#        return redirect(url_for('auth.signin'))
 
 
 @main.route('/', methods=['GET', 'POST'])
@@ -455,11 +455,13 @@ def validate_actual_time(time_s, level, failed):
     picked_baby_3 = 400  # failed but picked up baby (level 3)
 
     # check if input string is a number
-    if not time_s.isdigit():
-        return False
+    
 
     # convet to a float
-    time = float(time_s)
+    try: 
+        time = float(time_s)
+    except ValueError:
+        return False
 
     # validation for level 1
     if level == 1:
