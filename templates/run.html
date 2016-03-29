@@ -6,6 +6,16 @@
     #prev-runs td, #prev-runs th {
        text-align: center;
     }
+    .candle_contact {
+        padding-left: 0;
+    }
+    .candle_contact_l {
+        padding-left: 0;
+        margin-top: 5px;
+    }
+    .candle_contact_l label {
+        font-weight: normal;
+    }
 </style>
 {% endblock %}
 {% block main_content %}
@@ -37,16 +47,17 @@
                                 <img id="candleLocationImg" src="/static/img/_THUMBNAILS_/Flames.Thumbnails/flame1.png" height="300" width="300">
                             </div>
                         </div>
-                        <br>
-                        {% if robot['level'] in [1,2] %}
-                        <div class="row">
-                            <div class="col-xs-6">
-                                <div class="btn btn-lg btn-primary" id="puppy-but" role="button">Puppy Loc: &raquo;</div>
+                        {% if robot['level'] in [2,3] %}
+                            <br>
+                            <div class="row">
+                                <div class="col-xs-6">
+                                    <div class="btn btn-lg btn-primary" id="puppy-but" role="button">Puppy Loc: &raquo;</div>
+                                </div>
+                                <div class="col-xs-4 text-center">
+                                    <h4 class="alert-info"><strong id="puppy">-</strong></h4>
+                                </div>
                             </div>
-                            <div class="col-xs-4 text-center">
-                                <h4 class="alert-info"><strong id="puppy">-</strong></h4>
-                            </div>
-                        </div>
+                        {% endif %}
                         <div class="row">
                             <div class="col-xs-6 hidden" id="puppyLocationDiv">
                                 <img id="puppyLocationImg" src="/static/img/_THUMBNAILS_/Dogs.Thumbnails/dog1.png" height="300" width="300">
@@ -90,7 +101,7 @@
                         <br>
                         <div class="row">
                             <div class="col-xs-6">
-                                <div class="btn btn-lg btn-primary" id="baby-placement-but" role="button">Baby Placement: &raquo;</div>
+                                <div class="btn btn-lg btn-primary" id="baby-placement-but" role="button">Baby Place: &raquo;</div>
                             </div>
                             <div class="col-xs-4 text-center">
                             <h4 class="alert-info"><strong id="baby-placement">-</strong></h4>
@@ -276,10 +287,14 @@
                 <div class="col-xs-12 col-lg-12">
                     <h4>Penalty Points:</h4>
                 </div>
-                <div {% if input['CANDLE_ERR'] == True %} class="col-xs-12 col-lg-12 has-error row checkbox" {% else %} class="col-xs-12 col-lg-12 row checkbox" {% endif %}>
-                    <label for="touched_candle">  
-                        <input type="text" name="touched_candle" class="col-xs-2" value="{{ input['touched_candle']}}"/> Number of candle contact.
-                    </label>
+                <div {% if input['CANDLE_ERR'] == True %} class="col-xs-6 col-lg-6 has-error" {% else %} class="col-xs-6 col-lg-6" {% endif %}>
+                    <div class="col-xs-2 col-lg-2 candle_contact">
+                        <input type="text" class="form-control" name="touched_candle" class="col-xs-2" value="{{ input['touched_candle']}}"/>
+                        {% if input['CANDLE_ERR'] == True %}<label class="control-label">Invalid value</label> {% endif %}
+                    </div>
+                    <div class="col-xs-7 col-lg-7 candle_contact_l">
+                        <label>Number of candle contacts</label>
+                    </div>
                 </div>
                 <div class="col-xs-12 checkbox">
                     <label>

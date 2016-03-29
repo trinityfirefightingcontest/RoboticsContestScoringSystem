@@ -71,7 +71,7 @@ def advance_level(robot_id):
         r.get_registry()['ROBOTS'].advance_level(robot_id, robot['level'])
         return redirect(url_for('main.robot_add_run', robot_id=robot_id))
 
-    return "Robot not eligible to advnace to next level.\n"
+    return "Robot not eligible to advance to next level.\n"
 
 
 @main.route('/robot/<robot_id>', methods=['GET', 'POST'])
@@ -183,7 +183,7 @@ def export_to_csv():
         for robot in all_robots[div]:
             runs = r.get_registry()['RUNS'].get_runs(robot['id'])
             # get current best scores
-            best_scores, attempted_levels, total_score = (
+            best_scores, attempted_levels, total_score, num_successful = (
                 ScoreCalculator.get_best_scores(runs)
             )
             robot.update(best_scores)
@@ -393,8 +393,6 @@ def validate_params(input_data, level, div, name):
         if not validate_actual_time_compare(data['seconds_to_put_out_candle_1'],
                                             data['seconds_to_put_out_candle_2']):
             err["TIME_ERR_DIFF"] = True
-        if not validate_touched_candle(data['touched_candle']):
-            err["CANDLE_ERR"] = True
         if ((level == 1)
             and (div in ['junior', 'walking'])
             and (not validate_num_rooms(data['number_of_rooms_searched'], level))):
@@ -530,10 +528,14 @@ def validate_touched_candle(num_s):
     num_s = num_s.strip()
     
     # Just check if it's digit for now
+    # minimum allowed value
+    min_123 = 0
+
+    # check if input string is a number
     if not num_s.isdigit():
         return False
-    else:
-        return True
+
+    return int(num_s) >= min_123
 
 # creates a dictionary out of data entered for new run
 def bind_params(input_data, id, level):
