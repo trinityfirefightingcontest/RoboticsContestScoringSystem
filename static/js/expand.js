@@ -39,13 +39,13 @@ $(document).ready(function() {
 	});
 
 	$('#roomImg').on('click', function() {
-		if ($(this).height() == 500) {
-			$(this).animate({height:'600px', width: '500px'});
+		if ($(this).height() == 300) {
+			$(this).animate({height:'500px', width: '500px'});
 			$('#buttonPanel').attr('class', 'col-lg-6');
 			$('#addRunOptions').attr('class', 'col-lg-6');	
 		} 
 		else {
-			$(this).animate({height: '500px', width: '350px'});
+			$(this).animate({height: '300px', width: '300px'});
 			$('#buttonPanel').attr('class', 'col-lg-4');
 			$('#addRunOptions').attr('class', 'col-lg-8');
 		}
