@@ -176,7 +176,7 @@ def export_to_csv():
 
     si = StringIO.StringIO()
     cw = csv.writer(si)
-    cw.writerow(['Rank', 'Division', 'Name', 'Number of Runs', 
+    cw.writerow(['Rank', 'Division', 'Name', '# of Successful Runs',
                  'Current Level', 'LS1', 'LS2', 'LS3', 'TFS'])
 
     for div in all_robots:
@@ -188,19 +188,9 @@ def export_to_csv():
             )
             robot.update(best_scores)
             robot['TFS'] = total_score
+            robot['num_successful'] = num_successful
             # calculate lowes scores for each level and TFS, returns tuple
             robot['completed'] = attempted_levels
-
-
-            #If statements for obtaining current level
-            if 1 in robot['completed']:
-                robot['current_level'] = 1
-            if 2 in robot['completed']:
-                robot['current_level'] = 2
-            if 3 in robot['completed']:
-                robot['current_level'] = 3
-            else:
-                robot['current_level'] = ''
 
         # sort based on name then total score
         sorted_robots = sorted(list(all_robots[div]), key=lambda k: k['name'])
@@ -208,8 +198,8 @@ def export_to_csv():
 
 
         for index, sorted_r in enumerate(sorted_robots, start=1):
-            cw.writerow([index, sorted_r['division'], sorted_r['name'], len(sorted_r['completed']),
-                        sorted_r['current_level'], sorted_r['LS1'], sorted_r['LS2'], sorted_r['LS3'], 
+            cw.writerow([index, sorted_r['division'], sorted_r['name'], sorted_r['num_successful'],
+                        sorted_r['level'], sorted_r['LS1'], sorted_r['LS2'], sorted_r['LS3'],
                          sorted_r['TFS']])
 
         cw.writerow('\n')
