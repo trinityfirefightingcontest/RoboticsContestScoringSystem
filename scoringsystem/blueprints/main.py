@@ -71,7 +71,7 @@ def advance_level(robot_id):
         r.get_registry()['ROBOTS'].advance_level(robot_id, robot['level'])
         return redirect(url_for('main.robot_add_run', robot_id=robot_id))
 
-    return "Robot not eligible to advnace to next level.\n"
+    return "Robot not eligible to advance to next level.\n"
 
 
 @main.route('/robot/<robot_id>', methods=['GET', 'POST'])
@@ -176,13 +176,14 @@ def export_to_csv():
 
     si = StringIO.StringIO()
     cw = csv.writer(si)
-    cw.writerow(['Rank', 'Division', 'Name', 'LS1', 'LS2', 'LS3', 'TFS'])
+    cw.writerow(['Rank', 'Division', 'Name', 'Number of Runs', 
+                 'Current Level', 'LS1', 'LS2', 'LS3', 'TFS'])
 
     for div in all_robots:
         for robot in all_robots[div]:
             runs = r.get_registry()['RUNS'].get_runs(robot['id'])
             # get current best scores
-            best_scores, attempted_levels, total_score = (
+            best_scores, attempted_levels, total_score, num_successful = (
                 ScoreCalculator.get_best_scores(runs)
             )
             robot.update(best_scores)
@@ -190,12 +191,26 @@ def export_to_csv():
             # calculate lowes scores for each level and TFS, returns tuple
             robot['completed'] = attempted_levels
 
+
+            #If statements for obtaining current level
+            if 1 in robot['completed']:
+                robot['current_level'] = 1
+            if 2 in robot['completed']:
+                robot['current_level'] = 2
+            if 3 in robot['completed']:
+                robot['current_level'] = 3
+            else:
+                robot['current_level'] = ''
+
         # sort based on name then total score
         sorted_robots = sorted(list(all_robots[div]), key=lambda k: k['name'])
         sorted_robots = sorted(list(sorted_robots), key=lambda k: k['TFS'])
 
+
         for index, sorted_r in enumerate(sorted_robots, start=1):
-            cw.writerow([index, sorted_r['division'], sorted_r['name'], sorted_r['LS1'], sorted_r['LS2'], sorted_r['LS3'], sorted_r['TFS']])
+            cw.writerow([index, sorted_r['division'], sorted_r['name'], len(sorted_r['completed']),
+                        sorted_r['current_level'], sorted_r['LS1'], sorted_r['LS2'], sorted_r['LS3'], 
+                         sorted_r['TFS']])
 
         cw.writerow('\n')
 
@@ -378,8 +393,6 @@ def validate_params(input_data, level, div, name):
         if not validate_actual_time_compare(data['seconds_to_put_out_candle_1'],
                                             data['seconds_to_put_out_candle_2']):
             err["TIME_ERR_DIFF"] = True
-        if not validate_touched_candle(data['touched_candle']):
-            err["CANDLE_ERR"] = True
         if ((level == 1)
             and (div in ['junior', 'walking'])
             and (not validate_num_rooms(data['number_of_rooms_searched'], level))):
@@ -414,6 +427,10 @@ def validate_name(name, robot_name):
     return name == robot_name
 
 def validate_actual_time_compare(time_j1, time_j2):
+
+    time_j1 = time_j1.strip()
+    time_j2 = time_j2.strip()
+
     if time_j1.isdigit() and time_j2.isdigit():
         return float(time_j1) == float(time_j2)
     return False
@@ -421,6 +438,9 @@ def validate_actual_time_compare(time_j1, time_j2):
 # valide actual time
 def validate_actual_time(time_s, level, failed):
     # minimum and maximum time allowed for each level
+
+    time_s = time_s.strip()
+
     min_123 = 0  # minimum for any level
     max_1 = 180  # 3 minutes for level 1
     max_2 = 240  # 4 minutes for level 2
@@ -433,11 +453,13 @@ def validate_actual_time(time_s, level, failed):
     picked_baby_3 = 400  # failed but picked up baby (level 3)
 
     # check if input string is a number
-    if not time_s.isdigit():
-        return False
+    
 
     # convet to a float
-    time = float(time_s)
+    try: 
+        time = float(time_s)
+    except ValueError:
+        return False
 
     # validation for level 1
     if level == 1:
@@ -470,6 +492,8 @@ def validate_actual_time(time_s, level, failed):
 
 # validate number of rooms
 def validate_num_rooms(num_s, level):
+
+    num_s = num_s.strip()
     # minimum and maximum allowed values
     min_123 = 0
     max_123 = 4
@@ -486,6 +510,8 @@ def validate_num_rooms(num_s, level):
 
 # validate wall contact distance
 def validate_wall_contact(num_s):
+
+    num_s = num_s.strip()
     # minimum and maximum allowed values
     min_123 = 0
     max_123 = 500 # length of arena
@@ -498,11 +524,18 @@ def validate_wall_contact(num_s):
 
 #validate touched_candle 
 def validate_touched_candle(num_s):
+
+    num_s = num_s.strip()
+    
     # Just check if it's digit for now
+    # minimum allowed value
+    min_123 = 0
+
+    # check if input string is a number
     if not num_s.isdigit():
         return False
-    else:
-        return True
+
+    return int(num_s) >= min_123
 
 # creates a dictionary out of data entered for new run
 def bind_params(input_data, id, level):

@@ -18,7 +18,7 @@ class Runs(object):
                 id INT AUTO_INCREMENT,
                 level INT,
                 failed_trial BOOLEAN,
-                actual_time INT,
+                actual_time FLOAT(10,2),
                 non_air BOOLEAN,
                 furniture BOOLEAN,
                 arbitrary_start BOOLEAN,
