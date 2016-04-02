@@ -36,7 +36,12 @@
 						<td>{{ loop.index }}</td>
 						<td><a href="{{url_for('main.robot_detail', robot_id=robot['id'])}}">{{ robot.get('name') }}</a></td>
 						<td>{{ robot.get('num_successful') }}
-						<td>{{ robot.get('division')[0] }}</td>
+						<td>{% if robot.get('division') == 'high_school' %}
+								high school
+							{% else %}
+								{{robot.get('division')}}
+							{% endif %}
+						</td>
 						<td>{{ robot.get('level') }}</td>
 						<td>{{ robot.get('LS1') }}</td>
 						<td>{{ robot.get('LS2') }}</td>
