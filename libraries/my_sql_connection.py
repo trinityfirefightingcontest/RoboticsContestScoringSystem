@@ -13,6 +13,7 @@ class MySQLConnection(object):
             database=settings.mysql_database):
         self.db = MySQLdb.connect(host=host, port=port, user=user,
                                   passwd=passwd, db=database)
+        self.db.ping(True)
         self.db.set_character_set('utf8')
 
     def get_cursor(self):

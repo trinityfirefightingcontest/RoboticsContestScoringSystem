@@ -5,7 +5,6 @@ from flask import (
 import registry as r
 import StringIO
 import csv
-import logging
 from libraries.utilities.authentication import AuthenticationUtilities
 from libraries.utilities.level_progress_handler import LevelProgressHandler
 from libraries.utilities.score_calculator import ScoreCalculator
@@ -221,10 +220,10 @@ def scoreboard_brd(division):
     sorted_robots = sorted(list(sorted_robots), key=lambda k: k['TFS'])
 
     return render_template(
-            "scoreboard_brd_gpmp.html",
-            robots=sorted_robots,
-            scoreboard_name=get_division_label(division)
-        )
+        "scoreboard_brd_gpmp.html",
+        robots=sorted_robots,
+        scoreboard_name=get_division_label(division)
+    )
 
 @main.route('/scoreboard/gpmp', methods=['GET', 'POST'])
 def scoreboard_gpmp():
@@ -240,18 +239,18 @@ def scoreboard_gpmp():
     sorted_robots = sorted(list(robots), key=lambda k: k['name'])
     sorted_robots = sorted(list(sorted_robots), key=lambda k: k['TFS'])
 
-
     return render_template(
         "scoreboard_brd_gpmp.html",
         robots=sorted_robots,
         scoreboard_name="Grand Performance"
     )
 
+
 @main.route('/scoreboard/lisp/<level>', methods=['GET', 'POST'])
 def scoreboard_lisp(level):
     if not level.isdigit():
         return render_template("not_found.html")
-    if int(level) not in [1,2,3]:
+    if int(level) not in [1, 2, 3]:
         return render_template("not_found.html")
 
     robots = r.get_registry()['ROBOTS'].get_all_robots()
