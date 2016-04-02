@@ -8,6 +8,7 @@ import csv
 from libraries.utilities.authentication import AuthenticationUtilities
 from libraries.utilities.level_progress_handler import LevelProgressHandler
 from libraries.utilities.score_calculator import ScoreCalculator
+from libraries.utilities.scoreboard import ScoreBoard
 from libraries.utilities.run_parameters import RunParameters
 from libraries.utilities.robot_inspection_table_handler import (
     RobotInspectionTableHandler
@@ -218,7 +219,7 @@ def scoreboard_brd(division):
         return render_template("not_found.html")
 
     # add additional parameters to be displayed on scoreboard
-    robots = add_scoreboard_params(robots)
+    robots = ScoreBoard.add_scoreboard_params(robots)
 
     # sort based on name then total score
     sorted_robots = sorted(list(robots), key=lambda k: k['name'])
@@ -238,7 +239,7 @@ def scoreboard_gpmp():
         return render_template("not_found.html")
 
     # add additional parameters to be displayed on scoreboard
-    robots = add_scoreboard_params(robots)
+    robots = ScoreBoard.add_scoreboard_params(robots)
 
     # sort based on name then total score
     sorted_robots = sorted(list(robots), key=lambda k: k['name'])
@@ -264,7 +265,7 @@ def scoreboard_lisp(level):
         return render_template("not_found.html")
 
     # add additional parameters to be displayed on scoreboard
-    robots = add_scoreboard_params(robots)
+    robots = ScoreBoard.add_scoreboard_params(robots)
 
     # filter robots
     filtered_robots = filter_robots(robots, int(level))
@@ -283,19 +284,6 @@ def scoreboard_lisp(level):
         score_name=score_name
     )
 
-# adds necessary parameters to be displayed on the scoreboard
-def add_scoreboard_params(robots):
-    for robot in robots:
-        runs = r.get_registry()['RUNS'].get_runs(robot['id'])
-        best_scores, attempted_levels, total_score, num_successful = (
-            ScoreCalculator.get_best_scores(runs)
-        )
-        robot.update(best_scores)
-        robot['TFS'] = total_score
-        robot['completed'] = attempted_levels
-        robot['num_successful'] = num_successful
-
-    return robots
 
 # filter robots that should be shown on scoreboard
 def filter_robots(robots, level):
