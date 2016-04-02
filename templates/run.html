@@ -285,7 +285,7 @@
                     <h4>Penalty Points:</h4>
                 </div>
                 <div {% if input['CANDLE_ERR'] == True %} class="col-xs-6 col-lg-6 has-error" {% else %} class="col-xs-6 col-lg-6" {% endif %}>
-                    <div class="col-xs-2 col-lg-2 candle_contact">
+                    <div class="col-xs-6 col-lg-6 candle_contact">
                         <input type="text" class="form-control" name="touched_candle" class="col-xs-6" value="{{ input['touched_candle']}}"/>
                         {% if input['CANDLE_ERR'] == True %}<label class="control-label">Invalid value</label> {% endif %}
                     </div>
