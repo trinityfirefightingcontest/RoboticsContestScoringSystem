@@ -469,6 +469,8 @@ def validate_actual_time(time_s, level, failed):
 
 # validate number of rooms
 def validate_num_rooms(num_s, level):
+    if level not in [1,2]:
+        return True
 
     num_s = num_s.strip()
     # minimum and maximum allowed values
