@@ -29,7 +29,7 @@
         </div>
         <div class="row">
             <div {% if inputs['BREADTH_ERR'] %} class="col-xs-3 col-lg-3 has-error" {% else %} class="col-xs-3 col-lg-3" {% endif %} >
-                    <label>Breadth (in centimeters):</label>
+                    <label>Depth (in centimeters):</label>
                     <input type="text" class="form-control" name="breadth" value="{{ inputs['breadth'] }}"/>
                     {% if inputs['BREADTH_ERR'] == True %}<label class="control-label">Invalid value</label> {% endif %}
             </div>

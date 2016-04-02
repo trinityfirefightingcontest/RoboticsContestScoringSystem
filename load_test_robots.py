@@ -20,21 +20,20 @@ def run():
         'fire fighting walking division': 'walking'
     }
     unique_map = {
-        'no, it is unique': True,
-        'yes, we customized a kit': False
+        'unique': True,
+        'customized': False,
+        'i am not sure': False
     }
     versa_valve_map = {
-        'yes, please ship one to me.': True,
-        'no, not at this time.  we will contact you if we change our mind.': (
-            False)
+        'yes': True,
+        'no': False
     }
     fields_index = {
-        'email': 3,
-        'division': 5,
-        'name': 6,
-        'unique': 7,
-        'versa_valve': 8,
-        'school': 10
+        'division': 3,
+        'name': 4,
+        'unique': 5,
+        'versa_valve': 6,
+        'school': 7
     }
     with open('robot_list.csv', 'rb') as csvfile:
         spamreader = csv.reader(csvfile)

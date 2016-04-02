@@ -1,51 +1,83 @@
-,First Name,Last Name,Email,Quantity,Ticket Type,What is the robot name?,Is this robot created from a purchased kit that was then customized to perform the challenges of this event?,Does the team require a Versa Valve?  (1 free per robot will be provided),Billing State,Company
-1,Ruth,Kovalski,koruthy@gmail.com,1,Fire Fighting High School Division,Sami the Fireman,"No, it is unique","Yes, please ship one to me.",Israel,Ort Holon High School
-2,Ruth,Kovalski,koruthy@gmail.com,1,Fire Fighting High School Division,Kegy the Fire-bot,"No, it is unique","Yes, please ship one to me.",Israel,Ort Holon High School
-3,alex,kiiru,alexkiiru@taftschool.org,1,Fire Fighting High School Division,RedRhino,"No, it is unique","No, not at this time.  We will contact you if we change our mind.",CT,taft school
-4,CJ,Silverman,cjsilverman@taftschool.org,1,Fire Fighting High School Division,Bill Nye,"No, it is unique","No, not at this time.  We will contact you if we change our mind.",CT,taft school
-5,Shasha,Alvares,shashaalvares@taftschool.org,1,Fire Fighting High School Division,Risotto,"No, it is unique","No, not at this time.  We will contact you if we change our mind.",CT,taft school
-6,Chris,Bravo-Ibanez,christopherbravo-ibanez@taftschool.org,1,Fire Fighting High School Division,Big Red,"No, it is unique","No, not at this time.  We will contact you if we change our mind.",CT,taft school
-7,Sidharth,Annapragada,sidharth0801@gmail.com,1,Fire Fighting High School Division,That's funny..,"No, it is unique","Yes, please ship one to me.",DE,The Brothers Annapragada
-8,Niki,Russell,russelln14@gmail.com,1,Fire Fighting High School Division,Angus,"No, it is unique","Yes, please ship one to me.",MA,Frontier Regional School
-9,ran,nusboim,nusboimran@gmail.com,1,Fire Fighting High School Division,ROBONER1,"No, it is unique","Yes, please ship one to me.",Israel,ORT GIVATAYIM
-10,ran,nusboim,nusboimran@gmail.com,1,Fire Fighting High School Division,ROBONER2,"No, it is unique","Yes, please ship one to me.",Israel,ORT GIVATAYIM
-11,Jun,Zhou,joannaz@yeah.net,1,Fire Fighting High School Division,SMTL BULL,"No, it is unique","No, not at this time.  We will contact you if we change our mind.",China,Shimen Senior Middle School & Tongling No.3 High School
-12,Jun,Zhou,joannaz@yeah.net,1,Fire Fighting High School Division,SMTL RAZER,"Yes, we customized a kit","No, not at this time.  We will contact you if we change our mind.",China,Shimen Senior Middle School & Tongling No.3 High School
-13,Joanna,Zhou,joannaz@yeah.net,1,Fire Fighting High School Division,TLSM MARS,"Yes, we customized a kit","No, not at this time.  We will contact you if we change our mind.",China,Tongling No.3 High School & Shimen Senior Middle School
-14,Joanna,Zhou,joannaz@yeah.net,1,Fire Fighting High School Division,TLSM CHALLENGER,"No, it is unique","No, not at this time.  We will contact you if we change our mind.",China,Tongling No.3 High School & Shimen Senior Middle School
-15,Graciela,Elia,graciela_elia@princetonk12.org,1,Fire Fighting High School Division,Botbox 2001,"No, it is unique","Yes, please ship one to me.",NJ,Princeton High School
-16,David,Shaffer,cdshaffer@acm.org,1,Fire Fighting High School Division,Eddie,"No, it is unique","No, not at this time.  We will contact you if we change our mind.",PA,Mercer/West Middlesex High Schools
-17,David,Shaffer,cdshaffer@acm.org,1,Fire Fighting High School Division,Lil' Twitch,"No, it is unique","No, not at this time.  We will contact you if we change our mind.",PA,Mercer Area High School
-18,Rahul,Jayachandran,ketki.vahalia@gmail.com,1,Fire Fighting Junior Division,Flame Killer 300,"Yes, we customized a kit","No, not at this time.  We will contact you if we change our mind.",CT,Student
-19,William,Lovell,wlovell@c-linksystems.com,1,Fire Fighting Junior Division,Inferno Snuffer,"No, it is unique","No, not at this time.  We will contact you if we change our mind.",ME,Oxford Hills Middle School
-20,haoyu,wang,robokidix@gmail.com,1,Fire Fighting Junior Division,It's not rocket science,"No, it is unique","Yes, please ship one to me.",CT,Robokidix
-21,haoyu,wang,robokidix@gmail.com,1,Fire Fighting Junior Division,Goat-Bot,"I am not sure, please contact me to discuss","Yes, please ship one to me.",CT,Robokidix
-22,Mark,Meredith,mmeredith@tmsc.org,1,Fire Fighting Junior Division,Talcott Vex Alpha,"Yes, we customized a kit","Yes, please ship one to me.",CT,"Talcott Mountain Science Center for Student Involvement, Inc."
-23,Mark,Meredith,mmeredith@tmsc.org,1,Fire Fighting Junior Division,Talcott Vex Beta,"Yes, we customized a kit","Yes, please ship one to me.",CT,"Talcott Mountain Science Center for Student Involvement, Inc."
-24,John,Pellino,jpellino@tmsc.org,1,Fire Fighting Junior Division,Talcott Mindstorms Don,"Yes, we customized a kit","Yes, please ship one to me.",CT,"Talcott Mountain Science Center for Student Involvement, Inc."
-25,John,Pellino,jpellino@tmsc.org,1,Fire Fighting Junior Division,Talcott Mindstorms George,"Yes, we customized a kit","Yes, please ship one to me.",CT,"Talcott Mountain Science Center for Student Involvement, Inc."
-26,David,Shaffer,cdshaffer@acm.org,1,Fire Fighting Junior Division,Fluff,"No, it is unique","Yes, please ship one to me.",PA,Mercer/Sharon Elementary Schools
-27,Zachariah,Sutton,zachariah.sutton@uconn.edu,1,Fire Fighting Senior Division,Astrid,"No, it is unique","No, not at this time.  We will contact you if we change our mind.",CT,University of Connecticut
-28,Imam,Robani,iimrobani@gmail.com,1,Fire Fighting Senior Division,DU114-WHITE,"No, it is unique","No, not at this time.  We will contact you if we change our mind.",Indonesia,UNIKOM
-29,Anita,Fitrizia,anitafitrizia@gmail.com,1,Fire Fighting Senior Division,DU114-RED,"No, it is unique","No, not at this time.  We will contact you if we change our mind.",Indonesia,UNIKOM
-30,Muhamad Ikbal,Wiguna,muhamadikbal.wiguna@gmail.com,1,Fire Fighting Senior Division,DU114-ORANGE,"No, it is unique","No, not at this time.  We will contact you if we change our mind.",Indonesia,UNIKOM
-31,Feki,Pangestu,fleqsy_afc@yahoo.com,1,Fire Fighting Senior Division,DU114-BLUE,"No, it is unique","No, not at this time.  We will contact you if we change our mind.",Indonesia,UNIKOM
-32,Leonard,McDonald,mcdonaldl8695@stuemail.gcc.mass.edu,1,Fire Fighting Senior Division,HAL,"No, it is unique","Yes, please ship one to me.",MA,GCC Robotics and Engineering Club
-33,Chris,DiMauro,chrisdimauro@google.com,1,Fire Fighting Senior Division,Tower Of Shower,"No, it is unique","Yes, please ship one to me.",NY,Chris DiMauro
-34,Nathan,Weisling,nw90@evansville.edu,1,Fire Fighting Senior Division,Florian,"No, it is unique","Yes, please ship one to me.",IN,University of Evansville
-35,Faizal,Aminuddin Aziz,I_cank@ymail.com,1,Fire Fighting Senior Division,KHAUM 1,"No, it is unique","Yes, please ship one to me.",Indonesia,UNISSULA
-36,La Ode,Muhamad Idris,Lmidris10@gmail.com,1,Fire Fighting Senior Division,KHAUM 2,"No, it is unique","Yes, please ship one to me.",Indonesia,UNISSULA
-37,Nick,Morris,morrismn@alfredstate.edu,1,Fire Fighting Senior Division,Pyro-X-Tinger,"No, it is unique","No, not at this time.  We will contact you if we change our mind.",NY,Alfred State College
-38,Brandon,Bryniarski,bryniabj@alfredstate.edu,1,Fire Fighting Senior Division,Knight Wolf,"No, it is unique","No, not at this time.  We will contact you if we change our mind.",NY,Alfred State College
-39,Dale,Salmon,salmond@alfredstate.edu,1,Fire Fighting Senior Division,Alpha Bravo Foxtrot,"No, it is unique","No, not at this time.  We will contact you if we change our mind.",NY,Alfred State College
-40,Virginia A,MacGowan,macgowav@erau.edu,1,Fire Fighting Senior Division,EAGLE-1,"No, it is unique","Yes, please ship one to me.",AZ,Embry Riddle Aeronautical University
-41,Abhimanyu,Ghosh,Aghosh993@gmail.com,1,Fire Fighting Senior Division,Theseus,"No, it is unique","Yes, please ship one to me.",NY,NYU Tandon School of Engineering
-42,Tyler,Sanders,SanderTJ@alfredstate.edu,1,Fire Fighting Senior Division,Dr. B,"No, it is unique","No, not at this time.  We will contact you if we change our mind.",NY,Alfred State College
-43,Kevin,Sherridan,SheridKM@alfredstate.edu,1,Fire Fighting Senior Division,Brenda Berkman,"No, it is unique","No, not at this time.  We will contact you if we change our mind.",NY,Alfred State College
-44,Edward,Chen,ec2321@nyu.edu,1,Fire Fighting Senior Division,Chick peas,"No, it is unique","No, not at this time.  We will contact you if we change our mind.",NY,NYU
-45,Joanna,Zhou,joannaz@yeah.net,1,Fire Fighting Senior Division,TLSM COMET,"Yes, we customized a kit","No, not at this time.  We will contact you if we change our mind.",China,Tongling No.3 High School & Shimen Senior Middle School
-46,Joanna,Zhou,joannaz@yeah.net,1,Fire Fighting Senior Division,SMTL APRIL,"Yes, we customized a kit","No, not at this time.  We will contact you if we change our mind.",China,Shimen Senior Middle School & Tongling No.3 High School
-47,David,Shaffer,cdshaffer@acm.org,1,Fire Fighting Senior Division,The Watcher,"No, it is unique","No, not at this time.  We will contact you if we change our mind.",PA,Westminster College
-48,prawzach gari,papang,prawzachgp@gmail.com,1,Fire Fighting Walking Division,CYBER RIMAU,"Yes, we customized a kit","Yes, please ship one to me.",Indonesia,SRIWIJAYA UNIVERSITY
-49,Bustanul,Arifin,bustanul@unissula.ac.id,1,Fire Fighting Walking Division,Sultan Agung 1,"No, it is unique","Yes, please ship one to me.",Indonesia,UNISSULA
-50,Ahmad,Zuhri,Zuhri.ahmad1994@gmail.com,1,Fire Fighting Walking Division,Sultan Agung 2,"No, it is unique","Yes, please ship one to me.",Indonesia,UNISSULA
+1,Niki,Russell,Fire Fighting High School Division,Angus,Unique,Yes,Frontier Regional School,,,,,
+2,Peter,swan,Fire Fighting High School Division,Phlogiston,Unique,No,Hopkins School,,,,,
+3,feliks,bekman,Fire Fighting High School Division,VULKAN,Unique,No,Ironi Gimel School,,,,,
+4,feliks,bekman,Fire Fighting High School Division,PHOENIX,Unique,No,Ironi Gimel School,,,,,
+5,David,Shaffer,Fire Fighting High School Division,Lil' Twitch,Unique,No,Mercer Area High School,,,,,
+6,David,Shaffer,Fire Fighting High School Division,Eddie,Unique,No,Mercer/West Middlesex High Schools,,,,,
+7,Haim,Dribin,Fire Fighting High School Division,Y.E.T-I,Unique,No,Misgav High School,,,,,
+8,Haim,Dribin,Fire Fighting High School Division,Leroy,Unique,No,Misgav High School,,,,,
+9,Haim,Dribin,Fire Fighting High School Division,TOY,Unique,No,Misgav High School,,,,,
+10,ran,nusboim,Fire Fighting High School Division,ROBONER1,Unique,Yes,ORT GIVATAYIM,,,,,
+11,ran,nusboim,Fire Fighting High School Division,ROBONER2,Unique,Yes,ORT GIVATAYIM,,,,,
+12,Ruth,Kovalski,Fire Fighting High School Division,Sami the Fireman,Unique,Yes,Ort Holon High School,,,,,
+13,Ruth,Kovalski,Fire Fighting High School Division,Kegy the Fire-bot,Unique,Yes,Ort Holon High School,,,,,
+14,Graciela,Elia,Fire Fighting High School Division,Botbox 2001,Unique,Yes,Princeton High School,,,,,
+15,graciela,elia,Fire Fighting High School Division,Walter 1.0.0,Customized,Yes,Princeton High School,,,,,
+16,Pridhvi,Myneni,Fire Fighting High School Division,Fire 404,I am not sure,Yes,Princeton High School,,,,,
+17,Jun,Zhou,Fire Fighting High School Division,SMTL BULL,Unique,No,Shimen Senior Middle School & Tongling No.3 High School,,,,,
+18,Jun,Zhou,Fire Fighting High School Division,SMTL RAZER,Customized,No,Shimen Senior Middle School & Tongling No.3 High School,,,,,
+19,alex,kiiru,Fire Fighting High School Division,RedRhino,Unique,No,taft school,,,,,
+20,CJ,Silverman,Fire Fighting High School Division,Bill Nye,Unique,No,taft school,,,,,
+21,Shasha,Alvares,Fire Fighting High School Division,Risotto,Unique,No,taft school,,,,,
+22,Chris,Bravo-Ibanez,Fire Fighting High School Division,Big Red,Unique,No,taft school,,,,,
+23,Sidharth,Annapragada,Fire Fighting High School Division,That's funny..,Unique,Yes,The Brothers Annapragada,,,,,
+24,Joanna,Zhou,Fire Fighting High School Division,TLSM MARS,Customized,No,Tongling No.3 High School & Shimen Senior Middle School,,,,,
+25,Joanna,Zhou,Fire Fighting High School Division,TLSM CHALLENGER,Unique,No,Tongling No.3 High School & Shimen Senior Middle School,,,,,
+26,David,Shaffer,Fire Fighting Junior Division,Fluff,Unique,Yes,Mercer/Sharon Elementary Schools,,,,,
+27,William,Lovell,Fire Fighting Junior Division,Inferno Snuffer,Unique,No,Oxford Hills Middle School,,,,,
+28,haoyu,wang,Fire Fighting Junior Division,It's not rocket science,Unique,Yes,Robokidix,,,,,
+29,haoyu,wang,Fire Fighting Junior Division,Goat-Bot,I am not sure,Yes,Robokidix,,,,,
+30,Kathy,Hardesty,Fire Fighting Junior Division,Smokey,Customized,No,Smith STEM School,,,,,
+31,Rahul,Jayachandran,Fire Fighting Junior Division,Flame Killer 300,Customized,No,Student,,,,,
+32,Mark,Meredith,Fire Fighting Junior Division,Talcott Vex Alpha,Customized,Yes,"Talcott Mountain Science Center for Student Involvement, Inc.",,,,,
+33,Mark,Meredith,Fire Fighting Junior Division,Talcott Vex Beta,Customized,Yes,"Talcott Mountain Science Center for Student Involvement, Inc.",,,,,
+34,John,Pellino,Fire Fighting Junior Division,Talcott Mindstorms Don,Customized,Yes,"Talcott Mountain Science Center for Student Involvement, Inc.",,,,,
+35,John,Pellino,Fire Fighting Junior Division,Talcott Mindstorms George,Customized,Yes,"Talcott Mountain Science Center for Student Involvement, Inc.",,,,,
+36,Nick,Morris,Fire Fighting Senior Division,Pyro-X-Tinger,Unique,No,Alfred State College,,,,,
+37,Dale,Salmon,Fire Fighting Senior Division,Alpha Bravo Foxtrot,Unique,No,Alfred State College,,,,,
+38,Tyler,Sanders,Fire Fighting Senior Division,Dr. B,Unique,No,Alfred State College,,,,,
+39,Kevin,Sherridan,Fire Fighting Senior Division,Brenda Berkman,Unique,No,Alfred State College,,,,,
+40,Brandon,Bryniarski,Fire Fighting Senior Division,Knight Wolf,Unique,No,Alfred State College,,,,,
+41,Sage,Routier,Fire Fighting Senior Division,FN2187,Unique,No,Alfred State College,,,,,
+42,Chris,DiMauro,Fire Fighting Senior Division,Tower Of Shower,Unique,Yes,Chris DiMauro,,,,,
+43,Virginia A,MacGowan,Fire Fighting Senior Division,EAGLE-1,Unique,Yes,Embry Riddle Aeronautical University,,,,,
+44,Yesenia,Garcia Balbuena,Fire Fighting Senior Division,Britney Gears,Unique,No,ENGR120,,,,,
+45,Leonard,McDonald,Fire Fighting Senior Division,HAL,Unique,Yes,GCC Robotics and Engineering Club,,,,,
+46,Chris,Odom,Fire Fighting Senior Division,The Procrastinator,Unique,Yes,George School,,,,,
+47,Alxander,Nuciforo,Fire Fighting Senior Division,He Who Must Not Be Named,Unique,No,New York University,,,,,
+48,Lilith,Morales,Fire Fighting Senior Division,SPACE ARSON,Unique,No,New York University Tandon School of Engineering,,,,,
+49,Jiwoo,Song,Fire Fighting Senior Division,Hank the Fireman,Unique,No,Norwalk Community College,,,,,
+50,Edward,Chen,Fire Fighting Senior Division,Chick peas,Unique,No,NYU,,,,,
+51,Diallo,Sambury,Fire Fighting Senior Division,Ohmz,Unique,Yes,NYU Polybots,,,,,
+52,Abhimanyu,Ghosh,Fire Fighting Senior Division,Theseus,Unique,Yes,NYU Tandon School of Engineering,,,,,
+53,Matthew,Slizys,Fire Fighting Senior Division,Poly-calypse,Unique,Yes,NYU Tandon School of Engineering / Polybots,,,,,
+54,Nikolas,Vale,Fire Fighting Senior Division,ROG,Unique,Yes,NYU Tandon School of Engineering/ PolyBOTs,,,,,
+55,Bruce,Sheridan,Fire Fighting Senior Division,FlameOut,Unique,No,Retired,,,,,
+56,Christian,Netter,Fire Fighting Senior Division,Candlefinder,Unique,No,Self,,,,,
+57,Joanna,Zhou,Fire Fighting Senior Division,SMTL APRIL,Customized,No,Shimen Senior Middle School & Tongling No.3 High School,,,,,
+58,Dennis,Quill,Fire Fighting Senior Division,SUNY Oswego ECE,Unique,No,SUNY Oswego - ECE Department,,,,,
+59,Joanna,Zhou,Fire Fighting Senior Division,TLSM COMET,Customized,No,Tongling No.3 High School & Shimen Senior Middle School,,,,,
+60,Dillon,Montgomery,Fire Fighting Senior Division,Boo Boo,Unique,No,Trinity College,,,,,
+61,Lydia,Silva,Fire Fighting Senior Division,Thor,Unique,Yes,Trinity College,,,,,
+62,Binh,Vo,Fire Fighting Senior Division,Kit-Kat,Unique,No,Trinity College,,,,,
+63,Bemnet,Demere,Fire Fighting Senior Division,IronBot,Unique,No,Trinity College,,,,,
+64,Madison,Sinkfield,Fire Fighting Senior Division,Bantbot,Unique,Yes,Trinity College,,,,,
+65,Elijah,Hernandez,Fire Fighting Senior Division,Slim Jesus,Unique,No,Trinity College,,,,,
+66,Andrew,Lewis,Fire Fighting Senior Division,Marshmallow,Unique,No,Trinity collge,,,,,
+67,Riley,Wood,Fire Fighting Senior Division,Eg,Unique,No,Tufts Robotics Club,,,,,
+68,Riley,Wood,Fire Fighting Senior Division,Dave,Unique,No,Tufts Robotics Club,,,,,
+69,Riley,Wood,Fire Fighting Senior Division,Sleep On It,Unique,No,Tufts Robotics Club,,,,,
+70,Imam,Robani,Fire Fighting Senior Division,DU114-WHITE,Unique,No,UNIKOM,,,,,
+71,Anita,Fitrizia,Fire Fighting Senior Division,DU114-RED,Unique,No,UNIKOM,,,,,
+72,Muhamad Ikbal,Wiguna,Fire Fighting Senior Division,DU114-ORANGE,Unique,No,UNIKOM,,,,,
+73,Feki,Pangestu,Fire Fighting Senior Division,DU114-BLUE,Unique,No,UNIKOM,,,,,
+74,Faizal,Aminuddin Aziz,Fire Fighting Senior Division,KHAUM 1,Unique,Yes,UNISSULA,,,,,
+75,La Ode,Muhamad Idris,Fire Fighting Senior Division,KHAUM 2,Unique,Yes,UNISSULA,,,,,
+76,Ryan,Morin,Fire Fighting Senior Division,UNH FFR Team,Unique,No,Univ. of New Hampshire,,,,,
+77,Zachariah,Sutton,Fire Fighting Senior Division,Astrid,Unique,No,University of Connecticut,,,,,
+78,Nathan,Weisling,Fire Fighting Senior Division,Florian,Unique,Yes,University of Evansville,,,,,
+79,Yeshwanth,Abburi,Fire Fighting Senior Division,SPARK,Unique,Yes,University Of Hartford,,,,,
+80,David,Shaffer,Fire Fighting Senior Division,The Watcher,Unique,No,Westminster College,,,,,
+81,prawzach gari,papang,Fire Fighting Walking Division,CYBER RIMAU,Customized,Yes,SRIWIJAYA UNIVERSITY,,,,,
+82,Bustanul,Arifin,Fire Fighting Walking Division,Sultan Agung 1,Unique,Yes,UNISSULA,,,,,
+83,Ahmad,Zuhri,Fire Fighting Walking Division,Sultan Agung 2,Unique,Yes,UNISSULA,,,,,
