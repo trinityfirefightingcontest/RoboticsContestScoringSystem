@@ -25,7 +25,7 @@ class RobotInspectionTableHandler:
         },
         BREADTH: {
             'modifer': lambda x: int(x),
-            'validator': lambda x: x > 0 and x < 31,
+            'validator': lambda x: x > 0 and x <= 31,
             'error_key': BREADTH_ERR
         },
         PASSES_INSPECTION: {
