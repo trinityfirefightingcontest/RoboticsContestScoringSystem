@@ -15,17 +15,17 @@ class RobotInspectionTableHandler:
     REQUIRED_INPUTS = {
         HEIGHT: {
             'modifer': lambda x: int(x),
-            'validator': lambda x: x > 0 and x <= 27,
+            'validator': lambda x: x > 0 and x <= 270,
             'error_key': HEIGHT_ERR
         },
         WIDTH: {
             'modifer': lambda x: int(x),
-            'validator': lambda x: x > 0 and x <= 31,
+            'validator': lambda x: x > 0 and x <= 310,
             'error_key': WIDTH_ERR
         },
         BREADTH: {
             'modifer': lambda x: int(x),
-            'validator': lambda x: x > 0 and x <= 31,
+            'validator': lambda x: x > 0 and x <= 310,
             'error_key': BREADTH_ERR
         },
         PASSES_INSPECTION: {
