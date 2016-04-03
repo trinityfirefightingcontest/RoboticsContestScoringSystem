@@ -1,0 +1,118 @@
+{% extends "header.html" %}
+{% block head %}
+	<style>
+	    #prizes td, #prizes th {
+	       text-align: center;
+	    }
+	    .gi-lg {
+	    	font-size: 1.5em;
+	    	padding-left: 1em;
+	    	padding-right: 1em;
+	    }
+	    #gpmp-winner {
+	    	font-size: 1.5em;
+	    }
+    </style>
+{% endblock %}
+{% block main_content %}
+<div class="container container-fluid">
+    <div class="row text-center">
+        <div class="page-header">
+            <h1>Prize Winners</h1>
+        </div>
+    </div>
+
+    <div class="row text-center">
+    	<h3>Grand Performance Mastery Prize Winner (GPMP)</h3>
+    	<span class="glyphicon glyphicon-king gi-lg"></span>
+    	<span id="gpmp-winner">
+	    	{% for place in [1] %}
+				{% if gpmp_winners.get(place) %}
+				 	<a href="{{url_for('main.robot_detail', robot_id=gpmp_winners.get(place).get('id'))}}">
+				 		{{gpmp_winners.get(place).get('name')}}
+				 	</a>
+				{% else %}
+					N/A
+				{% endif %}
+			{% endfor %}
+		</span>
+		<span class="glyphicon glyphicon-king gi-lg"></span>
+	</div>
+	<br><br>
+	<div class="row text-center" id="prizes">
+		<div class="col-lg-6">
+			<h3>Lowest Individual Score Prize Winners (LISP)</h3>
+			<table class="table table-striped">
+				<thead class="thead-inverse">
+	                <tr>
+	                    <th>Level</th>
+	                    <th>Unique</th>
+	                    <th>Customized</th>
+	                </tr>
+	            </thead>
+	            <tbody>
+	            {% for level in [1,2,3] %}
+	            	<tr>
+	            		<td>L{{level}}</td>
+						{% for category in ['unique', 'custom'] %}
+							<td>
+								{% for place in [1] %}
+									{% if lisp_winners.get(level).get(category).get(place) %}
+									 	<a href="#">
+									 		{{lisp_winners.get(level).get(category).get(place).get('name')}}
+									 	</a>
+									 	<br>
+									{% else %}
+										N/A
+										<br>
+									{% endif %}
+								{% endfor %}
+							</td>
+						{% endfor %}
+					</tr>
+				{% endfor %}
+	            </tbody>
+			</table>
+		</div>
+		<div class="col-lg-6">
+			<h3>Best Robots in Division Prize Winners (BRD)</h3>
+			<table class="table table-striped">
+				<thead class="thead-inverse">
+	                <tr>
+	                    <th>Division</th>
+	                    <th>Unique</th>
+	                    <th>Customized</th>
+	                </tr>
+	            </thead>
+	            <tbody>
+	            {% for division in ['junior', 'high_school', 'walking', 'senior'] %}
+	            	<tr>
+	            		<td>{{division}}</td>
+						{% for category in ['unique', 'custom'] %}
+							<td>
+								{% for place in [1,2,3] %}
+									{{place}}:
+									{% if brd_winners.get(division).get(category).get(place) %}
+									 	<a href="#">
+									 		{{brd_winners.get(division).get(category).get(place).get('name')}}
+									 	</a>
+									 	<br>
+									{% else %}
+										N/A
+										<br>
+									{% endif %}
+								{% endfor %}
+							</td>
+						{% endfor %}
+					</tr>
+				{% endfor %}
+	            </tbody>
+			</table>
+		</div>
+	</div>
+	<div class="row text-center">
+		<a href="/api/prizes">(Export to CSV)</a>
+		<br><br><br>
+	</div>
+</div>
+{% endblock %}

@@ -23,6 +23,7 @@
 							<th>Rank</th>
 							<th>Name</th>
 							<th>Division</th>
+							<th>Category</th>
 							<th># of Successful Runs</th>
 							<th>Lowest Score Level {{level}}</th>
 						</tr>
@@ -33,6 +34,7 @@
 							<td>{{ loop.index }}</td>
 							<td><a href="{{url_for('main.robot_detail', robot_id=robot['id'])}}">{{ robot.get('name') }}</a></td>
 							<td>{{ robot.get('division') }}</td>
+							<td>{{ "Unique" if robot.get('is_unique') == 1 else "Customized" }}</td>
 							<td>{{ robot.get('num_successful') }}
 							<td>{{ robot.get(score_name) }}</td>
 						</tr>
