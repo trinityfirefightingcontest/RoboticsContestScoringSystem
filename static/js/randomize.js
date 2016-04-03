@@ -25,8 +25,13 @@ function furniture_loc() {
     return arr[Math.floor(Math.random()*arr.length)]; 
 }
 
-function baby_placement_loc() {
+function baby_exit_loc() {
     var arr = ["W1", "W2", "W3", "W4"];
+    return arr[Math.floor(Math.random()*arr.length)];
+}
+
+function baby_placement_loc() {
+    var arr = ["C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8"];
     return arr[Math.floor(Math.random()*arr.length)];
 }
 
@@ -83,12 +88,27 @@ function furniture_img(id) {
     return dict[id];
 }
 
-function baby_loc_img(id) {
+function baby_exit_loc_img(id) {
     var dict = {
         'W1': '/static/img/_THUMBNAILS_/Targets.Thumbnails/W1.png',
         'W2': '/static/img/_THUMBNAILS_/Targets.Thumbnails/W2.png',
         'W3': '/static/img/_THUMBNAILS_/Targets.Thumbnails/W3.png',
         'W4': '/static/img/_THUMBNAILS_/Targets.Thumbnails/W4.png'
+    }
+
+    return dict[id];
+}
+
+function baby_place_loc_img(id) {
+    var dict = {
+        'C1': '/static/img/_THUMBNAILS_/Cradle.Thumbnails/cradle1.png',
+        'C2': '/static/img/_THUMBNAILS_/Cradle.Thumbnails/cradle2.png',
+        'C3': '/static/img/_THUMBNAILS_/Cradle.Thumbnails/cradle3.png',
+        'C4': '/static/img/_THUMBNAILS_/Cradle.Thumbnails/cradle4.png',
+        'C5': '/static/img/_THUMBNAILS_/Cradle.Thumbnails/cradle5.png',
+        'C6': '/static/img/_THUMBNAILS_/Cradle.Thumbnails/cradle6.png',
+        'C7': '/static/img/_THUMBNAILS_/Cradle.Thumbnails/cradle7.png',
+        'C8': '/static/img/_THUMBNAILS_/Cradle.Thumbnails/cradle8.png'
     }
 
     return dict[id];
@@ -129,11 +149,18 @@ $(document).ready(function() {
         $('#furnitureLocationImg').attr('src', furniture_img(furniture_loc_id));
 
     })
+    $('#baby-exit-but').on('click', function (e) {
+        var baby_exit_id = baby_exit_loc();
+        $('#baby-exit').html(baby_exit_id);
+        
+        $('#babyExitDiv').removeClass('hidden');
+        $('#babyExitImg').attr('src', baby_exit_loc_img(baby_exit_id));
+    })
     $('#baby-placement-but').on('click', function (e) {
         var baby_placement_id = baby_placement_loc();
         $('#baby-placement').html(baby_placement_id);
-        
+
         $('#babyLocationDiv').removeClass('hidden');
-        $('#babyLocationImg').attr('src', baby_loc_img(baby_placement_id));
+        $('#babyLocationImg').attr('src', baby_place_loc_img(baby_placement_id));
     })
 });
