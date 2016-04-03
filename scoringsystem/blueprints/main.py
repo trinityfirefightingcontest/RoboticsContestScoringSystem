@@ -268,7 +268,7 @@ def scoreboard_lisp(level):
     robots = ScoreBoard.add_scoreboard_params(robots)
 
     # filter robots
-    filtered_robots = filter_robots(robots, int(level))
+    filtered_robots = ScoreBoard.filter_robots_level(robots, int(level))
 
     # key used for sorting
     score_name = "LS" + level
@@ -284,17 +284,28 @@ def scoreboard_lisp(level):
         score_name=score_name
     )
 
+@main.route('/prizes', methods=['GET', 'POST'])
+def prize_winners():
+    robots = r.get_registry()['ROBOTS'].get_all_robots()
 
-# filter robots that should be shown on scoreboard
-def filter_robots(robots, level):
-    if level == 1:
-        filtered = [robot for robot in robots if 1 in robot['completed'] and 2 not in robot['completed']]
-    elif level == 2:
-        filtered = [robot for robot in robots if 2 in robot['completed']]
-    else:
-        filtered = [robot for robot in robots if 3 in robot['completed']]
+    # calculate additional score parameters
+    robots = ScoreBoard.add_scoreboard_params(robots)
 
-    return filtered
+    # gpmp_winner[place] dict
+    gpmp_winners = ScoreBoard.get_gpmp_winners(robots)
+
+    # lisp_winners[level][category][place] dict
+    lisp_winners = ScoreBoard.get_lisp_winners(robots)
+
+    # brd_winners[division][category][place] dict
+    brd_winners = ScoreBoard.get_brd_winners(robots)
+
+    return render_template(
+        "prizes.html",
+        gpmp_winners=gpmp_winners,
+        lisp_winners=lisp_winners,
+        brd_winners=brd_winners
+    )
 
 # convert dict values to tuple to prepare to insert to DB
 def convert_to_tuple(dic, robot_id, score):

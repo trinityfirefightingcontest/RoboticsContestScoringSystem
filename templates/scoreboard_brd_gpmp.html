@@ -23,6 +23,7 @@
 						<th>Name</th>
 						<th># of Successful Runs</th>
 						<th>Robot's Division</th>
+						<th>Category</th>
 						<th>Current Level</th>
 						<th>Lowest Score Level 1</th>
 						<th>Lowest Score Level 2</th>
@@ -42,6 +43,7 @@
 								{{robot.get('division')}}
 							{% endif %}
 						</td>
+						<td>{{ "Unique" if robot.get('is_unique') == 1 else "Customized" }}</td>
 						<td>{{ robot.get('level') }}</td>
 						<td>{{ robot.get('LS1') }}</td>
 						<td>{{ robot.get('LS2') }}</td>
