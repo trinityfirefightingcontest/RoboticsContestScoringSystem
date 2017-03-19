@@ -9,7 +9,7 @@ from libraries.utilities.authentication import AuthenticationUtilities
 from libraries.utilities.level_progress_handler import LevelProgressHandler
 from libraries.utilities.score_calculator import ScoreCalculator
 from libraries.utilities.scoreboard import ScoreBoard
-from libraries.utilities.run_parameters import RunParameters
+from libraries.utilities.runs import Runs
 from libraries.utilities.robot_inspection_table_handler import (
     RobotInspectionTableHandler
 )
@@ -108,12 +108,14 @@ def robot_detail(robot_id, inputs=None):
 
 @main.route('/robot/<robot_id>/addrun', methods=['GET', 'POST'])
 def robot_add_run(robot_id):
+    # get current robot object
     robot = r.get_registry()['ROBOTS'].get_robot(robot_id)
-
-    if not robot:
+    if not robot:  # if invalid robot_id
         return render_template("not_found.html")
-
+    # get all previous runs
     all_runs = r.get_registry()['RUNS'].get_runs(robot_id)
+
+    # if GET request
     if request.method == 'GET':
         # get all previous runs
         return render_template(
@@ -121,43 +123,59 @@ def robot_add_run(robot_id):
             robot=robot,
             division=get_division_label(robot['division']),
             input=request.args,
+            error={},
             all_runs=all_runs
         )
-    # For post request
+    # request is POST
+    # validate input data
+    form = Runs.convert_to_dict(request.form)
+    error = Runs.validate_form(
+        form,
+        robot['level'],
+        robot['division'],
+        robot['name']
+    )
 
-    # Database query for showing past runs if the POST fails
-
-    all_runs = r.get_registry()['RUNS'].get_runs(robot_id)
-
-    # if invalidate input data
-    params_d = bind_params(request.form, robot_id, robot['level'])
-
-    err = validate_params(params_d,
-                          robot['level'],
-                          robot['division'],
-                          robot['name'])
-
-    if err:
-        err['ERR'] = True
-        params_and_errors = {}
-        params_and_errors.update(params_d)
-        # leave data already entered unchanged
-        params_and_errors.update(err)  # include errors
+    if error:
+        print error
         return render_template(
             "run.html",
             robot=robot,
             division=get_division_label(robot['division']),
-            input=params_and_errors,
+            input=form,
+            error=error,
             all_runs=all_runs
         )
 
+
     # calculate score
-    score = get_score(robot, params_d)
-    # convert dict values to tuple to prepare to insert to DB
-    params_t = convert_to_tuple(params_d, robot_id, score)
+    actual_time, score = Runs.get_score(robot, form)
+
     # insert into databse
-    r.get_registry()['RUNS'].record_run(*params_t)
+    r.get_registry()['RUNS'].record_run(
+        level=robot['level'],
+        failed_trial=form[Runs.RUN_DISQ],
+        actual_time=actual_time,
+        non_air=form[Runs.NON_AIR],
+        furniture=form[Runs.FURNITURE],
+        arbitrary_start=form[Runs.ARBITRARY_START],
+        return_trip=form[Runs.RETURN_TRIP],
+        candle_location_mode=form[Runs.NO_CANDLE_CIRCLE],
+        stopped_within_circle=form[Runs.STOPPED_WITHIN_30],
+        signaled_detection=form[Runs.CANDLE_DETECTED],
+        num_rooms_searched=form[Runs.NUM_ROOMS],
+        kicked_dog=form[Runs.KICKED_DOG],
+        touched_candle=form[Runs.TOUCHED_CANDLE],
+        cont_wall_contact=form[Runs.WALL_CONTACT],
+        ramp_hallway=form[Runs.RAMP_USED],
+        alt_target=form[Runs.BABY_RELOCATED],
+        all_candles=form[Runs.ALL_CANDLES],
+        used_versa_valve=form[Runs.VERSA_VALVE_USED],
+        score=score,
+        robot_id=robot_id
+    )
     return redirect(url_for('main.robot_detail', robot_id=robot_id))
+
 
 
 @main.route('/scoreboard', methods=['GET', 'POST'])
@@ -307,35 +325,6 @@ def prize_winners():
         brd_winners=brd_winners
     )
 
-# convert dict values to tuple to prepare to insert to DB
-def convert_to_tuple(dic, robot_id, score):
-    # convert the dictionary values to tuples, order matters
-    l = []
-
-    l.append(dic['level'])
-    l.append(dic['run_disqualified'])
-    l.append((to_float(dic['seconds_to_put_out_candle_1']) +
-              to_float(dic['seconds_to_put_out_candle_2'])) / 2.0)
-    # average times by the 2 judges
-    l.append(dic['non_air'])
-    l.append(dic['furniture'])
-    l.append(dic['arbitrary_start'])
-    l.append(dic['return_trip'])
-    l.append(dic['no_candle_circle'])
-    l.append(dic['stopped_within_30'])
-    l.append(dic['candle_detected'])
-    l.append(to_int(dic['number_of_rooms_searched']))
-    l.append(dic['kicked_dog'])
-    l.append(to_int(dic['touched_candle']))
-    l.append(to_int(dic['wall_contact_cms']))
-    l.append(dic['ramp_used'])
-    l.append(dic['baby_relocated'])
-    l.append(dic['all_candles'])
-    l.append(dic['versa_valve_used'])
-    l.append(score)
-    l.append(robot_id)
-
-    return tuple(l)
 
 def get_division_label(division):
     # page header label
@@ -347,225 +336,6 @@ def get_division_label(division):
         return "High School Division"
     else:
         return "Senior Division"
-
-# convert string to float
-def to_float(input_s):
-    if input_s:
-        return float(input_s)
-
-    # only true when run is disqualified
-    return 0
-
-# convert string to float
-def to_int(input_s):
-    if input_s:
-        return int(input_s)
-
-    # only true when run is disqualified
-    return 0
-
-# validate input
-def validate_params(input_data, level, div, name):
-    # create a dictionary out of input data
-    data = dict(input_data)
-
-    err = dict()
-    # if disqualified, need to check for name, AT and num of rooms
-    if(data['run_disqualified']): 
-        if not validate_name(data['name'], name):
-            err['NAME_ERR'] = True
-        if not validate_actual_time(data['seconds_to_put_out_candle_1'],level, True):
-            err["TIME_ERR_1"] = True
-        if not validate_actual_time(data['seconds_to_put_out_candle_2'],level, True):
-            err["TIME_ERR_2"] = True
-        if not validate_actual_time_compare(data['seconds_to_put_out_candle_1'],
-                                            data['seconds_to_put_out_candle_2']):
-            err["TIME_ERR_DIFF"] = True
-        if ((level == 1)
-            and (div in ['junior', 'walking'])
-            and (not validate_num_rooms(data['number_of_rooms_searched'], level))):
-            err["ROOM_ERR"] = True
-
-    # else validate every input
-    else:
-        for p in RunParameters.ALL:
-            if p in data:
-                if p == 'name':
-                    if not validate_name(data[p], name):
-                        err['NAME_ERR'] = True
-                elif p == 'seconds_to_put_out_candle_1':
-                    if not validate_actual_time(data[p],level, False):
-                        err["TIME_ERR_1"] = True
-                elif p == 'seconds_to_put_out_candle_2':
-                    if not validate_actual_time(data[p],level, False):
-                        err["TIME_ERR_2"] = True
-                elif p == 'number_of_rooms_searched':
-                    if not validate_num_rooms(data[p], level):
-                        err["ROOM_ERR"] = True
-                elif p == 'wall_contact_cms':
-                    if not validate_wall_contact(data[p]):
-                        err["WALL_ERR"] = True
-                elif p == 'touched_candle':
-                    if not validate_touched_candle(data[p]):
-                        err["CANDLE_ERR"] = True
-    return err
-
-
-def validate_name(name, robot_name):
-    return name == robot_name
-
-def validate_actual_time_compare(time_j1, time_j2):
-
-    time_j1 = time_j1.strip()
-    time_j2 = time_j2.strip()
-
-    if time_j1.isdigit() and time_j2.isdigit():
-        return float(time_j1) == float(time_j2)
-    return False
-
-# valide actual time
-def validate_actual_time(time_s, level, failed):
-    # minimum and maximum time allowed for each level
-
-    time_s = time_s.strip()
-
-    min_123 = 0  # minimum for any level
-    max_1 = 180  # 3 minutes for level 1
-    max_2 = 240  # 4 minutes for level 2
-    max_3 = 300  # 5 minutes for level 3
-
-    # special AT values in case of a failed trial
-    fail_123 = 600  # trial failed (any level)
-    traversed_3 = 500  # failed but traversed from arean A to B (level 3)
-    found_baby_3 = 450  # failed but found baby (level 3)
-    picked_baby_3 = 400  # failed but picked up baby (level 3)
-
-    # check if input string is a number
-    
-
-    # convet to a float
-    try: 
-        time = float(time_s)
-    except ValueError:
-        return False
-
-    # validation for level 1
-    if level == 1:
-        if failed and (time != fail_123):
-            return False;
-        elif (not failed) and  (time < min_123 or time > max_1):
-            return False
-
-    # validation for level 2
-    elif level == 2:
-        if failed and (time != fail_123):
-            return False;
-        elif (not failed) and  (time < min_123 or time > max_2):
-            return False
-
-    # validation for level 3
-    elif level == 3:
-        if (failed
-            and (time != fail_123)
-            and (time != traversed_3)
-            and (time != found_baby_3)
-            and (time != picked_baby_3)):
-
-            return False;
-
-        elif (not failed) and  (time < min_123 or time > max_3):
-            return False
-    return True
-
-
-# validate number of rooms
-def validate_num_rooms(num_s, level):
-    if level not in [1,2]:
-        return True
-
-    num_s = num_s.strip()
-    # minimum and maximum allowed values
-    min_123 = 0
-    max_123 = 4
-
-    # check if input string is a number
-    if level in [1, 2]:
-        if not num_s.isdigit():
-            return False
-
-        return (int(num_s) >= min_123) and (int(num_s) <= max_123)
-
-    return True
-
-
-# validate wall contact distance
-def validate_wall_contact(num_s):
-
-    num_s = num_s.strip()
-    # minimum and maximum allowed values
-    min_123 = 0
-    max_123 = 500 # length of arena
-
-    # check if input string is a number
-    if not num_s.isdigit():
-        return False
-
-    return (int(num_s) >= min_123) and (int(num_s) <= max_123)
-
-#validate touched_candle 
-def validate_touched_candle(num_s):
-
-    num_s = num_s.strip()
-    
-    # Just check if it's digit for now
-    # minimum allowed value
-    min_123 = 0
-
-    # check if input string is a number
-    if not num_s.isdigit():
-        return False
-
-    return int(num_s) >= min_123
-
-# creates a dictionary out of data entered for new run
-def bind_params(input_data, id, level):
-    # create a dictionary out of input data
-    data = dict(input_data)
-    # create a dictionary of all parameters
-    args = {}
-    args['level'] = level
-    for p in RunParameters.ALL:
-        if p in RunParameters.BOOLEANS:
-            args[p] = bool(data.get(p))
-        else:
-            # data dict is of form {key:value}
-            # where value is of form [u'str']
-            args[p] = data[p][0] if data.get(p) else None
-    return args
-
-
-# calculate and return score of current run
-def get_score(robot, data):
-    return r.get_registry()['RUNS'].calculate_run_score(
-        robot['division'],
-        robot['level'],
-        data['run_disqualified'],
-        (to_float(data['seconds_to_put_out_candle_1']) +
-         to_float(data['seconds_to_put_out_candle_2'])) / 2.0,
-        data['non_air'],
-        data['furniture'],
-        data['arbitrary_start'],
-        data['return_trip'],
-        data['no_candle_circle'],
-        data['stopped_within_30'],
-        data['candle_detected'],
-        to_int(data['number_of_rooms_searched']),
-        data['kicked_dog'],
-        to_int(data['touched_candle']),
-        to_int(data['wall_contact_cms']),
-        data['ramp_used'],
-        data['baby_relocated'],
-        data['all_candles'])
 
 
 def applied_factors(run_id, robot_id):
