@@ -325,7 +325,7 @@
     <div class="col-xs-12 col-lg-12">
       {% if error %}
         <label class="alert-danger control-label">
-          *Please fix all errors highlighted in red
+          {{error['error']}}
         </label><br><br>
         {% endif %}
     </div>

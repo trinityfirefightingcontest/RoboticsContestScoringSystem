@@ -39,6 +39,8 @@ from blueprints.authentication import authentication
 app.register_blueprint(authentication, url_prefix='/auth')
 from blueprints.api import api
 app.register_blueprint(api, url_prefix='/api')
+from blueprints.scoreboard import scoreboard
+app.register_blueprint(scoreboard)
 
 def _get_etag():
     """
