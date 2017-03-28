@@ -14,14 +14,14 @@ def get_id(id_counter, robot_data):
 def run():
     load_registry()
     division_map = {
-        'fire fighting high school division': 'high_school',
-        'fire fighting junior division': 'junior',
-        'fire fighting senior division': 'senior',
-        'fire fighting walking division': 'walking'
+        'high school': 'high_school',
+        'junior': 'junior',
+        'senior': 'senior',
+        'walking': 'walking'
     }
     unique_map = {
         'unique': True,
-        'customized': False,
+        'custom kit': False,
         'i am not sure': False
     }
     versa_valve_map = {
@@ -35,7 +35,7 @@ def run():
         'versa_valve': 6,
         'school': 7
     }
-    with open('robot_list.csv', 'rb') as csvfile:
+    with open('robot_list_2017.csv', 'rb') as csvfile:
         spamreader = csv.reader(csvfile)
         i = 0
         id_counter = {
@@ -45,9 +45,9 @@ def run():
             'junior': 1
         }
         for row in spamreader:
-            if i == 0:
-                i += 1
-                continue
+            # if i == 0:
+            #     i += 1
+            #     continue
             i += 1
             d = {}
             if row[fields_index['unique']].strip().lower() == (

@@ -75,14 +75,14 @@ function start_loc_img(orient_id) {
 
 function furniture_img(id) {
     var dict = {
-        'O1': '/static/img/_THUMBNAILS_/Furniture.Thumbnails/O1.png',
-        'O2': '/static/img/_THUMBNAILS_/Furniture.Thumbnails/O2.png',
-        'O3': '/static/img/_THUMBNAILS_/Furniture.Thumbnails/O3.png',
-        'O4': '/static/img/_THUMBNAILS_/Furniture.Thumbnails/O4.png',
-        'O5': '/static/img/_THUMBNAILS_/Furniture.Thumbnails/O5.png',
-        'O6': '/static/img/_THUMBNAILS_/Furniture.Thumbnails/O6.png',
-        'O7': '/static/img/_THUMBNAILS_/Furniture.Thumbnails/O7.png',
-        'O8': '/static/img/_THUMBNAILS_/Furniture.Thumbnails/O8.png'
+        'O1': '/static/img/_THUMBNAILS_/Furniture.Thumbnails/O1_merged.png',
+        'O2': '/static/img/_THUMBNAILS_/Furniture.Thumbnails/O2_merged.png',
+        'O3': '/static/img/_THUMBNAILS_/Furniture.Thumbnails/O3_merged.png',
+        'O4': '/static/img/_THUMBNAILS_/Furniture.Thumbnails/O4_merged.png',
+        'O5': '/static/img/_THUMBNAILS_/Furniture.Thumbnails/O5_merged.png',
+        'O6': '/static/img/_THUMBNAILS_/Furniture.Thumbnails/O6_merged.png',
+        'O7': '/static/img/_THUMBNAILS_/Furniture.Thumbnails/O7_merged.png',
+        'O8': '/static/img/_THUMBNAILS_/Furniture.Thumbnails/O8_merged.png'
     }
 
     return dict[id];
