@@ -46,7 +46,16 @@ class ScoreBoard():
             for category in ['unique','custom']:
                 lisp_winners[level][category] = {}
                 # filter based on level and category
-                filtered = ScoreBoard.filter_robots_category(ScoreBoard.filter_robots_level(robots,level), category)
+                filtered = ScoreBoard.filter_robots_category(
+                    ScoreBoard.filter_robots_level(robots,level),
+                    category
+                )
+                # only junior and walking are eligible for level 1 prizes (since 2017)
+                if level == 1:
+                    filtered = ScoreBoard.filter_robots_divisions(
+                        filtered,
+                        ['junior', 'walking']
+                    )
                 # check if number of successful runs is atleast 3
                 filtered = ScoreBoard.filter_number_of_runs(filtered, 3)
                 # sort robots
@@ -98,6 +107,11 @@ class ScoreBoard():
     @staticmethod
     def filter_robots_division(robots, division):
         return [robot for robot in robots if robot['division'] == division]
+
+    # filter robots based on divisions
+    @staticmethod
+    def filter_robots_divisions(robots, divisions):
+        return [robot for robot in robots if robot['division'] in divisions]
 
     # filter robots based on category(unique or customized)
     @staticmethod
