@@ -29,7 +29,7 @@
 	    	{% for place in [1] %}
 				{% if gpmp_winners.get(place) %}
 				 	<a href="{{url_for('main.robot_detail', robot_id=gpmp_winners.get(place).get('id'))}}">
-				 		{{gpmp_winners.get(place).get('name')}}
+				 		{{gpmp_winners.get(place).get('name')}}, {{gpmp_winners.get(place).get('school')}}
 				 	</a>
 				{% else %}
 					N/A
@@ -58,8 +58,9 @@
 							<td>
 								{% for place in [1] %}
 									{% if lisp_winners.get(level).get(category).get(place) %}
-									 	<a href="#">
-									 		{{lisp_winners.get(level).get(category).get(place).get('name')}}
+									 	<a href="{{url_for('main.robot_detail', robot_id=lisp_winners.get(level).get(category).get(place).get('id'))}}">
+									 		{{lisp_winners.get(level).get(category).get(place).get('name')}} <br>
+									 		({{lisp_winners.get(level).get(category).get(place).get('school')}})
 									 	</a>
 									 	<br>
 									{% else %}
@@ -93,8 +94,9 @@
 								{% for place in [1,2,3] %}
 									{{place}}:
 									{% if brd_winners.get(division).get(category).get(place) %}
-									 	<a href="#">
-									 		{{brd_winners.get(division).get(category).get(place).get('name')}}
+									 	<a href="{{url_for('main.robot_detail', robot_id=brd_winners.get(division).get(category).get(place).get('id'))}}">
+									 		{{brd_winners.get(division).get(category).get(place).get('name')}} <br>
+									 		({{brd_winners.get(division).get(category).get(place).get('school')}})
 									 	</a>
 									 	<br>
 									{% else %}

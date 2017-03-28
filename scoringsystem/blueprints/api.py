@@ -53,7 +53,10 @@ def prize_winners():
     entry = ''
     first_place = 1
     if gpmp_winners.get(first_place):
-        entry += gpmp_winners.get(first_place).get('name')
+        entry += (
+            gpmp_winners.get(first_place).get('name') +
+            ' (' + gpmp_winners.get(first_place).get('school') + ')'
+        )
     else:
         entry += 'N/A'
     cw.writerow(['Grand Performance Mastery Prize Winner (GPMP)',entry])
@@ -73,7 +76,10 @@ def prize_winners():
             for place in [1,2,3]:
                 entry += str(place) + ': '
                 if brd_winners.get(division).get(category).get(place):
-                    entry += brd_winners.get(division).get(category).get(place).get('name')
+                    entry += (
+                        brd_winners.get(division).get(category).get(place).get('name') +
+                        ' (' + brd_winners.get(division).get(category).get(place).get('school') + ')'
+                    )
                 else:
                     entry += 'N\A'
                 entry += '      '
@@ -96,7 +102,10 @@ def prize_winners():
             for place in [1]:
                 entry += str(place) + ': '
                 if lisp_winners.get(level).get(category).get(place):
-                    entry += lisp_winners.get(level).get(category).get(place).get('name')
+                    entry += (
+                        lisp_winners.get(level).get(category).get(place).get('name') +
+                        ' (' + lisp_winners.get(level).get(category).get(place).get('school') + ')'
+                    )
                 else:
                     entry += 'N\A'
                 entry += '      '
