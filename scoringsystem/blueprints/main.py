@@ -412,7 +412,7 @@ def validate_params(input_data, level, div, name):
 
 
 def validate_name(name, robot_name):
-    return name == robot_name
+    return name.lower() == robot_name.lower()
 
 def validate_actual_time_compare(time_j1, time_j2):
 
