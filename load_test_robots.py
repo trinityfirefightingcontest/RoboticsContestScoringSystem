@@ -29,11 +29,11 @@ def run():
         'no': False
     }
     fields_index = {
-        'division': 3,
-        'name': 4,
-        'unique': 5,
+        'division': 0,
+        'name': 1,
+        'unique': 3,
         'versa_valve': 6,
-        'school': 7
+        'school': 2
     }
     with open('robot_list_2017.csv', 'rb') as csvfile:
         spamreader = csv.reader(csvfile)
@@ -45,9 +45,10 @@ def run():
             'junior': 1
         }
         for row in spamreader:
-            # if i == 0:
-            #     i += 1
-            #     continue
+            # skip first three lines
+            if i <= 2:
+                i += 1
+                continue
             i += 1
             d = {}
             if row[fields_index['unique']].strip().lower() == (
@@ -58,8 +59,6 @@ def run():
                     d[field] = division_map[row[index].strip().lower()]
                 elif field == 'unique':
                     d[field] = unique_map[row[index].strip().lower()]
-                elif field == 'versa_valve':
-                    d[field] = versa_valve_map[row[index].strip().lower()]
                 else:
                     d[field] = row[index]
             d['id'] = get_id(id_counter, d)
@@ -70,7 +69,7 @@ def run():
                 school=d['school'],
                 name=d['name'],
                 is_unique=d['unique'],
-                used_versa_valve=d['versa_valve'],
+                used_versa_valve=False,
                 level=1,
                 is_disqualified=False,
                 passed_inspection=False
