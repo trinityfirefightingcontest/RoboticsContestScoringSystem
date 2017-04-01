@@ -128,16 +128,19 @@ def robot_add_run(robot_id):
     # Database query for showing past runs if the POST fails
 
     all_runs = r.get_registry()['RUNS'].get_runs(robot_id)
+    more_than_five_runs = False
+    if len(all_runs) >= 5:
+        more_than_five_runs = True
+    else:
+        # if invalidate input data
+        params_d = bind_params(request.form, robot_id, robot['level'])
 
-    # if invalidate input data
-    params_d = bind_params(request.form, robot_id, robot['level'])
+        err = validate_params(params_d,
+                              robot['level'],
+                              robot['division'],
+                              robot['name'])
 
-    err = validate_params(params_d,
-                          robot['level'],
-                          robot['division'],
-                          robot['name'])
-
-    if err:
+    if err or more_than_five_runs:
         err['ERR'] = True
         params_and_errors = {}
         params_and_errors.update(params_d)
