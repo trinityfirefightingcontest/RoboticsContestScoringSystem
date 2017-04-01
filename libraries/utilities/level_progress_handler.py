@@ -31,7 +31,7 @@ class LevelProgressHandler(object):
                 # reset consecutive failure counter
                 cons_failed_count = 0
             # if three consecutive failures
-            if cons_failed_count >= 3:
+            if cons_failed_count >= 5:
                 return {
                     'disqualified': True,
                     'can_level_up': False
