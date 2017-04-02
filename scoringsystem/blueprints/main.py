@@ -210,7 +210,8 @@ def export_to_csv():
     si = StringIO.StringIO()
     cw = csv.writer(si)
     cw.writerow(['Rank', 'Division', 'Name', '# of Successful Runs',
-                 'Current Level', 'LS1', 'LS2', 'LS3', 'TFS', 'Volume', 'From NA', 'From CT'])
+                 'Current Level', 'LS1', 'LS2', 'LS3', 'TFS', 'Volume',
+                 'From NA', 'From CT', 'Unique'])
 
     for div in all_robots:
         for robot in all_robots[div]:
@@ -233,7 +234,8 @@ def export_to_csv():
             cw.writerow([index, sorted_r['division'], sorted_r['name'], sorted_r['num_successful'],
                         sorted_r['level'], sorted_r['LS1'], sorted_r['LS2'], sorted_r['LS3'],
                          sorted_r['TFS'], sorted_r['volume'],
-                         sorted_r['from_na'], sorted_r['from_ct']])
+                         sorted_r['from_na'], sorted_r['from_ct'],
+                         sorted_r['is_unique']])
 
         cw.writerow('\n')
 
