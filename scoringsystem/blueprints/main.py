@@ -91,6 +91,16 @@ def robot_detail(robot_id, inputs=None):
     best_scores, attempted_levels, total_score, num_successful = (
         ScoreCalculator.get_best_scores(runs)
     )
+
+    # check how many runs robot did on sunday (sunday = 1)
+    # TODO: this logic needs to be rewritten after the competition
+    sunday = 1
+    filtered = filter_runs_day(runs, sunday)
+    already_run_three = False
+    if len(filtered) >= 3:
+        already_run_three = True
+
+
     return render_template(
         "robot.html",
         attempted_levels=attempted_levels,
@@ -102,7 +112,8 @@ def robot_detail(robot_id, inputs=None):
         best_scores=best_scores,
         robot_runs=runs,
         applied_factors=[applied_factors(id, robot_id) for id in run_levels],
-        inputs=inputs
+        inputs=inputs,
+        already_run_three=already_run_three
     )
 
 
@@ -124,24 +135,37 @@ def robot_add_run(robot_id):
             all_runs=all_runs
         )
     # For post request
+    params_d = bind_params(request.form, robot_id, robot['level'])
+    err = {}
+    error = ""
+
+    # check how many runs robot did on sunday (sunday = 1)
+    # TODO: this logic needs to be rewritten after the competition
+    sunday = 1
+    filtered = filter_runs_day(all_runs, sunday)
+    already_run_three = False
 
     # Database query for showing past runs if the POST fails
-
     all_runs = r.get_registry()['RUNS'].get_runs(robot_id)
     more_than_five_runs = False
     if len(all_runs) >= 5:
         more_than_five_runs = True
+        error = "Robot has exhausted all five trials."
+    elif len(filtered) >= 3:
+        already_run_three = True
+        error = "Not more than three runs allowed on Sunday"
     else:
         # if invalidate input data
-        params_d = bind_params(request.form, robot_id, robot['level'])
-
         err = validate_params(params_d,
                               robot['level'],
                               robot['division'],
                               robot['name'])
+        error = "Please fix all errors highlighted in red"
 
-    if err or more_than_five_runs:
+
+    if err or more_than_five_runs or already_run_three:
         err['ERR'] = True
+        err['ERR_MESSAGE'] = error
         params_and_errors = {}
         params_and_errors.update(params_d)
         # leave data already entered unchanged
@@ -159,7 +183,13 @@ def robot_add_run(robot_id):
     # convert dict values to tuple to prepare to insert to DB
     params_t = convert_to_tuple(params_d, robot_id, score)
     # insert into databse
-    r.get_registry()['RUNS'].record_run(*params_t)
+    r_id = r.get_registry()['RUNS'].record_run(*params_t)
+
+    # update day column to 1 (1 means sunday)
+    # this was added to make sure no robot runs more than 3 times on Sunday
+    # TODO: the below is hardcoded just for sunday, needs to be rewritten
+    r.get_registry()['RUNS'].set_day(r_id, sunday)
+
     return redirect(url_for('main.robot_detail', robot_id=robot_id))
 
 
@@ -309,6 +339,10 @@ def prize_winners():
         lisp_winners=lisp_winners,
         brd_winners=brd_winners
     )
+
+# filter runs based on day
+def filter_runs_day(runs, day):
+    return [run for run in runs if run['day'] == day]
 
 # convert dict values to tuple to prepare to insert to DB
 def convert_to_tuple(dic, robot_id, score):

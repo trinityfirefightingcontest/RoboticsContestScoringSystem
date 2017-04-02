@@ -321,7 +321,7 @@
             <div class="row">
                 <hr/>
                 <div class="col-xs-12 col-lg-12">
-                    {% if input['ERR'] == True %}<label class="alert-danger control-label">*Please fix all errors highlighted in red</label><br><br>{% endif %}
+                    {% if input['ERR'] == True %}<label class="alert-danger control-label">{{input['ERR_MESSAGE']}}</label><br><br>{% endif %}
                 </div>
                 <div class="col-xs-12 col-lg-12">
                     <input class="btn btn-large btn-primary" type="submit"/>

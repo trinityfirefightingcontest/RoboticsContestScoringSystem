@@ -135,7 +135,7 @@ class Runs(object):
             'score': score,
             'robot_id': robot_id 
         }
-        r.get_registry()['MY_SQL'].insert(query, data)
+        return r.get_registry()['MY_SQL'].insert(query, data)
 
     @staticmethod
     def get_runs_robot_level(robot_id, level):
@@ -145,6 +145,18 @@ class Runs(object):
             'level': level
         }
         return r.get_registry()['MY_SQL'].get_all(query, data)
+
+    @staticmethod
+    def set_day(run_id, day):
+        query = """UPDATE runs SET
+            day = %(day)s
+            where id = %(id)s;"""
+
+        data = {
+            'day': day,
+            'id': run_id
+        }
+        r.get_registry()['MY_SQL'].insert(query, data)
 
     @staticmethod
     def calculate_run_score(robot_div,

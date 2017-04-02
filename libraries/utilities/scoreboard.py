@@ -15,6 +15,7 @@ class ScoreBoard():
             robot['TFS'] = total_score
             robot['completed'] = attempted_levels
             robot['num_successful'] = num_successful
+            robot['num_runs'] = len(runs)
         return robots
 
     @staticmethod
