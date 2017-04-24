@@ -3,8 +3,8 @@
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
         <li><a href="{{ url_for('main.home') }}">Home</a></li>
-        <li><a href="{{ url_for('main.scoreboard_home') }}">Scoreboard</a></li>
-        <li><a href="{{ url_for('main.prize_winners') }}">Prizes</a></li>
+        <li><a href="{{ url_for('scoreboard.scoreboard_home') }}">Scoreboard</a></li>
+        <li><a href="{{ url_for('scoreboard.prize_winners') }}">Prizes</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li><a href="{{ url_for('auth.sign_out') }}">Sign Out</a></li>
