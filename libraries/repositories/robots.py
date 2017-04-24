@@ -26,6 +26,8 @@ class Robots(object):
             level INT,
             is_disqualified BOOLEAN,
             passed_inspection BOOLEAN,
+            from_na BOOLEAN,
+            from_ct BOOLEAN,
             PRIMARY KEY (id))
             ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"""
         )

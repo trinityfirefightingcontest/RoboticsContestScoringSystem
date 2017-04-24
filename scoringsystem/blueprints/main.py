@@ -15,14 +15,15 @@ from libraries.utilities.robot_inspection_table_handler import (
 )
 main = Blueprint('main', __name__)
 
-
+# runs before all https requests to make sure user is logged in
 @main.before_request
 def require_login():
     if not AuthenticationUtilities.user_is_logged_in(session):
         return redirect(url_for('auth.signin'))
 
 
-@main.route('/', methods=['GET', 'POST'])
+# get request handler for home page
+@main.route('/', methods=['GET'])
 def home():
     robots = r.get_registry()['ROBOTS'].get_all_robots()
     for rb in robots:
@@ -33,14 +34,24 @@ def home():
     )
 
 
-@main.route('/schedule', methods=['GET', 'POST'])
-def schedule():
-    return render_template("schedule.html")
+# get request handler for scoreboard page
+@main.route('/scoreboard', methods=['GET'])
+def scoreboard_home():
+    return render_template("scoreboard_home.html")
 
 
+# not found page
+@main.route('/not_found', methods=['GET'])
+def not_found():
+    return render_template("not_found.html")
+
+
+# post request handler for robot insepection form
 @main.route('/rit_inspection_approval/<robot_id>', methods=['POST'])
 def rit_inspection_approval(robot_id):
+    # validate form
     valid, inputs = RobotInspectionTableHandler.validate_inputs(request.form)
+    # if valid, check volume and store in db
     if valid:
         RobotInspectionTableHandler.approve_and_store_volume(
             inputs[RobotInspectionTableHandler.HEIGHT],
@@ -51,22 +62,24 @@ def rit_inspection_approval(robot_id):
     return robot_detail(robot_id=robot_id, inputs=inputs)
 
 
-@main.route('/not_found', methods=['GET', 'POST'])
-def not_found():
-    return render_template("not_found.html")
-
-
+# post request handler for "advance to next level" button on robot detail page
 @main.route('/robot/<robot_id>', methods=['POST'])
 def advance_level(robot_id):
+    # validate robot id
     robot = r.get_registry()['ROBOTS'].get_robot(robot_id)
-
     if not robot:
         return render_template("not_found.html")
 
+    # get existing runs of robot
     runs = r.get_registry()['RUNS'].get_runs(robot_id)
 
-    eligible = LevelProgressHandler.get_eligibility_for_next_run(runs, robot['level'])
+    # check if robot is eligible to be advanced to next level
+    eligible = LevelProgressHandler.get_eligibility_for_next_run(
+        runs,
+        robot['level']
+    )
 
+    # if eligible and has not be disqualified, advance robot to next level
     if eligible.get('can_level_up') and not eligible['disqualified']:
         r.get_registry()['ROBOTS'].advance_level(robot_id, robot['level'])
         return redirect(url_for('main.robot_add_run', robot_id=robot_id))
@@ -74,12 +87,15 @@ def advance_level(robot_id):
     return "Robot not eligible to advance to next level.\n"
 
 
-@main.route('/robot/<robot_id>', methods=['GET', 'POST'])
+# get request handler for robot detail page
+@main.route('/robot/<robot_id>', methods=['GET'])
 def robot_detail(robot_id, inputs=None):
+    # validate robot id
     robot = r.get_registry()['ROBOTS'].get_robot(robot_id)
     if not robot:
         return render_template("not_found.html")
 
+    # get existing runs of robot
     runs = r.get_registry()['RUNS'].get_runs(robot_id)
     run_levels = [run['id'] for run in runs]
 
@@ -91,16 +107,10 @@ def robot_detail(robot_id, inputs=None):
     best_scores, attempted_levels, total_score, num_successful = (
         ScoreCalculator.get_best_scores(runs)
     )
+    # calculate applied reduction factors for each run
+    factors=[applied_factors(id, robot_id) for id in run_levels]
 
-    # check how many runs robot did on sunday (sunday = 1)
-    # TODO: this logic needs to be rewritten after the competition
-    # sunday = 1
-    # filtered = filter_runs_day(runs, sunday)
-    # already_run_three = False
-    # if len(filtered) >= 3:
-    #     already_run_three = True
-
-
+    # render template
     return render_template(
         "robot.html",
         attempted_levels=attempted_levels,
@@ -111,19 +121,20 @@ def robot_detail(robot_id, inputs=None):
         eligible=eligibility['can_level_up'],
         best_scores=best_scores,
         robot_runs=runs,
-        applied_factors=[applied_factors(id, robot_id) for id in run_levels],
+        applied_factors=factors,
         inputs=inputs
     )
 
-
+# get and post request handler for add run page
 @main.route('/robot/<robot_id>/addrun', methods=['GET', 'POST'])
 def robot_add_run(robot_id):
+    # validate robot it
     robot = r.get_registry()['ROBOTS'].get_robot(robot_id)
-
     if not robot:
         return render_template("not_found.html")
 
     all_runs = r.get_registry()['RUNS'].get_runs(robot_id)
+    # check if request is post or get
     if request.method == 'GET':
         # get all previous runs
         return render_template(
@@ -133,35 +144,29 @@ def robot_add_run(robot_id):
             input=request.args,
             all_runs=all_runs
         )
-    # For post request
+
+    # else: request is POST
+    # get params from form
     params_d = bind_params(request.form, robot_id, robot['level'])
     err = {}
     error = ""
 
-    # check how many runs robot did on sunday (sunday = 1)
-    # TODO: this logic needs to be rewritten after the competition
-    # sunday = 1
-    # filtered = filter_runs_day(all_runs, sunday)
-    # already_run_three = False
-
-    # Database query for showing past runs if the POST fails
-    all_runs = r.get_registry()['RUNS'].get_runs(robot_id)
+    # check if robot already had five runs
     more_than_five_runs = False
     if len(all_runs) >= 5:
         more_than_five_runs = True
         error = "Robot has exhausted all five trials."
-    # elif len(filtered) >= 3:
-    #     already_run_three = True
-    #     error = "Not more than three runs allowed on Sunday"
     else:
         # if invalidate input data
-        err = validate_params(params_d,
-                              robot['level'],
-                              robot['division'],
-                              robot['name'])
+        err = validate_params(
+            params_d,
+            robot['level'],
+            robot['division'],
+            robot['name']
+        )
         error = "Please fix all errors highlighted in red"
 
-
+    # if error, or robot already run five times, rerender page with errors
     if err or more_than_five_runs:
         err['ERR'] = True
         err['ERR_MESSAGE'] = error
@@ -184,35 +189,35 @@ def robot_add_run(robot_id):
     # insert into databse
     r_id = r.get_registry()['RUNS'].record_run(*params_t)
 
-    # update day column to 1 (1 means sunday)
-    # this was added to make sure no robot runs more than 3 times on Sunday
-    # TODO: the below is hardcoded just for sunday, needs to be rewritten
-    # r.get_registry()['RUNS'].set_day(r_id, sunday)
-
+    # redirect to robot detail page
     return redirect(url_for('main.robot_detail', robot_id=robot_id))
 
 
-@main.route('/scoreboard', methods=['GET', 'POST'])
-def scoreboard_home():
-    return render_template("scoreboard_home.html")
-
-
-@main.route('/scoreboardcsv', methods=['GET', 'POST']) 
+# get request handler exports scoreboard to csv file
+@main.route('/scoreboardcsv', methods=['GET']) 
 def export_to_csv():
+    # all divitions
     divisions = ['junior', 'walking', 'high_school', 'senior']
 
+    # get all robots
     all_robots = {}
+    for d in divisions:
+        all_robots[d] = r.get_registry()['ROBOTS'].get_all_robots_division(
+            d
+        )
 
-    for division in divisions:
-        all_robots[division] = r.get_registry()['ROBOTS'].get_all_robots_division(division);
-
+    # initialize writer
     si = StringIO.StringIO()
     cw = csv.writer(si)
-    cw.writerow(['Rank', 'Division', 'Name', '# of Successful Runs',
-                 'Current Level', 'LS1', 'LS2', 'LS3', 'TFS', 'Volume',
-                 'From NA', 'From CT', 'Unique'])
+    cw.writerow(
+        ['Rank', 'Division', 'Name', '# of Successful Runs',
+         'Current Level', 'LS1', 'LS2', 'LS3', 'TFS', 'Volume',
+         'From NA', 'From CT', 'Unique']
+        )
 
+    # for each division
     for div in all_robots:
+        # for each robot
         for robot in all_robots[div]:
             runs = r.get_registry()['RUNS'].get_runs(robot['id'])
             # get current best scores
@@ -222,30 +227,40 @@ def export_to_csv():
             robot.update(best_scores)
             robot['TFS'] = total_score
             robot['num_successful'] = num_successful
-            # calculate lowes scores for each level and TFS, returns tuple
             robot['completed'] = attempted_levels
 
         # sort based on name then total score
         sorted_robots = sorted(list(all_robots[div]), key=lambda k: k['name'])
         sorted_robots = sorted(list(sorted_robots), key=lambda k: k['TFS'])
 
+        # write data to file
         for index, sorted_r in enumerate(sorted_robots, start=1):
-            cw.writerow([index, sorted_r['division'], sorted_r['name'], sorted_r['num_successful'],
-                        sorted_r['level'], sorted_r['LS1'], sorted_r['LS2'], sorted_r['LS3'],
-                         sorted_r['TFS'], sorted_r['volume'],
-                         sorted_r['from_na'], sorted_r['from_ct'],
-                         sorted_r['is_unique']])
+            cw.writerow(
+                [index, sorted_r['division'], sorted_r['name'],
+                sorted_r['num_successful'], sorted_r['level'],
+                sorted_r['LS1'], sorted_r['LS2'], sorted_r['LS3'],
+                sorted_r['TFS'], sorted_r['volume'],
+                sorted_r['from_na'], sorted_r['from_ct'],
+                sorted_r['is_unique']]
+            )
 
+        # write new line character
         cw.writerow('\n')
 
+    # finalize
     output = make_response(si.getvalue())
     si.close()
+
+    # set http response headers to appropriate type for csv content
     output.headers["Content-Disposition"] = "attachment; filename=scoreboard.csv"
     output.headers["Content-type"] = "text/csv"
+
+    # send response
     return output
 
 
-@main.route('/scoreboard/brd/<division>', methods=['GET', 'POST'])
+# get request handler for BRD scoreboard
+@main.route('/scoreboard/brd/<division>', methods=['GET'])
 def scoreboard_brd(division):
     robots = r.get_registry()['ROBOTS'].get_all_robots_division(division)
 
@@ -265,7 +280,8 @@ def scoreboard_brd(division):
         scoreboard_name=get_division_label(division)
     )
 
-@main.route('/scoreboard/gpmp', methods=['GET', 'POST'])
+# get request handler for GMPM scoreboard
+@main.route('/scoreboard/gpmp', methods=['GET'])
 def scoreboard_gpmp():
     robots = r.get_registry()['ROBOTS'].get_all_robots()
 
@@ -286,7 +302,8 @@ def scoreboard_gpmp():
     )
 
 
-@main.route('/scoreboard/lisp/<level>', methods=['GET', 'POST'])
+# get request handler for LISP scoreboard
+@main.route('/scoreboard/lisp/<level>', methods=['GET'])
 def scoreboard_lisp(level):
     if not level.isdigit():
         return render_template("not_found.html")
@@ -318,6 +335,7 @@ def scoreboard_lisp(level):
         score_name=score_name
     )
 
+# get request handler for prizes page
 @main.route('/prizes', methods=['GET', 'POST'])
 def prize_winners():
     robots = r.get_registry()['ROBOTS'].get_all_robots()
@@ -352,8 +370,10 @@ def convert_to_tuple(dic, robot_id, score):
 
     l.append(dic['level'])
     l.append(dic['run_disqualified'])
-    l.append((to_float(dic['seconds_to_put_out_candle_1']) +
-              to_float(dic['seconds_to_put_out_candle_2'])) / 2.0)
+    l.append(
+        (to_float(dic['seconds_to_put_out_candle_1']) +
+         to_float(dic['seconds_to_put_out_candle_2'])) / 2.0
+    )
     # average times by the 2 judges
     l.append(dic['non_air'])
     l.append(dic['furniture'])
@@ -449,9 +469,12 @@ def validate_params(input_data, level, div, name):
     return err
 
 
+# validates the name of a robot, not case sensitive
 def validate_name(name, robot_name):
     return name.lower() == robot_name.lower()
 
+
+# compares actual times of a run
 def validate_actual_time_compare(time_j1, time_j2):
 
     time_j1 = time_j1.strip()
@@ -550,6 +573,7 @@ def validate_wall_contact(num_s):
 
     return (int(num_s) >= min_123) and (int(num_s) <= max_123)
 
+
 #validate touched_candle 
 def validate_touched_candle(num_s):
 
@@ -564,6 +588,7 @@ def validate_touched_candle(num_s):
         return False
 
     return int(num_s) >= min_123
+
 
 # creates a dictionary out of data entered for new run
 def bind_params(input_data, id, level):
@@ -606,6 +631,7 @@ def get_score(robot, data):
         data['all_candles'])
 
 
+# caluclates applied factors based on the rules, need more documentation
 def applied_factors(run_id, robot_id):
     query = ("""SELECT * FROM runs where id = %(run_id)s;""")
     data = {
