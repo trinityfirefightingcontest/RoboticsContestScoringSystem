@@ -37,7 +37,7 @@
 {% endif %}
 
 <div class="row">
-    {% if not disqualified and robot_runs|length < 5 and not already_run_three%}
+    {% if not disqualified and robot_runs|length < 5 %}
         <a href="{{url_for('main.robot_add_run', robot_id=robot_id)}}" id="add-run">
             <button class="btn btn-large btn-primary">Add Run</button>
         </a>
@@ -50,7 +50,7 @@
     {% endif %}
 </div>
 
-{% if robot_runs|length >= 5 or disqualified or already_run_three%}
+{% if robot_runs|length >= 5 or disqualified %}
     <h2>Total Final Score</h2>
     <div class="row">
         <div class="col-lg-4">
