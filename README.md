@@ -13,11 +13,13 @@ More Info: http://www.trincoll.edu/events/robot/rules-1.html
 - gunicorn --bind 0.0.0.0:8090 run
 
 # Requirements:
+###### Enclosed in parenthesis is the Ubuntu package name
 - MySQL (mysql-server)
 - Python 2.7.3 (python)
-- Redis 
+- Redis (redis-server)
 
-# Additional packages that may be required on VPS:
+## Additional packages that may be required on VPS (Ubuntu):
+###### (Ubuntu) To install these packages and packages above, use sudo apt-get install <package_name>
 - python-dev
 - build-essential
 - libmysqlclient-dev (different from mysql-server)
