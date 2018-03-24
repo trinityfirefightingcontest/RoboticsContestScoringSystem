@@ -7,7 +7,6 @@ More Info: http://www.trincoll.edu/events/robot/rules-1.html
 - cd ~
 - virtualenv robotics
 - source robotics/bin/activate
-- cd scoring-system
 - pip install -r requirements.txt
 - mysql.server start
 - redis-server start
