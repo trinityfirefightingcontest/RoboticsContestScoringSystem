@@ -13,6 +13,11 @@ More Info: http://www.trincoll.edu/events/robot/rules-1.html
 - gunicorn --bind 0.0.0.0:8090 run
 
 # Requirements:
-- MySQL
-- Python 2.7.3
-- Redis
+- MySQL (mysql-server)
+- Python 2.7.3 (python)
+- Redis 
+
+# Additional packages that may be required on VPS:
+- python-dev
+- build-essential
+- libmysqlclient-dev (different from mysql-server)
