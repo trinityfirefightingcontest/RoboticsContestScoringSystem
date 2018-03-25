@@ -10,6 +10,7 @@ More Info: http://www.trincoll.edu/events/robot/rules-1.html
 - pip install -r requirements.txt
 - service mysql start
 - redis-server start
+- (if first time) run load.py to create SQL table
 - gunicorn --bind 0.0.0.0:8090 run
 
 # Requirements:
