@@ -8,7 +8,7 @@ More Info: http://www.trincoll.edu/events/robot/rules-1.html
 - virtualenv robotics
 - source robotics/bin/activate
 - pip install -r requirements.txt
-- mysql.server start
+- service mysql start
 - redis-server start
 - gunicorn --bind 0.0.0.0:8090 run
 
