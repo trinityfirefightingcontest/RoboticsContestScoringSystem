@@ -1,7 +1,15 @@
+import sys
+sys.path.append('..') # until I can find a better method
+
 from initialize_registry import load_registry
 import registry as r
 
 from libraries.repositories.runs import Runs
+import unittest
+
+class TestScoringMethods(unittest.TestCase):
+    
+    def 
 
 def run():
 	load_registry()
@@ -532,4 +540,4 @@ def run():
 
 
 if __name__ == "__main__":
-	run()
+	unittest.main()
