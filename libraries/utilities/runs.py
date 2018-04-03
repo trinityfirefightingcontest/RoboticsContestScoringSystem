@@ -2,6 +2,7 @@
 
 from libraries.utilities.utilities import Utilities
 
+
 class Runs(object):
     # form paramter name mappings
     NAME = 'name'
@@ -20,9 +21,15 @@ class Runs(object):
     TOUCHED_CANDLE = 'touched_candle'
     WALL_CONTACT = 'wall_contact_cms'
     RAMP_USED = 'ramp_used'
-    BABY_RELOCATED = 'baby_relocated'
+    SECONDARY_SAFE_ZONE = 'secondary_safe_zone'
     ALL_CANDLES = 'all_candles'
     VERSA_VALVE_USED = 'versa_valve_used'
+    L3_TRAVERSED_HALLWAY = 'l3_traversed_hallway'
+    L3_FOUND_BABY = 'l3_found_baby'
+    L3_RESCUED_BABY = 'l3_rescued_baby'
+    L3_ALL_CANDLES = 'l3_all_candles'
+    L3_ONE_CANDLE = 'l3_one_candle'
+    L3_NONE = 'l3_none'
 
     # other parameters
     TIME_DIFF_ERROR = 'time_difference_error'
@@ -57,9 +64,15 @@ class Runs(object):
         TOUCHED_CANDLE,
         WALL_CONTACT,
         RAMP_USED,
-        BABY_RELOCATED,
+        SECONDARY_SAFE_ZONE,
         ALL_CANDLES,
-        VERSA_VALVE_USED
+        VERSA_VALVE_USED,
+        L3_NONE,
+        L3_ONE_CANDLE,
+        L3_ALL_CANDLES,
+        L3_FOUND_BABY,
+        L3_RESCUED_BABY,
+        L3_TRAVERSED_HALLWAY
     ]
 
     BOOLEANS = [
@@ -73,9 +86,24 @@ class Runs(object):
         CANDLE_DETECTED,
         KICKED_DOG,
         RAMP_USED,
-        BABY_RELOCATED,
+        SECONDARY_SAFE_ZONE,
         ALL_CANDLES,
-        VERSA_VALVE_USED
+        VERSA_VALVE_USED,
+        L3_NONE,
+        L3_ONE_CANDLE,
+        L3_ALL_CANDLES,
+        L3_FOUND_BABY,
+        L3_RESCUED_BABY,
+        L3_TRAVERSED_HALLWAY
+    ]
+
+    L3_MILESTONES = [
+        L3_NONE,
+        L3_ONE_CANDLE,
+        L3_ALL_CANDLES,
+        L3_FOUND_BABY,
+        L3_RESCUED_BABY,
+        L3_TRAVERSED_HALLWAY
     ]
 
     @staticmethod
@@ -140,7 +168,7 @@ class Runs(object):
         )
         if not valid:
             error[Runs.TIME_DIFF_ERROR] = Runs.TIME_DIFF_ERR
-        
+
         # check level and division
         if level == 1 and division in ['junior', 'walking']:
             # validate number of rooms
@@ -150,7 +178,18 @@ class Runs(object):
             )
             if not valid:
                 error[Runs.NUM_ROOMS] = Runs.NUM_ROOMS_ERR
-
+        print form
+        if level == 3:
+            has_at_least_one_milestone = False
+            for milestone in Runs.L3_MILESTONES:
+                print form[milestone]
+                print milestone
+                has_at_least_one_milestone = (
+                    has_at_least_one_milestone or
+                    form[milestone]
+                )
+            if not has_at_least_one_milestone:
+                error['l3_sympathy'] = 'Please select at least one option'
         return error
 
     @staticmethod
@@ -206,7 +245,6 @@ class Runs(object):
 
         return error
 
-
     @staticmethod
     def validate_name(name, robot_name):
         return name.lower() == robot_name.lower()
@@ -239,10 +277,9 @@ class Runs(object):
         picked_baby_3 = 400  # failed but picked up baby (level 3)
 
         # check if input string is a number
-        
 
         # convet to a float
-        try: 
+        try:
             time = float(time_s)
         except ValueError, TypeError:
             return False
@@ -250,36 +287,34 @@ class Runs(object):
         # validation for level 1
         if level == 1:
             if failed and (time != fail_123):
-                return False;
-            elif (not failed) and  (time < min_123 or time > max_1):
+                return False
+            elif (not failed) and (time < min_123 or time > max_1):
                 return False
 
         # validation for level 2
         elif level == 2:
             if failed and (time != fail_123):
-                return False;
-            elif (not failed) and  (time < min_123 or time > max_2):
+                return False
+            elif (not failed) and (time < min_123 or time > max_2):
                 return False
 
         # validation for level 3
         elif level == 3:
-            if (failed
-                and (time != fail_123)
-                and (time != traversed_3)
-                and (time != found_baby_3)
-                and (time != picked_baby_3)):
+            if(failed
+                    and (time != fail_123)
+                    and (time != traversed_3)
+                    and (time != found_baby_3)
+                    and (time != picked_baby_3)):
+                return False
 
-                return False;
-
-            elif (not failed) and  (time < min_123 or time > max_3):
+            elif (not failed) and (time < min_123 or time > max_3):
                 return False
         return True
-
 
     # validate number of rooms
     @staticmethod
     def validate_num_rooms(num_s, level):
-        if level not in [1,2]:
+        if level not in [1, 2]:
             return True
 
         num_s = num_s.strip()
@@ -296,7 +331,6 @@ class Runs(object):
 
         return True
 
-
     # validate wall contact distance
     @staticmethod
     def validate_wall_contact(num_s):
@@ -304,7 +338,7 @@ class Runs(object):
         num_s = num_s.strip()
         # minimum and maximum allowed values
         min_123 = 0
-        max_123 = 500 # length of arena
+        max_123 = 500  # length of arena
 
         # check if input string is a number
         if not num_s.isdigit():
@@ -312,12 +346,10 @@ class Runs(object):
 
         return (int(num_s) >= min_123) and (int(num_s) <= max_123)
 
-    #validate touched_candle
+    # validate touched_candle
     @staticmethod
     def validate_touched_candle(num_s):
-
         num_s = num_s.strip()
-        
         # Just check if it's digit for now
         # minimum allowed value
         min_123 = 0
@@ -389,7 +421,7 @@ class Runs(object):
             candle_touch,
             wall_conatct,
             data[Runs.RAMP_USED],
-            data[Runs.BABY_RELOCATED],
+            data[Runs.SECONDARY_SAFE_ZONE],
             data[Runs.ALL_CANDLES]
         )
 
@@ -444,28 +476,32 @@ class Runs(object):
         om_ramp_hallway = 0.9 if ramp_hallway else 1
         om_all_candles = 0.6 if all_candles else 1
 
-        #Scores
+        # Scores
         if failed_trial:
             if robot_div in ['junior', 'walking'] and level == 1:
-                return 600 + task_detect + task_position + task_search;
+                return 600 + task_detect + task_position + task_search
             elif level == 3 and actual_time in [400, 450, 500]:
                 return actual_time
             else:
                 return 600
 
         if level == 1:
-            score = ((actual_time + pp_candle + pp_dog + pp_slide) *
-                    (om_candle * om_start * om_return * om_extinguisher * om_furniture) * room_factor)
+            score = (
+                (actual_time + pp_candle + pp_dog + pp_slide) *
+                (om_candle * om_start * om_return * om_extinguisher * om_furniture) * room_factor)
 
         if level == 2:
-            score = ((actual_time + pp_candle + pp_dog + pp_slide) * 
-                    (om_start * om_return * om_extinguisher * om_furniture) * room_factor)
+            score = (
+                (actual_time + pp_candle + pp_dog + pp_slide) *
+                (om_start * om_return * om_extinguisher * om_furniture) * room_factor)
 
         if level == 3:
-            score = ((actual_time + pp_candle + pp_dog + pp_slide) * 
-                    om_alt_target * om_ramp_hallway * om_all_candles) 
+            score = (
+                (actual_time + pp_candle + pp_dog + pp_slide) *
+                om_alt_target * om_ramp_hallway * om_all_candles
+            )
 
         if score > 600:
             return 600
-        else: 
+        else:
             return score
