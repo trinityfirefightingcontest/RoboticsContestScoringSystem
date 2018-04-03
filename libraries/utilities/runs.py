@@ -66,7 +66,13 @@ class Runs(object):
         RAMP_USED,
         SECONDARY_SAFE_ZONE,
         ALL_CANDLES,
-        VERSA_VALVE_USED
+        VERSA_VALVE_USED,
+        L3_NONE,
+        L3_ONE_CANDLE,
+        L3_ALL_CANDLES,
+        L3_FOUND_BABY,
+        L3_RESCUED_BABY,
+        L3_TRAVERSED_HALLWAY
     ]
 
     BOOLEANS = [
@@ -83,6 +89,15 @@ class Runs(object):
         SECONDARY_SAFE_ZONE,
         ALL_CANDLES,
         VERSA_VALVE_USED,
+        L3_NONE,
+        L3_ONE_CANDLE,
+        L3_ALL_CANDLES,
+        L3_FOUND_BABY,
+        L3_RESCUED_BABY,
+        L3_TRAVERSED_HALLWAY
+    ]
+
+    L3_MILESTONES = [
         L3_NONE,
         L3_ONE_CANDLE,
         L3_ALL_CANDLES,
@@ -163,7 +178,18 @@ class Runs(object):
             )
             if not valid:
                 error[Runs.NUM_ROOMS] = Runs.NUM_ROOMS_ERR
-
+        print form
+        if level == 3:
+            has_at_least_one_milestone = False
+            for milestone in Runs.L3_MILESTONES:
+                print form[milestone]
+                print milestone
+                has_at_least_one_milestone = (
+                    has_at_least_one_milestone or
+                    form[milestone]
+                )
+            if not has_at_least_one_milestone:
+                error['l3_sympathy'] = 'Please select at least one option'
         return error
 
     @staticmethod
