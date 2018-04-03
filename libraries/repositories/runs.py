@@ -36,6 +36,12 @@ class Runs(object):
                 used_versa_valve BOOLEAN,
                 score FLOAT(10,2),
                 robot_id VARCHAR(10),
+                l3_traversed_hallway BOOLEAN,
+                l3_found_baby BOOLEAN,
+                l3_rescued_baby BOOLEAN,
+                l3_all_candles BOOLEAN,
+                l3_one_candle BOOLEAN,
+                l3_none BOOLEAN,
                 PRIMARY KEY (id))
                 ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;""")
         r.get_registry()['MY_SQL'].query(query)
@@ -69,7 +75,13 @@ class Runs(object):
         all_candles,
         used_versa_valve,
         score,
-        robot_id
+        robot_id,
+        l3_traversed_hallway,
+        l3_found_baby,
+        l3_rescued_baby,
+        l3_all_candles,
+        l3_one_candle,
+        l3_none
     ):
 
         query = """INSERT INTO runs(
@@ -92,7 +104,13 @@ class Runs(object):
             all_candles,
             used_versa_valve,
             score,
-            robot_id
+            robot_id,
+            l3_traversed_hallway,
+            l3_found_baby,
+            l3_rescued_baby,
+            l3_all_candles,
+            l3_one_candle,
+            l3_none
         ) VALUES (
             %(level)s,
             %(failed_trial)s,
@@ -113,7 +131,13 @@ class Runs(object):
             %(all_candles)s,
             %(used_versa_valve)s,
             %(score)s,
-            %(robot_id)s
+            %(robot_id)s,
+            %(l3_traversed_hallway)s,
+            %(l3_found_baby)s,
+            %(l3_rescued_baby)s,
+            %(l3_all_candles)s,
+            %(l3_one_candle)s,
+            %(l3_none)s
         );"""
         data = {
             'level': level,
@@ -135,7 +159,13 @@ class Runs(object):
             'all_candles': all_candles,
             'used_versa_valve': used_versa_valve,
             'score': score,
-            'robot_id': robot_id 
+            'robot_id': robot_id,
+            'l3_traversed_hallway': l3_traversed_hallway,
+            'l3_found_baby': l3_found_baby,
+            'l3_rescued_baby': l3_rescued_baby,
+            'l3_all_candles': l3_all_candles,
+            'l3_one_candle': l3_one_candle,
+            'l3_none': l3_none
         }
         return r.get_registry()['MY_SQL'].insert(query, data)
 

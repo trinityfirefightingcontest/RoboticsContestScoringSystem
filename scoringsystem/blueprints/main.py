@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from flask import (
     Blueprint, render_template, url_for, request,
-    redirect, session, make_response)
+    redirect, session)
 import registry as r
 from libraries.utilities.authentication import AuthenticationUtilities
 from libraries.utilities.level_progress_handler import LevelProgressHandler
@@ -91,8 +91,7 @@ def advance_level(robot_id):
         )
         # redirect to add run page
         return redirect(
-            url_for('main.robot_add_run',
-                robot_id=robot_id)
+            url_for('main.robot_add_run', robot_id=robot_id)
         )
 
     return "Robot not eligible to advance to next level.\n"
@@ -108,7 +107,7 @@ def robot_detail(robot_id, inputs=None):
 
     # get existing runs of robot
     runs = r.get_registry()['RUNS'].get_runs(robot_id)
-    
+
     # check if disqualifited and eligibility to advnace to next level
     eligibility = LevelProgressHandler.get_eligibility_for_next_run(
         runs, robot['level']
@@ -172,7 +171,6 @@ def robot_add_run(robot_id):
             all_runs=all_runs
         )
 
-
     # request is POST
     # validate input data
     form = Runs.convert_to_dict(request.form) # convert to dict
@@ -185,7 +183,6 @@ def robot_add_run(robot_id):
 
     # if error, re-render page with errors
     if error:
-        print error
         error['error'] = '*Please fix all errors highlighted in red'
         return render_template(
             "run.html",
@@ -216,11 +213,17 @@ def robot_add_run(robot_id):
         touched_candle=form[Runs.TOUCHED_CANDLE],
         cont_wall_contact=form[Runs.WALL_CONTACT],
         ramp_hallway=form[Runs.RAMP_USED],
-        alt_target=form[Runs.BABY_RELOCATED],
+        alt_target=form[Runs.SECONDARY_SAFE_ZONE],
         all_candles=form[Runs.ALL_CANDLES],
         used_versa_valve=form[Runs.VERSA_VALVE_USED],
+        l3_traversed_hallway=form[Runs.L3_TRAVERSED_HALLWAY],
+        l3_found_baby=form[Runs.L3_FOUND_BABY],
+        l3_rescued_baby=form[Runs.L3_RESCUED_BABY],
+        l3_all_candles=form[Runs.L3_ALL_CANDLES],
+        l3_one_candle=form[Runs.L3_ONE_CANDLE],
+        l3_none=form[Runs.L3_NONE],
         score=score,
-        robot_id=robot_id
+        robot_id=robot_id,
     )
 
     # redirect to robot detail page

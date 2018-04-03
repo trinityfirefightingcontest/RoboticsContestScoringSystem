@@ -34,9 +34,75 @@
             checked
           {% endif %}
         />
-        Robot failed the trial or could not put out the flame within the time limit.
+        {% if robot['level'] == 3 %}
+          Robot failed the run.
+        {% else %}
+          Robot failed the trial or could not put out the flame within the time limit.
+        {% endif %}
       </label>
     </div>
+    {% if robot['level'] == 3 %}
+      <div class="col-xs-12 col-lg-12">
+        <h4>Robot could not complete run but:</h4>
+      </div>
+      <div class="col-xs-12 col-lg-12">
+        {% if error['l3_sympathy'] %}
+          <label class="col-xs- col-lg-12 has-error alert-danger">
+            {{error['l3_sympathy']}}
+          </label>
+        {% endif %}
+      </div>
+      <div class="col-xs-12 checkbox">
+        <label>
+          <input type="checkbox" name="l3_traversed_hallway"
+            {% if input['l3_traversed_hallway'] %}
+              checked
+            {% endif %}
+          />
+          Traversed the hallway.
+        </label>
+        <label>
+          <input type="checkbox" name="l3_found_baby"
+            {% if input['l3_found_baby'] %}
+              checked
+            {% endif %}
+          />
+          Found the baby.
+        </label>
+        <label>
+          <input type="checkbox" name="l3_rescued_baby"
+            {% if input['l3_rescued_baby'] %}
+              checked
+            {% endif %}
+          />
+          Rescued the baby.
+        </label>
+        <label>
+          <input type="checkbox" name="l3_one_candle"
+            {% if input['l3_one_candle'] %}
+              checked
+            {% endif %}
+          />
+          Put out at least 1 candle.
+        </label>
+        <label>
+          <input type="checkbox" name="l3_all_candles"
+            {% if input['l3_all_candles'] %}
+              checked
+            {% endif %}
+          />
+          Put out at all candles.
+        </label>
+        <label>
+          <input type="checkbox" name="l3_none"
+            {% if input['l3_none'] %}
+              checked
+            {% endif %}
+          />
+          None of the above.
+        </label>
+      </div>
+    {% endif %}
   </div>
 
   <!-- versa valve checkbox -->
