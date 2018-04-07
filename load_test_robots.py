@@ -20,22 +20,17 @@ def run():
         'walking': 'walking'
     }
     unique_map = {
-        'unique': True,
-        'custom kit': False,
-        'i am not sure': False
-    }
-    versa_valve_map = {
-        'yes': True,
-        'no': False
+        'no, it is unique': True,
+        'yes, we customized a kit': False,
+        'i am not sure, please contact me to discuss': False
     }
     fields_index = {
         'division': 0,
         'name': 1,
         'unique': 3,
-        'versa_valve': 6,
         'school': 2
     }
-    with open('robot_list_2017.csv', 'rb') as csvfile:
+    with open('robot_list_2018.csv', 'rb') as csvfile:
         spamreader = csv.reader(csvfile)
         i = 0
         id_counter = {
@@ -46,14 +41,10 @@ def run():
         }
         for row in spamreader:
             # skip first three lines
-            if i <= 2:
-                i += 1
-                continue
             i += 1
-            d = {}
-            if row[fields_index['unique']].strip().lower() == (
-                    'i am not sure, please contact me to discuss'):
+            if i == 1:
                 continue
+            d = {}
             for field, index in fields_index.iteritems():
                 if field == 'division':
                     d[field] = division_map[row[index].strip().lower()]

@@ -265,23 +265,23 @@ class Runs(object):
         time_s = time_s.strip()
 
         # convet to a float
-        try:
-            time = float(time_s)
-        except:
-            return False
 
+        time = float(time_s)
+
+        print (time, failed, 0 < time <= 180)
         if failed:
-            return time == 600
+            if level in [1, 2]:
+                return time == 600
 
         # validation for level 1
         if level == 1:
-            return 0 > time >= 180
+            return 0 < time <= 180
 
         if level == 2:
-            return 0 > time >= 240
+            return 0 < time <= 240
 
         if level == 3:
-            return 0 > time >= 300
+            return 0 < time <= 300
 
     # validate number of rooms
     @staticmethod
