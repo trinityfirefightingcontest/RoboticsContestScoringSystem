@@ -210,7 +210,7 @@ def robot_add_run(robot_id):
         signaled_detection=form[Runs.CANDLE_DETECTED],
         num_rooms_searched=form[Runs.NUM_ROOMS],
         kicked_dog=form[Runs.KICKED_DOG],
-        touched_candle=bool(form[Runs.TOUCHED_CANDLE]),
+        touched_candle=form[Runs.TOUCHED_CANDLE] or 0,
         cont_wall_contact=form[Runs.WALL_CONTACT],
         ramp_hallway=form[Runs.RAMP_USED],
         alt_target=form[Runs.SECONDARY_SAFE_ZONE],

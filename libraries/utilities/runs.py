@@ -177,12 +177,9 @@ class Runs(object):
             )
             if not valid:
                 error[Runs.NUM_ROOMS] = Runs.NUM_ROOMS_ERR
-        print form
         if level == 3:
             has_at_least_one_milestone = False
             for milestone in Runs.L3_MILESTONES:
-                print form[milestone]
-                print milestone
                 has_at_least_one_milestone = (
                     has_at_least_one_milestone or
                     form[milestone]
