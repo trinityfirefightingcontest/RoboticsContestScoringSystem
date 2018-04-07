@@ -393,7 +393,7 @@ class Runs(object):
             num_rooms_detected=num_rooms,
             kicked_dog=data[Runs.KICKED_DOG],
             touched_candle=candle_touch,
-            cont_wall_contact=wall_conatct,
+            cont_wall_contact=wall_conatct or 0,
             ramp_hallway=data[Runs.RAMP_USED],
             alt_target=data[Runs.SECONDARY_SAFE_ZONE],
             all_candles=data[Runs.ALL_CANDLES],
