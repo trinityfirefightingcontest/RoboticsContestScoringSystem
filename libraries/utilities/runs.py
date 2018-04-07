@@ -122,13 +122,12 @@ class Runs(object):
                 division,
                 robot_name
             )
-        else:
-            return Runs.validate_form_qualified(
-                form,
-                level,
-                division,
-                robot_name
-            )
+        return Runs.validate_form_qualified(
+            form,
+            level,
+            division,
+            robot_name
+        )
 
     @staticmethod
     def validate_form_disqualified(
@@ -265,51 +264,24 @@ class Runs(object):
 
         time_s = time_s.strip()
 
-        min_123 = 0  # minimum for any level
-        max_1 = 180  # 3 minutes for level 1
-        max_2 = 240  # 4 minutes for level 2
-        max_3 = 300  # 5 minutes for level 3
-
-        # special AT values in case of a failed trial
-        fail_123 = 600  # trial failed (any level)
-        traversed_3 = 500  # failed but traversed from arean A to B (level 3)
-        found_baby_3 = 450  # failed but found baby (level 3)
-        picked_baby_3 = 400  # failed but picked up baby (level 3)
-
-        # check if input string is a number
-
         # convet to a float
         try:
             time = float(time_s)
         except:
             return False
 
+        if failed:
+            return time == 600
+
         # validation for level 1
         if level == 1:
-            if failed and (time != fail_123):
-                return False
-            elif (not failed) and (time < min_123 or time > max_1):
-                return False
+            return 0 > time >= 180
 
-        # validation for level 2
-        elif level == 2:
-            if failed and (time != fail_123):
-                return False
-            elif (not failed) and (time < min_123 or time > max_2):
-                return False
+        if level == 2:
+            return 0 > time >= 240
 
-        # validation for level 3
-        elif level == 3:
-            if(failed and
-                    (time != fail_123) and
-                    (time != traversed_3) and
-                    (time != found_baby_3) and
-                    (time != picked_baby_3)):
-                return False
-
-            elif (not failed) and (time < min_123 or time > max_3):
-                return False
-        return True
+        if level == 3:
+            return 0 > time >= 300
 
     # validate number of rooms
     @staticmethod
@@ -405,24 +377,24 @@ class Runs(object):
             0
         )
         return actual_time, Runs.calculate_run_score(
-            robot['division'],
-            robot['level'],
-            data[Runs.RUN_DISQ],
-            actual_time,
-            data[Runs.NON_AIR],
-            data[Runs.FURNITURE],
-            data[Runs.ARBITRARY_START],
-            data[Runs.RETURN_TRIP],
-            data[Runs.NO_CANDLE_CIRCLE],
-            data[Runs.STOPPED_WITHIN_30],
-            data[Runs.CANDLE_DETECTED],
-            num_rooms,
-            data[Runs.KICKED_DOG],
-            candle_touch,
-            wall_conatct,
-            data[Runs.RAMP_USED],
-            data[Runs.SECONDARY_SAFE_ZONE],
-            data[Runs.ALL_CANDLES]
+            robot_div=robot['division'],
+            level=robot['level'],
+            failed_trial=data[Runs.RUN_DISQ],
+            actual_time=actual_time,
+            non_air=data[Runs.NON_AIR],
+            furniture=data[Runs.FURNITURE],
+            arbitrary_start=data[Runs.ARBITRARY_START],
+            return_trip=data[Runs.RETURN_TRIP],
+            candle_location_mode=data[Runs.NO_CANDLE_CIRCLE],
+            stopped_within_circle=data[Runs.STOPPED_WITHIN_30],
+            signaled_detection=data[Runs.CANDLE_DETECTED],
+            num_rooms_detected=num_rooms,
+            kicked_dog=data[Runs.KICKED_DOG],
+            touched_candle=candle_touch,
+            cont_wall_contact=wall_conatct,
+            ramp_hallway=data[Runs.RAMP_USED],
+            alt_target=data[Runs.SECONDARY_SAFE_ZONE],
+            all_candles=data[Runs.ALL_CANDLES],
         )
 
     # calculates score
