@@ -281,7 +281,7 @@ class Runs(object):
         # convet to a float
         try:
             time = float(time_s)
-        except ValueError, TypeError:
+        except:
             return False
 
         # validation for level 1
@@ -300,11 +300,11 @@ class Runs(object):
 
         # validation for level 3
         elif level == 3:
-            if(failed
-                    and (time != fail_123)
-                    and (time != traversed_3)
-                    and (time != found_baby_3)
-                    and (time != picked_baby_3)):
+            if(failed and
+                    (time != fail_123) and
+                    (time != traversed_3) and
+                    (time != found_baby_3) and
+                    (time != picked_baby_3)):
                 return False
 
             elif (not failed) and (time < min_123 or time > max_3):
