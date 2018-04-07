@@ -15,7 +15,8 @@ ALLOWED_ADMINS = [
     'fsd@acm.org',
     'imanabasileal@gmail.com',
     'aba1731@gmail.com',
-    'robotics.scoring.test@gmail.com'
+    'robotics.scoring.test@gmail.com',
+    'a.sinson6@gmail.com'
 ]
 
 CLIENT_ID = '735766766561-3qtasjqsha768eqdqthfqfg0lf35rofm.apps.googleusercontent.com'  # NOQA
