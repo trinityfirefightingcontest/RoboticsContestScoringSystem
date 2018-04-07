@@ -265,8 +265,10 @@ class Runs(object):
         time_s = time_s.strip()
 
         # convet to a float
-
-        time = float(time_s)
+        try:
+            time = float(time_s)
+        except:
+            return False
 
         print (time, failed, 0 < time <= 180)
         if failed:

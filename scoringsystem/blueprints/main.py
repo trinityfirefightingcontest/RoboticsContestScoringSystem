@@ -173,7 +173,7 @@ def robot_add_run(robot_id):
 
     # request is POST
     # validate input data
-    form = Runs.convert_to_dict(request.form) # convert to dict
+    form = Runs.convert_to_dict(request.form)  # convert to dict
     error = Runs.validate_form(
         form,
         robot['level'],
@@ -210,7 +210,7 @@ def robot_add_run(robot_id):
         signaled_detection=form[Runs.CANDLE_DETECTED],
         num_rooms_searched=form[Runs.NUM_ROOMS],
         kicked_dog=form[Runs.KICKED_DOG],
-        touched_candle=form[Runs.TOUCHED_CANDLE],
+        touched_candle=bool(form[Runs.TOUCHED_CANDLE]),
         cont_wall_contact=form[Runs.WALL_CONTACT],
         ramp_hallway=form[Runs.RAMP_USED],
         alt_target=form[Runs.SECONDARY_SAFE_ZONE],
