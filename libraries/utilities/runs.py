@@ -3,6 +3,16 @@
 from libraries.utilities.utilities import Utilities
 
 
+L3_SCORES = [
+    600,
+    550,
+    450,
+    400,
+    350,
+    325
+]
+
+
 class Runs(object):
     # form paramter name mappings
     NAME = 'name'
@@ -271,6 +281,8 @@ class Runs(object):
         if failed:
             if level in [1, 2]:
                 return time == 600
+            else:
+                return time in L3_SCORES
 
         # validation for level 1
         if level == 1:
@@ -379,11 +391,13 @@ class Runs(object):
             robot_div=robot['division'],
             level=robot['level'],
             failed_trial=data[Runs.RUN_DISQ],
+
             actual_time=actual_time,
             non_air=data[Runs.NON_AIR],
             furniture=data[Runs.FURNITURE],
             arbitrary_start=data[Runs.ARBITRARY_START],
             return_trip=data[Runs.RETURN_TRIP],
+
             candle_location_mode=data[Runs.NO_CANDLE_CIRCLE],
             stopped_within_circle=data[Runs.STOPPED_WITHIN_30],
             signaled_detection=data[Runs.CANDLE_DETECTED],
@@ -394,6 +408,12 @@ class Runs(object):
             ramp_hallway=data[Runs.RAMP_USED],
             alt_target=data[Runs.SECONDARY_SAFE_ZONE],
             all_candles=data[Runs.ALL_CANDLES],
+            l3_traversed_hallway=data[Runs.L3_TRAVERSED_HALLWAY],
+            l3_found_baby=data[Runs.L3_FOUND_BABY],
+            l3_rescued_baby=data[Runs.L3_RESCUED_BABY],
+            l3_all_candles=data[Runs.L3_ALL_CANDLES],
+            l3_one_candle=data[Runs.L3_ONE_CANDLE],
+            l3_none=data[Runs.L3_NONE]
         )
 
     # calculates score
@@ -416,7 +436,13 @@ class Runs(object):
         cont_wall_contact,
         ramp_hallway,
         alt_target,
-        all_candles
+        all_candles,
+        l3_traversed_hallway,
+        l3_found_baby,
+        l3_rescued_baby,
+        l3_all_candles,
+        l3_one_candle,
+        l3_none
     ):
 
         task_search = num_rooms_detected * (-30)
@@ -447,12 +473,30 @@ class Runs(object):
         om_ramp_hallway = 0.9 if ramp_hallway else 1
         om_all_candles = 0.6 if all_candles else 1
 
+        l3_failure_reduction_factor = 0
+        if om_ramp_hallway:
+            l3_failure_reduction_factor = 25
         # Scores
         if failed_trial:
             if robot_div in ['junior', 'walking'] and level == 1:
                 return 600 + task_detect + task_position + task_search
-            elif level == 3 and actual_time in [400, 450, 500]:
-                return actual_time
+            # elif level == 3 and actual_time in L3_SCORES:
+            if level == 3:
+                if l3_none:
+                    return 600
+                if l3_traversed_hallway:
+                    score = 550
+                    if l3_found_baby:
+                        score = 450
+                    if l3_found_baby and l3_one_candle:
+                        score = 400
+                    if l3_found_baby and l3_all_candles:
+                        score = 350
+                    if l3_rescued_baby:
+                        score = 350
+                    if l3_one_candle and l3_rescued_baby:
+                        score = 325
+                    return score - l3_failure_reduction_factor
             else:
                 return 600
 
