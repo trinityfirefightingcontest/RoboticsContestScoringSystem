@@ -474,7 +474,7 @@ class Runs(object):
         om_all_candles = 0.6 if all_candles else 1
 
         l3_failure_reduction_factor = 0
-        if om_ramp_hallway:
+        if ramp_hallway:
             l3_failure_reduction_factor = 25
         # Scores
         if failed_trial:
